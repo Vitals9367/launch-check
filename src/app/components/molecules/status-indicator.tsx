@@ -1,16 +1,19 @@
-import { Badge } from "@/components/ui/badge"
-import { AlertCircle, CheckCircle, Loader2 } from "lucide-react"
-import type { ScanStatus } from "@/types/scanner"
+import { Badge } from "@/components/ui/badge";
+import { AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import type { ScanStatus } from "@/types/scanner";
 
 interface StatusIndicatorProps {
-  status: ScanStatus
-  scanningPhase: string
+  status: ScanStatus;
+  scanningPhase: string;
 }
 
-export function StatusIndicator({ status, scanningPhase }: StatusIndicatorProps) {
+export function StatusIndicator({
+  status,
+  scanningPhase,
+}: StatusIndicatorProps) {
   return (
     <div className="mt-2">
-      <div className="text-sm font-medium mb-2">Status:</div>
+      <div className="mb-2 text-sm font-medium">Status:</div>
       <div className="flex items-center space-x-2">
         {status === "idle" && <Badge variant="outline">Idle</Badge>}
         {status === "scanning" && (
@@ -19,11 +22,16 @@ export function StatusIndicator({ status, scanningPhase }: StatusIndicatorProps)
               <Loader2 className="mr-1 h-3 w-3 animate-spin" />
               Scanning...
             </Badge>
-            <span className="text-sm text-muted-foreground">{scanningPhase}</span>
+            <span className="text-sm text-muted-foreground">
+              {scanningPhase}
+            </span>
           </>
         )}
         {status === "complete" && (
-          <Badge variant="success" className="bg-green-500 hover:bg-green-600 flex items-center">
+          <Badge
+            variant="default"
+            className="flex items-center bg-green-500 hover:bg-green-600"
+          >
             <CheckCircle className="mr-1 h-3 w-3" />
             Scan Complete
           </Badge>
@@ -36,6 +44,5 @@ export function StatusIndicator({ status, scanningPhase }: StatusIndicatorProps)
         )}
       </div>
     </div>
-  )
+  );
 }
-
