@@ -20,6 +20,9 @@ export const env = createEnv({
     SENTRY_ENVIRONMENT: z
       .enum(["local", "development", "test", "production"])
       .default("development"),
+    BREVO_API_KEY: z.string(),
+    BREVO_SENDER_EMAIL: z.string().email(),
+    BREVO_SENDER_NAME: z.string(),
   },
 
   /**
@@ -53,6 +56,9 @@ export const env = createEnv({
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
     NEXT_PUBLIC_SENTRY_ENVIRONMENT: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    BREVO_API_KEY: process.env.BREVO_API_KEY,
+    BREVO_SENDER_EMAIL: process.env.BREVO_SENDER_EMAIL,
+    BREVO_SENDER_NAME: process.env.BREVO_SENDER_NAME,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
