@@ -304,7 +304,6 @@ export function ScannerTemplate() {
           <ResultsSection
             vulnerabilities={vulnerabilities}
             reportId={reportId}
-            url={url}
             enabledCrawling={enableCrawling}
             securityRating={securityRating}
           />

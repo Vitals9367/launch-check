@@ -1,24 +1,24 @@
 import { type Vulnerability } from "@/app/types/scanner";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 // This is a mock implementation - in a real app, this would connect to OWASP ZAP
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(req: NextRequest, res: NextResponse) {
   try {
-    const { url, crawl } = await req.body({
-      url: z.string(),
-      crawl: z.boolean(),
-    });
+    const { url, crawl } = await req.json();
 
     if (!url) {
-      return res.status(400).json({ error: "URL is required" });
+      return NextResponse.json({ error: "URL is required" }, { status: 400 });
     }
 
     // Validate URL format
     try {
       new URL(url);
     } catch (error) {
-      return res.status(400).json({ error: "Invalid URL format" });
+      return NextResponse.json(
+        { error: "Invalid URL format" },
+        { status: 400 },
+      );
     }
 
     // Simulate scan delay (longer for crawling)
@@ -186,12 +186,15 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       }
     }
 
-    return res.status(200).json({
+    return NextResponse.json({
       vulnerabilities,
       reportId,
     });
   } catch (error) {
     console.error("Scan error:", error);
-    return res.status(500).json({ error: "Failed to process scan request" });
+    return NextResponse.json(
+      { error: "Failed to process scan request" },
+      { status: 500 },
+    );
   }
 }

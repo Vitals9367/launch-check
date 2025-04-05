@@ -1,12 +1,19 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 
 // This is a mock implementation for downloading a report
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(
+  req: NextRequest,
+  res: NextResponse,
+  { params }: { params: { reportId: string } },
+) {
   try {
-    const { reportId } = req.query;
+    const { reportId } = params;
 
     if (!reportId) {
-      return res.status(400).json({ error: "Report ID is required" });
+      return NextResponse.json(
+        { error: "Report ID is required" },
+        { status: 400 },
+      );
     }
 
     // In a real implementation, you would generate or retrieve a PDF report
@@ -31,14 +38,17 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
     const blob = new Blob([mockPdfContent], { type: "application/pdf" });
 
     // Return the blob with appropriate headers
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="owasp-zap-report-${reportId}.pdf"`,
-    );
-    res.status(200).send(blob);
+    return NextResponse.json(blob, {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="owasp-zap-report-${reportId}.pdf"`,
+      },
+    });
   } catch (error) {
     console.error("Report generation error:", error);
-    res.status(500).json({ error: "Failed to generate report" });
+    return NextResponse.json(
+      { error: "Failed to generate report" },
+      { status: 500 },
+    );
   }
 }
