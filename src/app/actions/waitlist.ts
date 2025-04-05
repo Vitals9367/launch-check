@@ -2,6 +2,7 @@
 
 import { db } from "@/server/db";
 import { Prisma } from "@prisma/client";
+import { sendEmail, generateWelcomeEmailHtml } from "@/lib/email";
 
 // Server action for waitlist submission
 export async function joinWaitlist(formData: FormData) {
@@ -40,6 +41,20 @@ export async function joinWaitlist(formData: FormData) {
         email,
       },
     });
+
+    // Send welcome email
+    const emailResult = await sendEmail({
+      to: email,
+      toName: name,
+      subject: "Welcome to LaunchCheck Waitlist!",
+      htmlContent: generateWelcomeEmailHtml(name),
+    });
+
+    if (!emailResult.success) {
+      console.error("Failed to send welcome email:", emailResult.error);
+      // We don't want to fail the whole operation if just the email fails
+      // The user is still successfully added to the waitlist
+    }
 
     return {
       success: true,
