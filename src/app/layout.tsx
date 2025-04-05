@@ -3,58 +3,60 @@ import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
+import { Toaster } from "./components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title:
-    "LaunchCheck | Free Website Security Scanner & Vulnerability Detection Tool",
+  title: "LaunchCheck | Security Scanner Built for Indie Hackers",
   description:
-    "Scan your website for security vulnerabilities before hackers do. Find XSS, SQL injection, and OWASP Top 10 issues before deployment. No downloads, no accounts required.",
+    "A security scanner built by an indie hacker for indie hackers. Find and fix vulnerabilities in your SaaS before hackers do. Simple, actionable, and built for makers.",
   keywords: [
-    "website security scanner",
-    "web vulnerability scanner online",
-    "scan website for vulnerabilities",
-    "pre-launch website security check",
-    "XSS vulnerability checker",
-    "SQL injection scanner",
+    "indie hacker security",
+    "saas security scanner",
+    "micro-saas security",
+    "website vulnerability scanner",
+    "indie maker security tool",
+    "startup security scanner",
     "OWASP Top 10 scanner",
-    "website security audit tool",
-    "check website security before launch",
-    "free security audit website",
+    "website security audit",
+    "indie business security",
+    "bootstrap startup security",
     "website vulnerability detection",
-    "automated security scanner",
+    "indie security tool",
   ],
   authors: [
     {
-      name: "LaunchCheck Security Team",
+      name: "Vitalijus Alsauskas",
+      url: "https://x.com/alsauskas_v",
     },
   ],
-  creator: "LaunchCheck",
+  creator: "Vitalijus Alsauskas",
   publisher: "LaunchCheck",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://launchcheck.io",
-    title: "LaunchCheck - Find Website Vulnerabilities Before Hackers Do",
+    title: "LaunchCheck - Security Scanner Built for Indie Hackers",
     description:
-      "Free online tool to scan websites for security vulnerabilities like XSS, SQL injection, and OWASP Top 10 issues before deployment or after launch.",
+      "Built by an indie hacker who understands your needs. Find and fix vulnerabilities in your SaaS with clear, actionable insights.",
     siteName: "LaunchCheck",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "LaunchCheck - Website Security Scanner",
+        alt: "LaunchCheck - Security Scanner for Indie Hackers",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "LaunchCheck - Website Security Scanner",
+    title: "LaunchCheck - Security Scanner for Indie Hackers",
     description:
-      "Scan your website for security vulnerabilities before hackers do. Free online security audit tool.",
-    images: ["/twitter-image.png"],
+      "Built by an indie hacker who understands your needs. Find and fix vulnerabilities in your SaaS with clear, actionable insights.",
+    images: ["/og-image.png"],
+    creator: "@alsauskas_v",
   },
   alternates: {
     canonical: "https://launchcheck.io",
@@ -80,6 +82,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <main>{children}</main>
+          <Toaster />
         </Providers>
       </body>
     </html>
