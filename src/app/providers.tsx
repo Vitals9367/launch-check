@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import { env } from "@/env";
 import { TRPCReactProvider } from "@/trpc/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { Toaster } from "@/components/ui/toaster";
 import PostHogPageView from "@/app/components/PostHogPageView";
 import { ThemeProvider } from "next-themes";
 
@@ -20,10 +19,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem={false}
+      disableTransitionOnChange
+    >
       <TRPCReactProvider>
         <PHProvider client={posthog}>
-          <Toaster />
           <PostHogPageView />
           <NuqsAdapter>{children}</NuqsAdapter>
         </PHProvider>

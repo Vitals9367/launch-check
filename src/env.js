@@ -35,7 +35,6 @@ export const env = createEnv({
       .enum(["local", "development", "test", "production"])
       .default("development"),
     NEXT_PUBLIC_SITE_URL: z.string(),
-    NEXT_PUBLIC_SPACES_REGION: z.string(),
   },
 
   /**
@@ -54,7 +53,6 @@ export const env = createEnv({
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
     NEXT_PUBLIC_SENTRY_ENVIRONMENT: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
-    NEXT_PUBLIC_SPACES_REGION: process.env.NEXT_PUBLIC_SPACES_REGION,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

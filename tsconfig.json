@@ -32,7 +32,9 @@
     "paths": {
       "@/*": ["./src/*"],
       "@/components/*": ["./src/app/components/*"],
-      "@/hooks/*": ["./src/app/hooks/*"]
+      "@/hooks/*": ["./src/app/hooks/*"],
+      "@/types/*": ["./src/app/types/*"],
+      "@/actions/*": ["./src/app/actions/*"]
     }
   },
   "include": [
