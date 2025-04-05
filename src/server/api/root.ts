@@ -1,16 +1,20 @@
-import { escapeRoomsRouter } from "@/server/api/routers/escapeRooms";
-import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
-import { contactRouter } from "@/server/api/routers/contact";
-import { leaderboardRouter } from "@/server/api/routers/leadboard";
+import {
+  createCallerFactory,
+  createTRPCRouter,
+  publicProcedure,
+} from "@/server/api/trpc";
+import { z } from "zod";
 /**
  * This is the primary router for your server.
  *
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  escapeRooms: escapeRoomsRouter,
-  contact: contactRouter,
-  leaderboard: leaderboardRouter,
+  scan: publicProcedure
+    .input(z.object({ url: z.string() }))
+    .mutation(async () => {
+      return "test";
+    }),
 });
 
 // export type definition of API

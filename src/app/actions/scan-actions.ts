@@ -8,10 +8,10 @@ export async function scanWebsite(url: string, crawl: boolean) {
     try {
       new URL(url);
     } catch (error) {
+      console.error("Invalid URL format:", error);
       return { error: "Invalid URL format" };
     }
 
-    // Simulate scan delay (longer for crawling)
     const scanTime = crawl ? 2000 : 1000;
     await new Promise((resolve) => setTimeout(resolve, scanTime));
 

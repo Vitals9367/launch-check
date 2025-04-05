@@ -19,7 +19,6 @@ import type { Vulnerability, SecurityRating } from "@/app/types/scanner";
 interface ResultsSectionProps {
   vulnerabilities: Vulnerability[];
   reportId: string | null;
-  url: string;
   enabledCrawling: boolean;
   securityRating: SecurityRating | null;
 }
@@ -27,7 +26,6 @@ interface ResultsSectionProps {
 export function ResultsSection({
   vulnerabilities,
   reportId,
-  url,
   enabledCrawling,
   securityRating,
 }: ResultsSectionProps) {

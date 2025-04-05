@@ -1,37 +1,43 @@
-import { NextResponse } from "next/server"
+import { type Vulnerability } from "@/app/types/scanner";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { z } from "zod";
 
 // This is a mock implementation - in a real app, this would connect to OWASP ZAP
-export async function POST(request: Request) {
+export async function POST(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { url, crawl } = await request.json()
+    const { url, crawl } = await req.body({
+      url: z.string(),
+      crawl: z.boolean(),
+    });
 
     if (!url) {
-      return NextResponse.json({ error: "URL is required" }, { status: 400 })
+      return res.status(400).json({ error: "URL is required" });
     }
 
     // Validate URL format
     try {
-      new URL(url)
+      new URL(url);
     } catch (error) {
-      return NextResponse.json({ error: "Invalid URL format" }, { status: 400 })
+      return res.status(400).json({ error: "Invalid URL format" });
     }
 
     // Simulate scan delay (longer for crawling)
-    const scanTime = crawl ? 5000 : 2000
-    await new Promise((resolve) => setTimeout(resolve, scanTime))
+    const scanTime = crawl ? 5000 : 2000;
+    await new Promise((resolve) => setTimeout(resolve, scanTime));
 
     // Generate a report ID
-    const reportId = `zap-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 7)}`
+    const reportId = `zap-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 7)}`;
 
     // Mock response - in a real implementation, this would be the result from OWASP ZAP
-    let vulnerabilities = []
+    let vulnerabilities: Vulnerability[] = [];
 
     if (url.includes("example.com")) {
       vulnerabilities = [
         {
           name: "Cross-Site Scripting (XSS)",
           risk: "High",
-          description: "Found potential XSS vulnerability that could allow attackers to inject malicious scripts.",
+          description:
+            "Found potential XSS vulnerability that could allow attackers to inject malicious scripts.",
           location: "/search?q=<script>alert(1)</script>",
           cweid: "CWE-79",
           remedy:
@@ -55,16 +61,20 @@ export async function POST(request: Request) {
             "Implement a Content Security Policy header to restrict which resources can be loaded. Start with a policy that matches your site's requirements and gradually tighten it. For example: Content-Security-Policy: default-src 'self'; script-src 'self' trusted-cdn.com",
           impact:
             "Without CSP, browsers have no way to distinguish between legitimate and malicious content sources, making the site more vulnerable to content injection attacks.",
-          references: ["https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP", "https://content-security-policy.com/"],
+          references: [
+            "https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP",
+            "https://content-security-policy.com/",
+          ],
         },
-      ]
+      ];
 
       // Add more detailed vulnerabilities if crawling is enabled
       if (crawl) {
         vulnerabilities.push({
           name: "Insecure Cookie Configuration",
           risk: "Medium",
-          description: "Cookies are set without secure flags, potentially exposing session data.",
+          description:
+            "Cookies are set without secure flags, potentially exposing session data.",
           location: "Set-Cookie: sessionid=abc123; path=/",
           cweid: "CWE-614",
           remedy:
@@ -76,14 +86,15 @@ export async function POST(request: Request) {
             "https://owasp.org/www-community/controls/SecureCookieAttribute",
             "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html#cookie-management",
           ],
-        })
+        });
       }
     } else if (url.includes("test")) {
       vulnerabilities = [
         {
           name: "SQL Injection",
           risk: "High",
-          description: "SQL injection vulnerability that could allow attackers to manipulate database queries.",
+          description:
+            "SQL injection vulnerability that could allow attackers to manipulate database queries.",
           location: "/users?id=1' OR '1'='1",
           cweid: "CWE-89",
           remedy:
@@ -100,7 +111,8 @@ export async function POST(request: Request) {
         {
           name: "Insecure Cookie",
           risk: "Medium",
-          description: "Cookies set without secure and HttpOnly flags expose sensitive information.",
+          description:
+            "Cookies set without secure and HttpOnly flags expose sensitive information.",
           location: "Set-Cookie: auth=token123; path=/",
           cweid: "CWE-614",
           remedy:
@@ -116,7 +128,8 @@ export async function POST(request: Request) {
         {
           name: "Information Disclosure",
           risk: "Low",
-          description: "Server version exposed in HTTP headers, providing information to potential attackers.",
+          description:
+            "Server version exposed in HTTP headers, providing information to potential attackers.",
           location: "HTTP Response Headers",
           cweid: "CWE-200",
           remedy:
@@ -129,54 +142,56 @@ export async function POST(request: Request) {
             "https://www.acunetix.com/vulnerabilities/web/server-version-disclosure/",
           ],
         },
-      ]
+      ];
 
       // Add more detailed vulnerabilities if crawling is enabled
       if (crawl) {
         vulnerabilities.push({
           name: "Cross-Site Request Forgery (CSRF)",
           risk: "Medium",
-          description: "No CSRF tokens were found in form submissions, making the site vulnerable to CSRF attacks.",
+          description:
+            "No CSRF tokens were found in form submissions, making the site vulnerable to CSRF attacks.",
           location: "/account/settings",
           cweid: "CWE-352",
           remedy:
             "Implement anti-CSRF tokens in all forms and verify them on the server. Use the SameSite cookie attribute to prevent CSRF in modern browsers. Consider implementing the double-submit cookie pattern as an additional layer of protection.",
-          evidence: '<form action="/account/settings" method="POST">...[No CSRF token found]...</form>',
+          evidence:
+            '<form action="/account/settings" method="POST">...[No CSRF token found]...</form>',
           impact:
             "Attackers can trick authenticated users into performing actions without their knowledge or consent, such as changing account details or making transactions.",
           references: [
             "https://owasp.org/www-community/attacks/csrf",
             "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html",
           ],
-        })
+        });
 
         vulnerabilities.push({
           name: "Insecure Direct Object Reference",
           risk: "High",
-          description: "Direct references to internal objects without proper authorization checks.",
+          description:
+            "Direct references to internal objects without proper authorization checks.",
           location: "/api/documents/123",
           cweid: "CWE-639",
           remedy:
             "Implement proper access controls that verify the user has permission to access the requested object. Use indirect references that map to actual database IDs but are meaningless to users. Validate all user input against expected values and formats.",
-          evidence: "User can access /api/documents/456 when they only have permission for documents 123 and 124",
+          evidence:
+            "User can access /api/documents/456 when they only have permission for documents 123 and 124",
           impact:
             "Attackers can access unauthorized resources by manipulating parameter values that directly reference objects, potentially exposing sensitive data or functions.",
           references: [
             "https://owasp.org/www-project-top-ten/2017/A5_2017-Broken_Access_Control",
             "https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html",
           ],
-        })
+        });
       }
     }
-    // For any other URL, return empty vulnerabilities (secure site)
 
-    return NextResponse.json({
+    return res.status(200).json({
       vulnerabilities,
       reportId,
-    })
+    });
   } catch (error) {
-    console.error("Scan error:", error)
-    return NextResponse.json({ error: "Failed to process scan request" }, { status: 500 })
+    console.error("Scan error:", error);
+    return res.status(500).json({ error: "Failed to process scan request" });
   }
 }
-

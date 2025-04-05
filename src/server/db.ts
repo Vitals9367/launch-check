@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 import { env } from "@/env";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const createPrismaClient = () =>
   new PrismaClient({
     log:

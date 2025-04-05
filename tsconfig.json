@@ -34,7 +34,7 @@
       "@/components/*": ["./src/app/components/*"],
       "@/hooks/*": ["./src/app/hooks/*"],
       "@/types/*": ["./src/app/types/*"],
-      "@/actions/*": ["./src/app/actions/*"]
+      "@/actions/*": ["src/app/actions/*"]
     }
   },
   "include": [

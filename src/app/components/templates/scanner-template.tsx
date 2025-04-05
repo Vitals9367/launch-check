@@ -7,7 +7,7 @@ import { ResultsSection } from "@/components/organisms/results-section";
 import { PageHeader } from "@/components/molecules/page-header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { scanWebsite } from "@/actions/scan-actions";
+import { scanWebsite } from "@/app/actions/scan-actions";
 import { LoadingAnimation } from "@/components/molecules/loading-animation";
 import type {
   ScanStatus,
@@ -58,9 +58,6 @@ export function ScannerTemplate() {
       (v) => v.risk === "Medium",
     ).length;
     const lowCount = vulnerabilities.filter((v) => v.risk === "Low").length;
-
-    // Calculate weighted score (high=5, medium=3, low=1)
-    const weightedScore = highCount * 5 + mediumCount * 3 + lowCount * 1;
 
     // Determine rating based on weighted score
     if (highCount >= 2) {
@@ -129,7 +126,7 @@ export function ScannerTemplate() {
     const url = formData.get("url") as string;
     const crawl = formData.get("crawl") === "on";
 
-    if (!url.trim() || !url.match(/^https?:\/\/.+/)) {
+    if (!url.trim() || !/^https?:\/\/.+/.exec(url)) {
       setErrorMessage(
         "Please enter a valid URL starting with http:// or https://",
       );
@@ -170,7 +167,7 @@ export function ScannerTemplate() {
         const phase = scanPhases[i];
         const timeoutId = window.setTimeout(() => {
           if (isScanCancelled.current) return;
-          setScanningPhase(phase || "");
+          setScanningPhase(phase ?? "");
         }, i * 1000);
 
         scanTimeouts.current.push(timeoutId);
@@ -189,9 +186,9 @@ export function ScannerTemplate() {
             throw new Error(result.error);
           }
 
-          const vulns = result.vulnerabilities || [];
+          const vulns = result.vulnerabilities ?? [];
           setVulnerabilities(vulns);
-          setReportId(result.reportId || null);
+          setReportId(result.reportId ?? null);
           setSecurityRating(calculateSecurityRating(vulns));
           setStatus("complete");
         } catch (error) {
