@@ -116,20 +116,6 @@ export function LoadingAnimation({ phase }: LoadingAnimationProps) {
       <div className="relative mb-6">
         <motion.div
           className="absolute inset-0 flex items-center justify-center"
-          animate={{
-            rotate: 360,
-          }}
-          transition={{
-            duration: 3,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
-          }}
-        >
-          <Loader2 className="h-16 w-16 text-primary opacity-75" />
-        </motion.div>
-
-        <motion.div
-          className="absolute inset-0 flex items-center justify-center"
           variants={pulseVariants}
           animate="pulse"
         >
