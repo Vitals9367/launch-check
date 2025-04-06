@@ -1,6 +1,6 @@
 import { Shield } from "lucide-react";
 import React from "react";
-import { Button } from "../ui/button";
+import Link from "next/link";
 
 const SecurityReportSection = () => {
   return (
@@ -65,12 +65,12 @@ const SecurityReportSection = () => {
                 allow attackers to inject malicious scripts.
               </p>
               <div className="mt-2">
-                <Button
-                  variant="link"
-                  className="h-auto p-0 text-xs text-red-600"
+                <Link
+                  href="#waitlist"
+                  className="text-xs font-medium text-red-600 transition-colors hover:text-red-700"
                 >
                   How to fix this →
-                </Button>
+                </Link>
               </div>
             </div>
             <div className="rounded border p-3">
@@ -85,12 +85,12 @@ const SecurityReportSection = () => {
                 helps prevent XSS attacks.
               </p>
               <div className="mt-2">
-                <Button
-                  variant="link"
-                  className="h-auto p-0 text-xs text-red-600"
+                <Link
+                  href="#waitlist"
+                  className="text-xs font-medium text-red-600 transition-colors hover:text-red-700"
                 >
                   How to fix this →
-                </Button>
+                </Link>
               </div>
             </div>
             <div className="rounded border p-3">
@@ -105,12 +105,12 @@ const SecurityReportSection = () => {
                 session data.
               </p>
               <div className="mt-2">
-                <Button
-                  variant="link"
-                  className="h-auto p-0 text-xs text-red-600"
+                <Link
+                  href="#waitlist"
+                  className="text-xs font-medium text-red-600 transition-colors hover:text-red-700"
                 >
                   How to fix this →
-                </Button>
+                </Link>
               </div>
             </div>
           </div>
