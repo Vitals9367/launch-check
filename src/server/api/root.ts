@@ -1,22 +1,14 @@
-import {
-  createCallerFactory,
-  createTRPCRouter,
-  publicProcedure,
-} from "@/server/api/trpc";
-import { z } from "zod";
+import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
+import { waitlistRouter } from "../routers/waitlist";
 /**
  * This is the primary router for your server.
  *
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  scan: publicProcedure
-    .input(z.object({ url: z.string() }))
-    .mutation(async () => {
-      return "test";
-    }),
+  waitlist: waitlistRouter,
 });
-
+``;
 // export type definition of API
 export type AppRouter = typeof appRouter;
 

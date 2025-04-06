@@ -5,35 +5,14 @@ import { Prisma } from "@prisma/client";
 import { sendEmail, generateWelcomeEmailHtml } from "@/lib/email";
 
 // Server action for waitlist submission
-export async function joinWaitlist(formData: FormData) {
+export async function joinWaitlist({
+  name,
+  email,
+}: {
+  name: string;
+  email: string;
+}) {
   try {
-    const name = formData.get("name");
-    const email = formData.get("email");
-
-    // Validate inputs
-    if (!name || !email) {
-      return {
-        success: false,
-        message: "Name and email are required",
-      };
-    }
-
-    if (typeof name !== "string" || typeof email !== "string") {
-      return {
-        success: false,
-        message: "Invalid input types",
-      };
-    }
-
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return {
-        success: false,
-        message: "Invalid email format",
-      };
-    }
-
     // Save to database
     await db.waitlistEntry.create({
       data: {
