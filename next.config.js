@@ -27,6 +27,9 @@ const config = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+  image: {
+    unoptimized: true,
+  },
 };
 
 // Injected content via Sentry wizard below
