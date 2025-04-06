@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { giveFeedback } from "@/app/actions/feedback";
 import { upperFirst } from "lodash";
+import { useToast } from "@/app/hooks/use-toast";
 
 const feedbackSchema = z.object({
   feedback: z.string().min(1, { message: "Feedback is required" }),
@@ -34,6 +35,8 @@ const WaitlistFeedbackModal = ({
   const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { toast } = useToast();
+
   const {
     register,
     handleSubmit,
@@ -48,6 +51,10 @@ const WaitlistFeedbackModal = ({
   }: z.infer<typeof feedbackSchema>) => {
     setIsSubmitting(true);
     await giveFeedback({ name, email, feedback });
+    toast({
+      title:
+        "Thank you for your feedback! We'll keep you updated on the progress.",
+    });
     setIsSubmitting(false);
     setIsFeedbackSubmitted(true);
     setShowFeedbackModal(false);
