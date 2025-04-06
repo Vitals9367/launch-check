@@ -1,8 +1,9 @@
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { HeroSection } from "./components/sections/HeroSection";
-import { HowItWorksSection } from "./components/sections/HowItWorksSection";
+import { SecurityRisksSection } from "./components/sections/SecurityRisksSection";
 import { FeaturesSection } from "./components/sections/FeaturesSection";
+import { HowItWorksSection } from "./components/sections/HowItWorksSection";
 import { FounderSection } from "./components/sections/FounderSection";
 import { WaitlistSection } from "./components/sections/WaitlistSection";
 
@@ -12,6 +13,7 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <HeroSection />
+        <SecurityRisksSection />
         <FeaturesSection />
         <HowItWorksSection />
         <FounderSection />
