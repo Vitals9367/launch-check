@@ -11,6 +11,7 @@ import { api } from "@/trpc/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import WaitlistFeedbackModal from "../organisms/WaitlistFeedbackModal";
+import { usePostHog } from "posthog-js/react";
 
 const waitlistSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -23,6 +24,7 @@ export function WaitlistSection() {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [submittedName, setSubmittedName] = useState("");
   const [submittedEmail, setSubmittedEmail] = useState("");
+  const posthog = usePostHog();
 
   const { data: waitlistEntries } = api.waitlist.fetch.useQuery();
 
@@ -48,6 +50,13 @@ export function WaitlistSection() {
         setSubmittedEmail(email);
         setShowFeedbackModal(true);
         reset();
+        posthog.identify(email, {
+          name,
+        });
+        posthog.capture("waitlist_joined", {
+          name,
+          email,
+        });
       } else {
         toast({
           title: "Error",

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import {
@@ -14,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { giveFeedback } from "@/app/actions/feedback";
 import { upperFirst } from "lodash";
 import { useToast } from "@/app/hooks/use-toast";
+import { usePostHog } from "posthog-js/react";
 
 const feedbackSchema = z.object({
   feedback: z.string().min(1, { message: "Feedback is required" }),
@@ -36,6 +39,7 @@ const WaitlistFeedbackModal = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { toast } = useToast();
+  const posthog = usePostHog();
 
   const {
     register,
@@ -58,6 +62,14 @@ const WaitlistFeedbackModal = ({
     setIsSubmitting(false);
     setIsFeedbackSubmitted(true);
     setShowFeedbackModal(false);
+    posthog.identify(email, {
+      name,
+    });
+    posthog.capture("waitlist_feedback_submitted", {
+      name,
+      email,
+      feedback,
+    });
   };
 
   return (
