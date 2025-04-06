@@ -3,14 +3,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Check, Shield } from "lucide-react";
 import { joinWaitlist } from "@/app/actions/waitlist";
 import { useToast } from "@/app/hooks/use-toast";
@@ -78,30 +70,30 @@ export function WaitlistSection() {
     <>
       <section
         id="waitlist"
-        className="bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 px-4 py-20"
+        className="animate-fade-in bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 px-4 py-20"
       >
         <div className="container mx-auto max-w-6xl">
           <div className="grid items-center gap-12 md:grid-cols-2">
             <div className="space-y-6">
-              <div className="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-sm text-red-700">
-                <Shield className="mr-1 h-3.5 w-3.5" />
+              <div className="animate-slide-down inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-sm text-red-700">
+                <Shield className="mr-1 h-3.5 w-3.5 animate-pulse" />
                 <span>Early Access</span>
               </div>
-              <h2 className="text-3xl font-bold md:text-4xl">
+              <h2 className="animate-slide-down text-3xl font-bold [animation-delay:200ms] md:text-4xl">
                 Join the Indie Hackers Security Movement
               </h2>
-              <p className="text-xl text-gray-600">
+              <p className="animate-slide-down text-xl text-gray-600 [animation-delay:400ms]">
                 Be part of making security accessible for indie hackers
                 everywhere
               </p>
 
-              <div className="flex items-center space-x-4 text-sm">
+              <div className="animate-slide-down flex items-center space-x-4 text-sm [animation-delay:600ms]">
                 <div className="flex items-center">
-                  <div className="mr-2 h-2 w-2 rounded-full bg-yellow-500"></div>
+                  <div className="mr-2 h-2 w-2 animate-pulse rounded-full bg-yellow-500"></div>
                   <span className="font-medium">Limited spots available</span>
                 </div>
                 <div className="flex items-center">
-                  <div className="mr-2 h-2 w-2 rounded-full bg-green-500"></div>
+                  <div className="mr-2 h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
                   <span className="font-medium">
                     {waitlistEntries &&
                       `${waitlistEntries?.length}+ people on the waitlist`}
@@ -109,7 +101,7 @@ export function WaitlistSection() {
                 </div>
               </div>
 
-              <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
+              <div className="animate-slide-up rounded-lg border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 [animation-delay:200ms] hover:shadow-md">
                 <h3 className="mb-4 font-semibold">Reserve Your Spot</h3>
                 <form
                   id="waitlist-form"
@@ -127,11 +119,11 @@ export function WaitlistSection() {
                       placeholder="Your name"
                       required
                       disabled={isSubmitting}
-                      className="w-full"
+                      className="w-full transition-all duration-300 focus:scale-[1.02]"
                       {...register("name")}
                     />
                     {errors.name && (
-                      <p className="mt-1 text-sm text-red-600">
+                      <p className="animate-shake mt-1 text-sm text-red-600">
                         {errors.name.message}
                       </p>
                     )}
@@ -148,17 +140,17 @@ export function WaitlistSection() {
                       placeholder="you@example.com"
                       required
                       disabled={isSubmitting}
-                      className="w-full"
+                      className="w-full transition-all duration-300 focus:scale-[1.02]"
                       {...register("email")}
                     />
                     {errors.email && (
-                      <p className="mt-1 text-sm text-red-600">
+                      <p className="animate-shake mt-1 text-sm text-red-600">
                         {errors.email.message}
                       </p>
                     )}
                   </div>
                   <Button
-                    className="w-full bg-red-600 hover:bg-red-700"
+                    className="w-full bg-red-600 transition-all duration-300 hover:scale-[1.02] hover:bg-red-700"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
@@ -194,7 +186,7 @@ export function WaitlistSection() {
             </div>
 
             <div className="space-y-6 md:pl-8">
-              <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
+              <div className="animate-slide-up rounded-lg border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 [animation-delay:400ms] hover:shadow-md">
                 <h3 className="mb-4 font-semibold">What You'll Get</h3>
                 <ul className="space-y-4">
                   <li className="flex">
@@ -211,7 +203,7 @@ export function WaitlistSection() {
                   </li>
                   <li className="flex">
                     <div className="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-green-100">
-                      <Check className="h-4 w-4 text-green-600" />
+                      <Check className="h-4 w-4 text-green-600 [animation-delay:200ms]" />
                     </div>
                     <div>
                       <p className="font-medium">Indie Hacker Pricing</p>
@@ -222,7 +214,7 @@ export function WaitlistSection() {
                   </li>
                   <li className="flex">
                     <div className="mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-green-100">
-                      <Check className="h-4 w-4 text-green-600" />
+                      <Check className="h-4 w-4 text-green-600 [animation-delay:400ms]" />
                     </div>
                     <div>
                       <p className="font-medium">Direct Access</p>
@@ -234,12 +226,12 @@ export function WaitlistSection() {
                 </ul>
               </div>
 
-              <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
+              <div className="animate-slide-up rounded-lg border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 [animation-delay:600ms] hover:shadow-md">
                 <div className="mb-4 flex items-center">
                   <div className="mr-4 flex -space-x-2">
-                    <div className="h-8 w-8 rounded-full border-2 border-white bg-gray-200"></div>
-                    <div className="h-8 w-8 rounded-full border-2 border-white bg-gray-300"></div>
-                    <div className="h-8 w-8 rounded-full border-2 border-white bg-gray-400"></div>
+                    <div className="h-8 w-8 animate-pulse rounded-full border-2 border-white bg-gray-200"></div>
+                    <div className="h-8 w-8 animate-pulse rounded-full border-2 border-white bg-gray-300 [animation-delay:200ms]"></div>
+                    <div className="h-8 w-8 animate-pulse rounded-full border-2 border-white bg-gray-400 [animation-delay:400ms]"></div>
                   </div>
                   <div className="text-sm">
                     <p className="font-medium">Joined this week</p>
@@ -250,7 +242,7 @@ export function WaitlistSection() {
                 </div>
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center">
-                    <div className="mr-2 h-2 w-2 rounded-full bg-red-500"></div>
+                    <div className="mr-2 h-2 w-2 animate-pulse rounded-full bg-red-500"></div>
                     <span>
                       "I've been greeted by email as "null", been locked out of
                       an account without a forgot password feature and found
