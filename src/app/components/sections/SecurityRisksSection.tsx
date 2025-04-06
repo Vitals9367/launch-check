@@ -1,5 +1,13 @@
 import Image from "next/image";
-import { AlertTriangle, DollarSign, Lock, Shield } from "lucide-react";
+import Link from "next/link";
+import {
+  AlertTriangle,
+  DollarSign,
+  Lock,
+  Shield,
+  Twitter,
+  X,
+} from "lucide-react";
 
 const risks = [
   {
@@ -18,7 +26,7 @@ const risks = [
     icon: Lock,
     title: "Personal Liability",
     description:
-      "As a solo developer or small team, you're personally responsible for data breaches. GDPR fines start at €10 million - way more than most indie projects can handle.",
+      "As a solo developer or small team, you're personally responsible for data breaches.",
   },
 ];
 
@@ -45,16 +53,27 @@ export function SecurityRisksSection() {
 
         <div className="grid gap-12 md:grid-cols-2">
           {/* Tweet Image */}
-          <div className="relative flex items-center justify-center rounded-xl p-6">
-            <div className="relative h-[400px] w-full overflow-hidden rounded-lg bg-black shadow-sm">
-              <Image
-                src="/tweet.png"
-                alt="Tweet showing real consequences of security oversight"
-                fill
-                className="object-contain"
-                sizes="(max-width: 768px) 100vw, 600px"
-              />
-            </div>
+          <div className="relative flex flex-col items-center justify-center rounded-xl md:p-6">
+            <Link
+              href="https://x.com/leojr94_/status/1901560276488511759"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex w-full flex-col items-center"
+            >
+              <div className="relative h-[400px] w-full overflow-hidden rounded-lg bg-black shadow-sm transition-transform group-hover:scale-[1.02]">
+                <Image
+                  src="/tweet.png"
+                  alt="Tweet showing real consequences of security oversight"
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, 600px"
+                />
+              </div>
+              <div className="mt-4 flex items-center justify-center text-sm text-gray-600 group-hover:text-gray-900">
+                <X className="mr-2 h-4 w-4" />
+                <span>Click to view the original post</span>
+              </div>
+            </Link>
           </div>
 
           {/* Risks and Stats */}

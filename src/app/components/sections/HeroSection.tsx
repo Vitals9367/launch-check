@@ -10,15 +10,15 @@ export function HeroSection() {
           <div className="space-y-6">
             <div className="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-sm text-red-700">
               <AlertTriangle className="mr-1 h-3.5 w-3.5" />
-              <span>Built by an indie hacker for indie hackers</span>
+              <span>Built for solo devs who ship fast and sleep well</span>
             </div>
             <h1 className="text-4xl font-bold leading-tight text-gray-900 md:text-5xl lg:text-6xl">
-              Security Scanning Made Simple for Your SaaS
+              Don't Let Security Slow Down Your Solo Project
             </h1>
             <p className="max-w-lg text-xl text-gray-600">
-              As a fellow indie hacker, I built the security scanner I wished
-              existed. Find and fix vulnerabilities in your micro-SaaS before
-              hackers do.
+              When you're racing to ship features, security feels like a burden.
+              I built the scanner I wish I had - so you can spot vulnerabilities
+              while coding, not after getting hacked.
             </p>
 
             <div className="flex flex-col gap-3 pt-2 sm:flex-row">
@@ -39,10 +39,10 @@ export function HeroSection() {
 
             <div className="flex items-center pt-2 text-sm text-gray-500">
               <Check className="mr-2 h-4 w-4 text-green-500" />
-              <span>No security expertise needed</span>
+              <span>Keep shipping fast & secure</span>
               <span className="mx-2">•</span>
               <Check className="mr-2 h-4 w-4 text-green-500" />
-              <span>Results in 2 minutes</span>
+              <span>No security expertise needed</span>
             </div>
           </div>
 

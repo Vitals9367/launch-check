@@ -1,5 +1,6 @@
 import axios from "axios";
 import { env } from "@/env";
+import { upperFirst } from "lodash";
 
 interface SendEmailParams {
   to: string;
@@ -89,7 +90,7 @@ export function generateWelcomeEmailHtml(name: string) {
             <h1>Welcome to LaunchCheck!</h1>
           </div>
           <div class="content">
-            <p>Hi ${name.charAt(0).toUpperCase() + name.slice(1)},</p>
+            <p>Hi ${upperFirst(name)},</p>
             <p>Thank you for joining the LaunchCheck waitlist! We're excited to have you on board.</p>
             <p>As a fellow indie hacker, I built LaunchCheck to help make security scanning simple and accessible for micro-SaaS businesses. You'll be among the first to know when we launch.</p>
             <p>In the meantime, if you have any questions or suggestions, feel free to reach out to me by replying to this email.</p>
