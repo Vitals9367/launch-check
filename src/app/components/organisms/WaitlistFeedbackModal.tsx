@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import {
@@ -60,6 +62,9 @@ const WaitlistFeedbackModal = ({
     setIsSubmitting(false);
     setIsFeedbackSubmitted(true);
     setShowFeedbackModal(false);
+    posthog.identify(email, {
+      name,
+    });
     posthog.capture("waitlist_feedback_submitted", {
       name,
       email,

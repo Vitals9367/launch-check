@@ -50,6 +50,9 @@ export function WaitlistSection() {
         setSubmittedEmail(email);
         setShowFeedbackModal(true);
         reset();
+        posthog.identify(email, {
+          name,
+        });
         posthog.capture("waitlist_joined", {
           name,
           email,
