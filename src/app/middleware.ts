@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { env } from "@/env";
 
 export function middleware(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
@@ -33,6 +34,19 @@ export function middleware(request: NextRequest) {
       headers: requestHeaders,
     },
   });
+
+  // Add CORS headers
+  response.headers.set("Access-Control-Allow-Origin", env.NEXT_PUBLIC_SITE_URL);
+  response.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS",
+  );
+  response.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization",
+  );
+  response.headers.set("Access-Control-Max-Age", "86400"); // 24 hours
+
   response.headers.set(
     "Content-Security-Policy",
     contentSecurityPolicyHeaderValue,
