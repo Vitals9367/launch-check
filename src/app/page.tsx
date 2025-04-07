@@ -16,8 +16,8 @@ export default function Home() {
         <SecurityRisksSection />
         <FeaturesSection />
         <HowItWorksSection />
-        <FounderSection />
         <WaitlistSection />
+        <FounderSection />
       </main>
       <Footer />
     </div>

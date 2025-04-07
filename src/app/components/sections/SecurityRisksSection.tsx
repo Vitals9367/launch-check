@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   AlertTriangle,
   DollarSign,
@@ -49,32 +49,40 @@ const socialProof = [
   {
     image: "/tweet.png",
     link: "https://x.com/leojr94_/status/1901560276488511759",
-    alt: "Tweet showing real consequences of security oversight",
+    alt: "Leo getting hacked",
   },
   {
-    image: "/tweet2.png",
-    link: "https://x.com/example2",
-    alt: "Another developer sharing their security incident",
+    image: "/tweet-2.jpg",
+    link: "https://x.com/hackSultan/status/1902416056301306248/photo/2",
+    alt: "Jack Friks getting hacked",
   },
   {
-    image: "/tweet3.png",
-    link: "https://x.com/example3",
-    alt: "Security breach impact story",
+    image: "/tweet-3.png",
+    link: "https://x.com/tech_nurgaliyev/status/1908776130158395897",
+    alt: "Sabyr getting hacked",
   },
 ];
 
 export function SecurityRisksSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % socialProof.length);
-  };
+  }, []);
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     setCurrentSlide(
       (prev) => (prev - 1 + socialProof.length) % socialProof.length,
     );
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!isPaused) {
+      const timer = setInterval(nextSlide, 3000);
+      return () => clearInterval(timer);
+    }
+  }, [isPaused, nextSlide]);
 
   return (
     <section className="border-b border-gray-100 bg-gray-50 px-4 py-20">
@@ -97,7 +105,11 @@ export function SecurityRisksSection() {
 
         <div className="grid gap-8 md:grid-cols-7">
           {/* Social Proof Carousel */}
-          <div className="relative px-16 md:col-span-4">
+          <div
+            className="relative px-16 md:col-span-4"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
             {/* Navigation Buttons */}
             <button
               onClick={prevSlide}
