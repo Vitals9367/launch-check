@@ -1,8 +1,12 @@
 "use server";
 
+import { env } from "@/env";
 import { db } from "@/server/db";
 import { Prisma } from "@prisma/client";
-import { sendEmail, generateWelcomeEmailHtml } from "@/lib/email";
+import { Resend } from "resend";
+import WaitlistWelcomeEmail from "@/emails/waitlist-welcome";
+
+const resend = new Resend(env.RESEND_API_KEY);
 
 // Server action for waitlist submission
 export async function joinWaitlist({
@@ -21,16 +25,16 @@ export async function joinWaitlist({
       },
     });
 
-    // Send welcome email
-    const emailResult = await sendEmail({
-      to: email,
-      toName: name,
-      subject: "Welcome to LaunchCheck Waitlist!",
-      htmlContent: generateWelcomeEmailHtml(name),
-    });
-
-    if (!emailResult.success) {
-      console.error("Failed to send welcome email:", emailResult.error);
+    // Send welcome email using Resend
+    try {
+      await resend.emails.send({
+        from: `${env.EMAIL_SENDER_NAME} <${env.EMAIL_SENDER_EMAIL}>`,
+        to: [email],
+        subject: "Welcome to LaunchCheck Waitlist! 🚀",
+        react: WaitlistWelcomeEmail({ name }),
+      });
+    } catch (emailError) {
+      console.error("Failed to send welcome email:", emailError);
       // We don't want to fail the whole operation if just the email fails
       // The user is still successfully added to the waitlist
     }

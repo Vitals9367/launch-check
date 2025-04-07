@@ -11,7 +11,7 @@ export function Header() {
           <h1 className="text-xl font-bold">LaunchCheck</h1>
         </div>
         <div className="flex items-center space-x-3">
-          <Link href="#waitlist">
+          <Link href="/#waitlist">
             <Button
               size="sm"
               className="bg-red-600 text-white hover:bg-red-700"
