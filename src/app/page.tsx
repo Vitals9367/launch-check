@@ -6,6 +6,7 @@ import { FeaturesSection } from "./components/sections/FeaturesSection";
 import { HowItWorksSection } from "./components/sections/HowItWorksSection";
 import { FounderSection } from "./components/sections/FounderSection";
 import { WaitlistSection } from "./components/sections/WaitlistSection";
+import { FAQSection } from "./components/sections/FAQSection";
 
 export default function Home() {
   return (
@@ -15,9 +16,9 @@ export default function Home() {
         <HeroSection />
         <SecurityRisksSection />
         <FeaturesSection />
-        <HowItWorksSection />
-        <WaitlistSection />
         <FounderSection />
+        <WaitlistSection />
+        <FAQSection />
       </main>
       <Footer />
     </div>

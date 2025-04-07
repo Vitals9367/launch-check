@@ -1,20 +1,12 @@
-"use client";
-
-import Image from "next/image";
-import Link from "next/link";
-import { useState, useEffect, useCallback } from "react";
 import {
   AlertTriangle,
   DollarSign,
   Lock,
   Shield,
-  Twitter,
-  X,
-  ChevronLeft,
-  ChevronRight,
   Clock,
   Zap,
 } from "lucide-react";
+import { SecurityRisksCarousel } from "./SecurityRisksCarousel";
 
 const risks = [
   {
@@ -45,47 +37,9 @@ const risks = [
   },
 ];
 
-const socialProof = [
-  {
-    image: "/tweet.png",
-    link: "https://x.com/leojr94_/status/1901560276488511759",
-    alt: "Leo getting hacked",
-  },
-  {
-    image: "/tweet-2.jpg",
-    link: "https://x.com/hackSultan/status/1902416056301306248/photo/2",
-    alt: "Jack Friks getting hacked",
-  },
-  {
-    image: "/tweet-3.png",
-    link: "https://x.com/tech_nurgaliyev/status/1908776130158395897",
-    alt: "Sabyr getting hacked",
-  },
-];
-
 export function SecurityRisksSection() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-
-  const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % socialProof.length);
-  }, []);
-
-  const prevSlide = useCallback(() => {
-    setCurrentSlide(
-      (prev) => (prev - 1 + socialProof.length) % socialProof.length,
-    );
-  }, []);
-
-  useEffect(() => {
-    if (!isPaused) {
-      const timer = setInterval(nextSlide, 3000);
-      return () => clearInterval(timer);
-    }
-  }, [isPaused, nextSlide]);
-
   return (
-    <section className="border-b border-gray-100 bg-gray-50 px-4 py-20">
+    <section className="border-b border-gray-100 bg-gray-50 px-4 py-20 pb-32">
       <div className="container mx-auto max-w-6xl">
         <div className="mb-16 text-center">
           <div className="mx-auto mb-6 flex max-w-fit items-center rounded-full bg-red-100 px-4 py-1">
@@ -105,73 +59,8 @@ export function SecurityRisksSection() {
 
         <div className="grid gap-8 md:grid-cols-7">
           {/* Social Proof Carousel */}
-          <div
-            className="relative px-16 md:col-span-4"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-          >
-            {/* Navigation Buttons */}
-            <button
-              onClick={prevSlide}
-              className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white p-2 text-gray-800 shadow-lg transition-all hover:bg-red-50 hover:text-red-600"
-              aria-label="Previous slide"
-            >
-              <ChevronLeft className="h-6 w-6" />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white p-2 text-gray-800 shadow-lg transition-all hover:bg-red-50 hover:text-red-600"
-              aria-label="Next slide"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </button>
-
-            <div className="relative h-[500px] overflow-hidden rounded-xl bg-black shadow-lg">
-              {socialProof.map((item, index) => (
-                <Link
-                  key={index}
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`absolute inset-0 transition-transform duration-500 ease-in-out ${
-                    index === currentSlide
-                      ? "translate-x-0"
-                      : "translate-x-full"
-                  }`}
-                  style={{
-                    transform: `translateX(${(index - currentSlide) * 100}%)`,
-                  }}
-                >
-                  <Image
-                    src={item.image}
-                    alt={item.alt}
-                    fill
-                    className="object-contain"
-                    sizes="(max-width: 768px) 100vw, 600px"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-                    <div className="flex items-center justify-end text-sm text-white">
-                      <X className="mr-2 h-4 w-4" />
-                      <span>View on X</span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-
-              {/* Dots */}
-              <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2">
-                {socialProof.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`h-2 w-2 rounded-full transition-all ${
-                      index === currentSlide ? "w-4 bg-white" : "bg-white/50"
-                    }`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
+          <div className="md:col-span-4">
+            <SecurityRisksCarousel />
           </div>
 
           {/* Risks */}

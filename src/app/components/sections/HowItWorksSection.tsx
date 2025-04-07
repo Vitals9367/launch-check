@@ -1,3 +1,5 @@
+"use client";
+
 import SecurityReportSection from "./SecurityReport";
 
 export function HowItWorksSection() {
