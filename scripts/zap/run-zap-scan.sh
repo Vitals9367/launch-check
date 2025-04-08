@@ -373,8 +373,15 @@ run_scan() {
     local report_file="${REPORTS_DIR}/${TIMESTAMP}/$(echo $url | sed 's/[^a-zA-Z0-9]/_/g').html"
     local report_response=$(zap_api_call "/OTHER/core/other/htmlreport" "contextId=$context_id")
     
-    if echo "$report_response" | grep -q "error"; then
-        log_error "$url" "/OTHER/core/other/htmlreport" "$report_response" "Failed to generate report"
+    # Check if response is valid HTML (should start with <!DOCTYPE html> or <html>)
+    if ! echo "$report_response" | grep -q '^\(<!DOCTYPE html>\|<html>\)'; then
+        # Not HTML, check if it's an error response
+        if echo "$report_response" | grep -q '"error"'; then
+            log_error "$url" "/OTHER/core/other/htmlreport" "$report_response" "Failed to generate report"
+            return 1
+        fi
+        # Not HTML and no error message - something else went wrong
+        log_error "$url" "/OTHER/core/other/htmlreport" "$report_response" "Invalid report format received"
         return 1
     fi
     
@@ -383,7 +390,7 @@ run_scan() {
     
     # Clean up context
     local cleanup_response=$(zap_api_call "/JSON/context/action/removeContext" "contextName=$context_name")
-    if echo "$cleanup_response" | grep -q "error"; then
+    if echo "$cleanup_response" | grep -q '"error"'; then
         log_error "$url" "/JSON/context/action/removeContext" "$cleanup_response" "Failed to remove context"
     fi
 }
