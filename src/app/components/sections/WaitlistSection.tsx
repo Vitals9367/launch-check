@@ -79,7 +79,7 @@ export function WaitlistSection() {
     <>
       <section
         id="waitlist"
-        className="animate-fade-in bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 px-4 py-20"
+        className="animate-fade-in bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 py-12 md:py-20"
       >
         <div className="container mx-auto max-w-6xl">
           <div className="grid items-center gap-12 md:grid-cols-2">

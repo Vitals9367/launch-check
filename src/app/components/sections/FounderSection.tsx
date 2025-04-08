@@ -4,17 +4,20 @@ import Link from "next/link";
 
 export function FounderSection() {
   return (
-    <section className="border-y border-gray-100 bg-white px-4 py-20">
-      <div className="container mx-auto max-w-6xl">
+    <section className="border-y border-gray-100 bg-white px-4 py-12 md:py-20">
+      <div className="container mx-auto max-w-6xl space-y-8">
+        <div>
+          <div className="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-sm text-red-700">
+            <Shield className="mr-1 h-3.5 w-3.5" />
+            <span>Why I Built This</span>
+          </div>
+          <h2 className="mt-4 text-3xl font-bold md:text-4xl">
+            Hey, I'm Vitalijus 👋
+          </h2>
+        </div>
+
         <div className="grid items-center gap-12 md:grid-cols-2">
-          <div className="space-y-6">
-            <div className="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-sm text-red-700">
-              <Shield className="mr-1 h-3.5 w-3.5" />
-              <span>Why I Built This</span>
-            </div>
-            <h2 className="text-3xl font-bold md:text-4xl">
-              Hey, I'm Vitalijus 👋
-            </h2>
+          <div className="order-2 space-y-6 md:order-none">
             <p className="text-xl text-gray-600">
               After launching multiple SaaS products, I realized security was
               always an afterthought - it was either too complex or too
@@ -43,12 +46,12 @@ export function FounderSection() {
           </div>
 
           {/* Profile Image Section */}
-          <div className="relative flex justify-center">
+          <div className="relative order-1 flex justify-center md:order-none">
             <Link
               href="https://x.com/alsauskas_v"
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative w-[80%]"
+              className="group relative w-[80%] md:w-[80%]"
             >
               <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 p-2 transition-transform duration-300 group-hover:scale-[1.02]">
                 <div className="relative h-full w-full rounded-xl">
@@ -67,7 +70,7 @@ export function FounderSection() {
                 <div className="absolute -bottom-4 -left-4 h-24 w-24 rounded-full bg-orange-100/50 blur-2xl"></div>
 
                 {/* Social proof badge */}
-                <div className="absolute bottom-4 left-4 right-4 rounded-lg bg-white/90 p-4 backdrop-blur-sm">
+                <div className="absolute bottom-4 left-4 right-4 hidden rounded-lg bg-white/90 p-4 backdrop-blur-sm sm:block">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">Vitalijus Alsauskas</p>

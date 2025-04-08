@@ -2,8 +2,9 @@ import { Shield } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t border-gray-100 bg-gray-50 px-4 py-12">
-      {/* <div className="container mx-auto max-w-6xl">
+    <footer className="border-t border-gray-100 bg-gray-50 py-12">
+      <div className="container mx-auto max-w-6xl">
+        {/* <div className="container mx-auto max-w-6xl">
         <div className="grid gap-8 md:grid-cols-4">
           <div>
             <div className="flex items-center">
@@ -84,13 +85,13 @@ export function Footer() {
           </div>
         </div> */}
 
-      <div className="mt-8 border-t border-gray-200 pt-8 text-center text-sm text-gray-500">
-        <p>
-          Built with ❤️ by an indie hacker for indie hackers. &copy;{" "}
-          {new Date().getFullYear()} LaunchCheck
-        </p>
+        <div className="text-center text-sm text-gray-500">
+          <p>
+            Built with ❤️ by an indie hacker for indie hackers. &copy;{" "}
+            {new Date().getFullYear()} LaunchCheck
+          </p>
+        </div>
       </div>
-      {/* </div> */}
     </footer>
   );
 }
