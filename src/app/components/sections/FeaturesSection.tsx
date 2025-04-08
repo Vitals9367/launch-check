@@ -109,7 +109,7 @@ export function FeaturesSection() {
   if (!currentFeature) return null;
 
   return (
-    <section className="bg-gray-900 px-4 py-24 text-white">
+    <section className="bg-gray-900 py-12 text-white md:py-24">
       <div className="container mx-auto max-w-6xl">
         <div className="mb-20 text-center">
           <h2 className="mb-6 text-4xl font-bold md:text-5xl">
@@ -196,7 +196,7 @@ export function FeaturesSection() {
             {/* Tab Content */}
             <div className="p-8">
               <div className="flex items-start gap-6">
-                <div className="rounded-xl bg-gray-700 p-3">
+                <div className="hidden rounded-xl bg-gray-700 p-3 sm:block">
                   <currentFeature.icon className="h-8 w-8 text-red-500" />
                 </div>
                 <div>

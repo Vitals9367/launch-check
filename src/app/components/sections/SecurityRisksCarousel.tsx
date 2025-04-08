@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, TouchEvent } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 const socialProof = [
@@ -26,6 +26,8 @@ const socialProof = [
 export function SecurityRisksCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % socialProof.length);
@@ -37,6 +39,43 @@ export function SecurityRisksCarousel() {
     );
   }, []);
 
+  // Minimum swipe distance in pixels
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: TouchEvent) => {
+    const touch = e.targetTouches[0];
+    if (!touch) return;
+
+    setTouchEnd(null);
+    setTouchStart(touch.clientX);
+    setIsPaused(true);
+  };
+
+  const onTouchMove = (e: TouchEvent) => {
+    const touch = e.targetTouches[0];
+    if (!touch) return;
+
+    setTouchEnd(touch.clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+
+    setTouchStart(null);
+    setTouchEnd(null);
+    setIsPaused(false);
+  };
+
   useEffect(() => {
     if (!isPaused) {
       const timer = setInterval(nextSlide, 3000);
@@ -46,27 +85,32 @@ export function SecurityRisksCarousel() {
 
   return (
     <div
-      className="relative px-16"
+      className="relative sm:px-16"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       {/* Navigation Buttons */}
       <button
         onClick={prevSlide}
-        className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white p-2 text-gray-800 shadow-lg transition-all hover:bg-red-50 hover:text-red-600"
+        className="absolute left-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-white p-2 text-gray-800 shadow-lg transition-all hover:bg-red-50 hover:text-red-600 sm:block"
         aria-label="Previous slide"
       >
         <ChevronLeft className="h-6 w-6" />
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white p-2 text-gray-800 shadow-lg transition-all hover:bg-red-50 hover:text-red-600"
+        className="absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-white p-2 text-gray-800 shadow-lg transition-all hover:bg-red-50 hover:text-red-600 sm:block"
         aria-label="Next slide"
       >
         <ChevronRight className="h-6 w-6" />
       </button>
 
-      <div className="relative h-[500px] overflow-hidden rounded-xl bg-black shadow-lg">
+      <div
+        className="relative h-[500px] overflow-hidden rounded-xl bg-black shadow-lg"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
         {socialProof.map((item, index) => (
           <Link
             key={index}

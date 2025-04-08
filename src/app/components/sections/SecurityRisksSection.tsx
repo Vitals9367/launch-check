@@ -39,7 +39,7 @@ const risks = [
 
 export function SecurityRisksSection() {
   return (
-    <section className="border-b border-gray-100 bg-gray-50 px-4 py-20 pb-32">
+    <section className="border-b border-gray-100 bg-gray-50 py-12 pb-20 md:py-20 md:pb-32">
       <div className="container mx-auto max-w-6xl">
         <div className="mb-16 text-center">
           <div className="mx-auto mb-6 flex max-w-fit items-center rounded-full bg-red-100 px-4 py-1">
