@@ -4,7 +4,7 @@ import { Calendar, Clock, Tag } from "lucide-react";
 import { getAllPosts } from "@/lib/mdx";
 
 export const metadata = {
-  title: "Blog | Security Scanner",
+  title: "Blog | LaunchCheck",
   description: "Latest insights and updates about web security scanning.",
 };
 
