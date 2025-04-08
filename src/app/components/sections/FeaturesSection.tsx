@@ -181,7 +181,7 @@ export function FeaturesSection() {
                   key={index}
                   onClick={() => setActiveTab(index)}
                   className={cn(
-                    "flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium transition-all",
+                    "flex items-center gap-2 rounded-lg px-3 py-3 text-sm font-medium transition-all sm:px-6",
                     activeTab === index
                       ? "bg-red-600 text-white shadow-sm"
                       : "text-gray-300 hover:bg-gray-700 hover:text-white",
