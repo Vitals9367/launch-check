@@ -1,0 +1,48 @@
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - n8n
+      - owasp-zap
+    networks:
+      - my-network
+
+  n8n:
+    image: n8nio/n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=user
+      - N8N_BASIC_AUTH_PASSWORD=pass
+    networks:
+      - my-network
+
+  owasp-zap:
+    image: owasp/zap2docker-stable
+    ports:
+      - "8080:8080"
+    command: zap.sh -daemon -host 0.0.0.0 -port 8080 \
+      -config api.disablekey=true \
+      -config api.addrs.addr.name=.* \
+      -config api.addrs.addr.regex=true \
+      -config jvm.memory=3g \
+      -config database.recoverylog=false \
+      -config connection.timeoutInSecs=120 \
+      -config spider.maxDuration=60 \
+      -config scanner.maxDurationInMins=60
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 4g
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
