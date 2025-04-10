@@ -23,7 +23,7 @@ services:
       - my-network
 
   owasp-zap:
-    image: owasp/zap2docker-stable
+    image: zaproxy/zap-stable
     ports:
       - "8080:8080"
     command: zap.sh -daemon -host 0.0.0.0 -port 8080 \
