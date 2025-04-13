@@ -12,13 +12,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DEFAULT_LOGOUT_REDIRECT } from "@/routes";
+
 export function UserMenu() {
   const { data: session } = useSession();
   const user = session?.user;
 
   const handleSignOut = () => {
-    signOut({ redirect: true, callbackUrl: DEFAULT_LOGOUT_REDIRECT });
+    signOut();
   };
 
   return (

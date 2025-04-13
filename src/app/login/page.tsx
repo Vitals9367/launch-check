@@ -2,7 +2,6 @@
 
 import type React from "react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { LoadingScreen } from "@/components/loading-screen";
@@ -16,7 +15,6 @@ import {
 } from "@/components/ui/card";
 import { signIn } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 const providers = [
   {
@@ -38,9 +36,7 @@ export default function LoginPage() {
   const handleSignIn = async (providerId: string) => {
     try {
       setIsLoading(true);
-      const result = await signIn(providerId, {
-        redirectTo: DEFAULT_LOGIN_REDIRECT,
-      });
+      const result = await signIn(providerId);
 
       if (result?.error) {
         toast({
