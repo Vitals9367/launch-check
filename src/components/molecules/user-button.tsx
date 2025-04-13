@@ -1,7 +1,6 @@
 "use client";
 
-import { User, Settings, LogOut, ChevronDown } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
+import { User, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -12,19 +11,43 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import LogoutButton from "./logout-button";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
-export function UserMenu() {
-  const { data: session } = useSession();
-  const user = session?.user;
+type UserDropdownItemProps = {
+  href: string;
+  icon: React.ElementType;
+  label: string;
+};
 
-  const handleSignOut = () => {
-    signOut();
-  };
+const UserDropdownItem = ({
+  href,
+  icon: Icon,
+  label,
+}: UserDropdownItemProps) => (
+  <DropdownMenuItem asChild>
+    <Link href={href} className="flex w-full items-center">
+      <Icon className="mr-2 h-4 w-4" />
+      {label}
+    </Link>
+  </DropdownMenuItem>
+);
+
+const userMenuItems: UserDropdownItemProps[] = [
+  {
+    href: "/dashboard/profile",
+    icon: User,
+    label: "Profile",
+  },
+];
+
+export function UserButton() {
+  const user = useCurrentUser();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center space-x-2 rounded-lg border border-gray-200 bg-white px-3 py-2 hover:bg-gray-50">
+        <button className="flex items-center space-x-2 rounded-lg bg-white px-3 py-2 hover:bg-gray-50">
           <Avatar className="h-8 w-8">
             <AvatarImage src={user?.image || ""} alt={user?.name || "User"} />
             <AvatarFallback>{user?.name?.[0] || "U"}</AvatarFallback>
@@ -39,26 +62,11 @@ export function UserMenu() {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/dashboard/profile" className="flex w-full items-center">
-            <User className="mr-2 h-4 w-4" />
-            Profile Settings
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/dashboard/settings" className="flex w-full items-center">
-            <Settings className="mr-2 h-4 w-4" />
-            Account Settings
-          </Link>
-        </DropdownMenuItem>
+        {userMenuItems.map((item) => (
+          <UserDropdownItem key={item.href} {...item} />
+        ))}
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={handleSignOut}
-          className="flex w-full items-center text-red-600 focus:text-red-600"
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          Sign Out
-        </DropdownMenuItem>
+        <LogoutButton />
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -37,3 +37,9 @@ export const nextAuthApiPrefix = "/api/auth";
  * @type {string}
  */
 export const trpcApiPrefix = "/api/trpc";
+
+/**
+ * The query parameter name for the callback URL.
+ * @type {string}
+ */
+export const callbackUrlQueryParam = "callbackUrl";

@@ -4,7 +4,7 @@ import type React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FaGoogle, FaGithub } from "react-icons/fa";
-import { LoadingScreen } from "@/components/loading-screen";
+import { LoadingScreen } from "@/components/organisms/loading-screen";
 
 import {
   Card,
@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/card";
 import { signIn } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
+import { callbackUrlQueryParam, DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { useQueryState } from "nuqs";
 
 const providers = [
   {
@@ -31,12 +33,15 @@ const providers = [
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [callbackUrl, setCallbackUrl] = useQueryState(callbackUrlQueryParam);
   const { toast } = useToast();
 
   const handleSignIn = async (providerId: string) => {
     try {
       setIsLoading(true);
-      const result = await signIn(providerId);
+      const result = await signIn(providerId, {
+        redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
+      });
 
       if (result?.error) {
         toast({

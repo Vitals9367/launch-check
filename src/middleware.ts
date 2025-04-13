@@ -3,14 +3,24 @@ import { config as authConfig } from "@/server/auth/auth.config";
 import { NextAuthRequest } from "node_modules/next-auth/lib";
 import {
   authRoutes,
+  callbackUrlQueryParam,
   DEFAULT_LOGIN_REDIRECT,
   DEFAULT_LOGOUT_REDIRECT,
   nextAuthApiPrefix,
   publicRoutes,
   trpcApiPrefix,
 } from "./routes";
+import { NextURL } from "next/dist/server/web/next-url";
 
 const { auth } = NextAuth(authConfig);
+
+const getCallbackUrl = (nextUrl: NextURL) => {
+  let callbackUrl = nextUrl.pathname;
+  if (nextUrl.search) {
+    callbackUrl += nextUrl.search;
+  }
+  return encodeURIComponent(callbackUrl);
+};
 
 export default auth((req: NextAuthRequest) => {
   const { nextUrl } = req;
@@ -37,12 +47,18 @@ export default auth((req: NextAuthRequest) => {
 
   // If the user is not logged in, redirect to the default logout redirect
   if (!isLoggedIn && !isPublicRoute) {
-    return Response.redirect(new URL(DEFAULT_LOGOUT_REDIRECT, nextUrl));
+    return Response.redirect(
+      new URL(
+        `${DEFAULT_LOGOUT_REDIRECT}?${callbackUrlQueryParam}=${getCallbackUrl(nextUrl)}`,
+        nextUrl,
+      ),
+    );
   }
 
   return;
 });
 
+// This is the middleware that will be used to protect the routes
 export const config = {
   matcher: [
     // Skip Next.js internals and all static files, unless found in search params

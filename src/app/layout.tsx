@@ -3,7 +3,6 @@ import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
-import { Toaster } from "@/components/ui/toaster";
 import { SessionProvider } from "next-auth/react";
 import { Session } from "next-auth";
 
@@ -84,10 +83,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <SessionProvider session={session}>
-          <Providers>
-            {children}
-            <Toaster />
-          </Providers>
+          <Providers>{children}</Providers>
         </SessionProvider>
       </body>
     </html>

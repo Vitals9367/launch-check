@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Shield } from "lucide-react";
-import { HeroGraphic } from "@/components/sections/HeroGraphic";
+import { HeroGraphic } from "@/components/organisms/HeroGraphic";
 
 export function HeroSection() {
   return (

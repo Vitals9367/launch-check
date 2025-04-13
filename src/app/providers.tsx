@@ -9,6 +9,8 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import PostHogPageView from "@/components/PostHogPageView";
 import { ThemeProvider } from "next-themes";
+import { Toaster } from "@/components/ui/toaster";
+import DialogManager from "@/components/ui/dialog-manager";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -28,7 +30,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <TRPCReactProvider>
         <PHProvider client={posthog}>
           <PostHogPageView />
-          <NuqsAdapter>{children}</NuqsAdapter>
+          <NuqsAdapter>
+            {children}
+            <Toaster />
+            <DialogManager />
+          </NuqsAdapter>
         </PHProvider>
       </TRPCReactProvider>
     </ThemeProvider>
