@@ -9,5 +9,16 @@ import { config } from "./auth.config";
 export const authConfig = {
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
+  callbacks: {
+    session: ({ token, session }) => {
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
+    jwt: ({ token }) => {
+      return token;
+    },
+  },
   ...config,
 } satisfies NextAuthConfig;

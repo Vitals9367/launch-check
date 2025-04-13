@@ -2,11 +2,10 @@
 
 import { env } from "@/env";
 import { db } from "@/server/db";
+import { resend } from "@/server/email";
 import { Prisma } from "@prisma/client";
-import { Resend } from "resend";
-import WaitlistWelcomeEmail from "@/emails/waitlist-welcome";
 
-const resend = new Resend(env.RESEND_API_KEY);
+import WaitlistWelcomeEmail from "@/emails/waitlist-welcome";
 
 // Server action for waitlist submission
 export async function joinWaitlist({
