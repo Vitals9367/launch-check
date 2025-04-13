@@ -13,9 +13,9 @@ import { Textarea } from "../ui/textarea";
 import z from "node_modules/zod/lib";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { giveFeedback } from "@/app/actions/feedback";
+import { giveFeedback } from "@/actions/feedback";
 import { upperFirst } from "lodash";
-import { useToast } from "@/app/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { usePostHog } from "posthog-js/react";
 
 const feedbackSchema = z.object({

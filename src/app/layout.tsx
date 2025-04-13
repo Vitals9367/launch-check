@@ -3,9 +3,9 @@ import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
-import { Toaster } from "./components/ui/toaster";
-import { Header } from "./components/Header";
-import { Footer } from "./components/Footer";
+import { Toaster } from "@/components/ui/toaster";
+import { SessionProvider } from "next-auth/react";
+import { Session } from "next-auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -78,14 +78,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+  session,
+}: Readonly<{ children: React.ReactNode; session: Session }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <Providers>
-          {children}
-          <Toaster />
-        </Providers>
+        <SessionProvider session={session}>
+          <Providers>
+            {children}
+            <Toaster />
+          </Providers>
+        </SessionProvider>
       </body>
     </html>
   );

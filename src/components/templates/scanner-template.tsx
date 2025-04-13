@@ -7,13 +7,13 @@ import { ResultsSection } from "@/components/organisms/results-section";
 import { PageHeader } from "@/components/molecules/page-header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { scanWebsite } from "@/app/actions/scan-actions";
+import { scanWebsite } from "@/actions/scan-actions";
 import { LoadingAnimation } from "@/components/molecules/loading-animation";
 import type {
   ScanStatus,
   Vulnerability,
   SecurityRating,
-} from "@/app/types/scanner";
+} from "@/types/scanner";
 import { Rocket } from "lucide-react";
 
 export function ScannerTemplate() {

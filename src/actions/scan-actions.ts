@@ -1,32 +1,33 @@
-"use server"
+"use server";
 
-import type { Vulnerability } from "@/types/scanner"
+import type { Vulnerability } from "@/types/scanner";
 
 export async function scanWebsite(url: string, crawl: boolean) {
   try {
     // Validate URL format
     try {
-      new URL(url)
+      new URL(url);
     } catch (error) {
-      return { error: "Invalid URL format" }
+      console.error("Invalid URL format:", error);
+      return { error: "Invalid URL format" };
     }
 
-    // Simulate scan delay (longer for crawling)
-    const scanTime = crawl ? 2000 : 1000
-    await new Promise((resolve) => setTimeout(resolve, scanTime))
+    const scanTime = crawl ? 2000 : 1000;
+    await new Promise((resolve) => setTimeout(resolve, scanTime));
 
     // Generate a report ID
-    const reportId = `zap-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 7)}`
+    const reportId = `zap-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 7)}`;
 
     // Mock response - in a real implementation, this would be the result from OWASP ZAP
-    let vulnerabilities: Vulnerability[] = []
+    let vulnerabilities: Vulnerability[] = [];
 
     if (url.includes("example.com")) {
       vulnerabilities = [
         {
           name: "Cross-Site Scripting (XSS)",
           risk: "High",
-          description: "Found potential XSS vulnerability that could allow attackers to inject malicious scripts.",
+          description:
+            "Found potential XSS vulnerability that could allow attackers to inject malicious scripts.",
           location: "/search?q=<script>alert(1)</script>",
           cweid: "CWE-79",
           remedy:
@@ -50,16 +51,20 @@ export async function scanWebsite(url: string, crawl: boolean) {
             "Implement a Content Security Policy header to restrict which resources can be loaded. Start with a policy that matches your site's requirements and gradually tighten it. For example: Content-Security-Policy: default-src 'self'; script-src 'self' trusted-cdn.com",
           impact:
             "Without CSP, browsers have no way to distinguish between legitimate and malicious content sources, making the site more vulnerable to content injection attacks.",
-          references: ["https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP", "https://content-security-policy.com/"],
+          references: [
+            "https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP",
+            "https://content-security-policy.com/",
+          ],
         },
-      ]
+      ];
 
       // Add more detailed vulnerabilities if crawling is enabled
       if (crawl) {
         vulnerabilities.push({
           name: "Insecure Cookie Configuration",
           risk: "Medium",
-          description: "Cookies are set without secure flags, potentially exposing session data.",
+          description:
+            "Cookies are set without secure flags, potentially exposing session data.",
           location: "Set-Cookie: sessionid=abc123; path=/",
           cweid: "CWE-614",
           remedy:
@@ -71,14 +76,15 @@ export async function scanWebsite(url: string, crawl: boolean) {
             "https://owasp.org/www-community/controls/SecureCookieAttribute",
             "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html#cookie-management",
           ],
-        })
+        });
       }
     } else if (url.includes("test")) {
       vulnerabilities = [
         {
           name: "SQL Injection",
           risk: "High",
-          description: "SQL injection vulnerability that could allow attackers to manipulate database queries.",
+          description:
+            "SQL injection vulnerability that could allow attackers to manipulate database queries.",
           location: "/users?id=1' OR '1'='1",
           cweid: "CWE-89",
           remedy:
@@ -95,7 +101,8 @@ export async function scanWebsite(url: string, crawl: boolean) {
         {
           name: "Insecure Cookie",
           risk: "Medium",
-          description: "Cookies set without secure and HttpOnly flags expose sensitive information.",
+          description:
+            "Cookies set without secure and HttpOnly flags expose sensitive information.",
           location: "Set-Cookie: auth=token123; path=/",
           cweid: "CWE-614",
           remedy:
@@ -111,7 +118,8 @@ export async function scanWebsite(url: string, crawl: boolean) {
         {
           name: "Information Disclosure",
           risk: "Low",
-          description: "Server version exposed in HTTP headers, providing information to potential attackers.",
+          description:
+            "Server version exposed in HTTP headers, providing information to potential attackers.",
           location: "HTTP Response Headers",
           cweid: "CWE-200",
           remedy:
@@ -124,26 +132,28 @@ export async function scanWebsite(url: string, crawl: boolean) {
             "https://www.acunetix.com/vulnerabilities/web/server-version-disclosure/",
           ],
         },
-      ]
+      ];
 
       // Add more detailed vulnerabilities if crawling is enabled
       if (crawl) {
         vulnerabilities.push({
           name: "Cross-Site Request Forgery (CSRF)",
           risk: "Medium",
-          description: "No CSRF tokens were found in form submissions, making the site vulnerable to CSRF attacks.",
+          description:
+            "No CSRF tokens were found in form submissions, making the site vulnerable to CSRF attacks.",
           location: "/account/settings",
           cweid: "CWE-352",
           remedy:
             "Implement anti-CSRF tokens in all forms and verify them on the server. Use the SameSite cookie attribute to prevent CSRF in modern browsers. Consider implementing the double-submit cookie pattern as an additional layer of protection.",
-          evidence: '<form action="/account/settings" method="POST">...[No CSRF token found]...</form>',
+          evidence:
+            '<form action="/account/settings" method="POST">...[No CSRF token found]...</form>',
           impact:
             "Attackers can trick authenticated users into performing actions without their knowledge or consent, such as changing account details or making transactions.",
           references: [
             "https://owasp.org/www-community/attacks/csrf",
             "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html",
           ],
-        })
+        });
       }
     }
     // For any other URL, return empty vulnerabilities (secure site)
@@ -151,9 +161,9 @@ export async function scanWebsite(url: string, crawl: boolean) {
     return {
       vulnerabilities,
       reportId,
-    }
+    };
   } catch (error) {
-    console.error("Scan error:", error)
-    return { error: "Failed to process scan request" }
+    console.error("Scan error:", error);
+    return { error: "Failed to process scan request" };
   }
 }

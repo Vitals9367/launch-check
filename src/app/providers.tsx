@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { env } from "@/env";
 import { TRPCReactProvider } from "@/trpc/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import PostHogPageView from "@/app/components/PostHogPageView";
+import PostHogPageView from "@/components/PostHogPageView";
 import { ThemeProvider } from "next-themes";
 
 export function Providers({ children }: { children: React.ReactNode }) {

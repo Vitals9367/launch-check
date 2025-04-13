@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Download, ShieldAlert } from "lucide-react";
 import { VulnerabilityCard } from "@/components/molecules/vulnerability-card";
 import { SecurityRatingDisplay } from "@/components/molecules/security-rating-display";
-import type { Vulnerability, SecurityRating } from "@/app/types/scanner";
+import type { Vulnerability, SecurityRating } from "@/types/scanner";
 
 interface ResultsSectionProps {
   vulnerabilities: Vulnerability[];

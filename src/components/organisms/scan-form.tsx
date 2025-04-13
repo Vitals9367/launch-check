@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Scan, ArrowRight, X } from "lucide-react";
 import { StatusIndicator } from "@/components/molecules/status-indicator";
-import type { ScanStatus } from "@/app/types/scanner";
+import type { ScanStatus } from "@/types/scanner";
 
 interface ScanFormProps {
   onScan: (formData: FormData) => Promise<void>;
