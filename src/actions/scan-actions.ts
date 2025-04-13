@@ -1,28 +1,18 @@
-import { type Vulnerability } from "@/types/scanner";
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
+"use server";
 
-// This is a mock implementation - in a real app, this would connect to OWASP ZAP
-export async function POST(req: NextRequest) {
+import type { Vulnerability } from "@/types/scanner";
+
+export async function scanWebsite(url: string, crawl: boolean) {
   try {
-    const { url, crawl } = await req.json();
-
-    if (!url) {
-      return NextResponse.json({ error: "URL is required" }, { status: 400 });
-    }
-
     // Validate URL format
     try {
       new URL(url);
     } catch (error) {
-      return NextResponse.json(
-        { error: "Invalid URL format" },
-        { status: 400 },
-      );
+      console.error("Invalid URL format:", error);
+      return { error: "Invalid URL format" };
     }
 
-    // Simulate scan delay (longer for crawling)
-    const scanTime = crawl ? 5000 : 2000;
+    const scanTime = crawl ? 2000 : 1000;
     await new Promise((resolve) => setTimeout(resolve, scanTime));
 
     // Generate a report ID
@@ -164,37 +154,16 @@ export async function POST(req: NextRequest) {
             "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html",
           ],
         });
-
-        vulnerabilities.push({
-          name: "Insecure Direct Object Reference",
-          risk: "High",
-          description:
-            "Direct references to internal objects without proper authorization checks.",
-          location: "/api/documents/123",
-          cweid: "CWE-639",
-          remedy:
-            "Implement proper access controls that verify the user has permission to access the requested object. Use indirect references that map to actual database IDs but are meaningless to users. Validate all user input against expected values and formats.",
-          evidence:
-            "User can access /api/documents/456 when they only have permission for documents 123 and 124",
-          impact:
-            "Attackers can access unauthorized resources by manipulating parameter values that directly reference objects, potentially exposing sensitive data or functions.",
-          references: [
-            "https://owasp.org/www-project-top-ten/2017/A5_2017-Broken_Access_Control",
-            "https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html",
-          ],
-        });
       }
     }
+    // For any other URL, return empty vulnerabilities (secure site)
 
-    return NextResponse.json({
+    return {
       vulnerabilities,
       reportId,
-    });
+    };
   } catch (error) {
     console.error("Scan error:", error);
-    return NextResponse.json(
-      { error: "Failed to process scan request" },
-      { status: 500 },
-    );
+    return { error: "Failed to process scan request" };
   }
 }

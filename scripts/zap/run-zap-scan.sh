@@ -97,8 +97,8 @@ fi
 
 URLS_FILE=$1
 MAX_PARALLEL=${2:-3}     # Default to 3 parallel scans if not specified
-API_KEY=${3:-""}         # Optional API key
-ZAP_API=${4:-"http://localhost:8080"}  # Optional ZAP API URL
+API_KEY=${3:-"kavalierius"}         # Optional API key
+ZAP_API=${4:-"http://20.55.35.219:8080"}  # Optional ZAP API URL
 REPORTS_DIR="zap-reports"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 LOG_DIR="${REPORTS_DIR}/${TIMESTAMP}/logs"
