@@ -1,13 +1,13 @@
 "use server";
 
 import { env } from "@/env";
-import { db } from "@/server/db";
+import { db } from "@/server/db/db";
 import { resend } from "@/server/email";
-import { Prisma } from "@prisma/client";
+import { waitlistEntry } from "@/server/db/schema/waitlist";
+import { eq } from "drizzle-orm";
 
 import WaitlistWelcomeEmail from "@/emails/waitlist-welcome";
 
-// Server action for waitlist submission
 export async function joinWaitlist({
   name,
   email,
@@ -16,15 +16,23 @@ export async function joinWaitlist({
   email: string;
 }) {
   try {
-    // Save to database
-    await db.waitlistEntry.create({
-      data: {
-        name,
-        email,
-      },
+    const entry = await db
+      .select()
+      .from(waitlistEntry)
+      .where(eq(waitlistEntry.email, email));
+
+    if (entry.length > 0) {
+      return {
+        success: false,
+        message: "This email is already on the waitlist",
+      };
+    }
+
+    await db.insert(waitlistEntry).values({
+      name,
+      email,
     });
 
-    // Send welcome email using Resend
     try {
       await resend.emails.send({
         from: `${env.EMAIL_SENDER_NAME} <${env.EMAIL_SENDER_EMAIL}>`,
@@ -43,16 +51,6 @@ export async function joinWaitlist({
       message: "Successfully joined the waitlist! We'll be in touch soon.",
     };
   } catch (error) {
-    // Check for Prisma unique constraint error
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2002") {
-        return {
-          success: false,
-          message: "This email is already on the waitlist",
-        };
-      }
-    }
-
     console.error("Waitlist submission error:", error);
     return {
       success: false,

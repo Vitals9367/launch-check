@@ -13,7 +13,7 @@ import { Textarea } from "../ui/textarea";
 import z from "node_modules/zod/lib";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { giveFeedback } from "@/actions/feedback";
+import { giveFeedback } from "@/actions/give-feedback";
 import { upperFirst } from "lodash";
 import { useToast } from "@/hooks/use-toast";
 import { usePostHog } from "posthog-js/react";

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Check, Shield } from "lucide-react";
-import { joinWaitlist } from "@/actions/waitlist";
+import { joinWaitlist } from "@/actions/join-waitlist";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { api } from "@/trpc/react";
@@ -60,7 +60,7 @@ export function WaitlistSection() {
       } else {
         toast({
           title: "Error",
-          description: "An unexpected error occurred. Please try again.",
+          description: result.message,
           variant: "destructive",
         });
       }

@@ -1,7 +1,7 @@
 "use server";
 
-import { db } from "@/server/db";
-import { Prisma } from "@prisma/client";
+import { db } from "@/server/db/db";
+import { feedback as feedbackTable } from "@/server/db/schema/feedback";
 
 export async function giveFeedback({
   name,
@@ -13,13 +13,10 @@ export async function giveFeedback({
   feedback: string;
 }) {
   try {
-    // Save to database
-    await db.feedback.create({
-      data: {
-        name,
-        email,
-        feedback,
-      },
+    await db.insert(feedbackTable).values({
+      name,
+      email,
+      feedback,
     });
 
     return {
@@ -27,16 +24,6 @@ export async function giveFeedback({
       message: "Successfully submitted feedback",
     };
   } catch (error) {
-    // Check for Prisma unique constraint error
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2002") {
-        return {
-          success: false,
-          message: "This email is already on the waitlist",
-        };
-      }
-    }
-
     console.error("Feedback submission error:", error);
     return {
       success: false,
