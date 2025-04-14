@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type Project } from "@/server/db/schema/projects";
 import { Shield, AlertTriangle, CheckCircle, Clock } from "lucide-react";

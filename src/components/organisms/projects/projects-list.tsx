@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import { ProjectsLoading } from "./projects-loading";
 import { ProjectsEmpty } from "./projects-empty";
@@ -16,24 +10,18 @@ export function ProjectsList() {
   const { data: projects, isLoading } = api.projects.fetch.useQuery();
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Your Projects</CardTitle>
-        <CardDescription>
-          View and manage your security scanning projects
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card className="border-none bg-transparent shadow-none">
+      <CardContent className="grid grid-cols-1 gap-4 p-0 sm:grid-cols-2 xl:grid-cols-3">
         {isLoading ? (
           <ProjectsLoading />
         ) : !projects?.length ? (
           <ProjectsEmpty />
         ) : (
-          <div className="space-y-4">
+          <>
             {projects.map((project) => (
               <ProjectItem key={project.id} project={project} />
             ))}
-          </div>
+          </>
         )}
       </CardContent>
     </Card>

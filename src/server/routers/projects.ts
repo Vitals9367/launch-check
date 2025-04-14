@@ -1,7 +1,7 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import { projects } from "@/server/db/schema/projects";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
 const createProject = protectedProcedure
@@ -27,7 +27,10 @@ const getProjectById = protectedProcedure
       .select()
       .from(projects)
       .where(
-        eq(projects.id, input.id) && eq(projects.userId, ctx.session.user.id),
+        and(
+          eq(projects.id, input.id),
+          eq(projects.userId, ctx.session.user.id),
+        ),
       )
       .limit(1);
     return project;

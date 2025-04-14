@@ -22,12 +22,15 @@ export function CreateProjectDialog() {
 
   const [projectName, setProjectName] = useState("");
   const router = useRouter();
+  const utils = api.useUtils();
 
   const createProject = api.projects.create.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
+      // Invalidate projects query to trigger a refresh
+      await utils.projects.fetch.invalidate();
+      // Close dialog and reset form
       onOpenChange(false);
       setProjectName("");
-      router.refresh();
     },
   });
 

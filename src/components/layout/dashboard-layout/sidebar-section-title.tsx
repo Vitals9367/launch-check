@@ -1,28 +1,28 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SidebarSectionTitleProps {
-  onClick: () => void;
-  isExpanded: boolean;
   title: string;
+  isExpanded: boolean;
+  onClick: () => void;
 }
 
 export function SidebarSectionTitle({
-  onClick,
-  isExpanded,
   title,
+  isExpanded,
+  onClick,
 }: SidebarSectionTitleProps) {
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+      className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
     >
-      <span>{title}</span>
+      {title}
       <ChevronDown
         className={cn(
-          "h-4 w-4 transition-transform duration-150",
+          "h-4 w-4 text-gray-500 transition-transform",
           isExpanded ? "rotate-0" : "-rotate-90",
         )}
       />
