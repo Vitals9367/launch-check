@@ -43,3 +43,5 @@ export const trpcApiPrefix = "/api/trpc";
  * @type {string}
  */
 export const callbackUrlQueryParam = "callbackUrl";
+
+export const projectRoute = "/dashboard/projects";
