@@ -7,48 +7,74 @@ import {
   TableHead,
   TableBody,
   TableCell,
+  Table,
 } from "@/components/ui/table";
-import { Table } from "lucide-react";
 
 interface RecentScansProps {
-  project: Project;
+  project: Project | undefined;
 }
 
+type ScanStatus = "Completed" | "Failed" | "In Progress";
+
+interface ScanData {
+  id: number;
+  date: string;
+  status: ScanStatus;
+  vulnerabilities: {
+    critical: number;
+    high: number;
+    medium: number;
+    low: number;
+  } | null;
+  duration: string;
+}
+
+// Mock data for recent scans
+const MOCK_SCANS: ScanData[] = [
+  {
+    id: 1,
+    date: "2024-03-15",
+    status: "Completed",
+    vulnerabilities: {
+      critical: 2,
+      high: 5,
+      medium: 8,
+      low: 12,
+    },
+    duration: "45m",
+  },
+  {
+    id: 2,
+    date: "2024-03-10",
+    status: "Failed",
+    vulnerabilities: null,
+    duration: "7m",
+  },
+  {
+    id: 3,
+    date: "2024-03-05",
+    status: "Completed",
+    vulnerabilities: {
+      critical: 1,
+      high: 3,
+      medium: 6,
+      low: 9,
+    },
+    duration: "38m",
+  },
+  {
+    id: 4,
+    date: "2024-03-01",
+    status: "In Progress",
+    vulnerabilities: null,
+    duration: "Running...",
+  },
+];
+
 export function RecentScans({ project }: RecentScansProps) {
-  // This would be replaced with actual scan data from your database
-  const recentScans = [
-    {
-      id: 1,
-      date: "2024-03-15",
-      status: "Completed",
-      vulnerabilities: {
-        critical: 2,
-        high: 5,
-        medium: 8,
-        low: 12,
-      },
-      duration: "45m",
-    },
-    {
-      id: 2,
-      date: "2024-03-10",
-      status: "Completed",
-      vulnerabilities: {
-        critical: 3,
-        high: 7,
-        medium: 10,
-        low: 15,
-      },
-      duration: "42m",
-    },
-    {
-      id: 3,
-      date: "2024-03-05",
-      status: "Failed",
-      vulnerabilities: null,
-      duration: "5m",
-    },
-  ];
+  if (!project) {
+    return null;
+  }
 
   return (
     <Card>
@@ -69,7 +95,7 @@ export function RecentScans({ project }: RecentScansProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {recentScans.map((scan) => (
+            {MOCK_SCANS.map((scan) => (
               <TableRow key={scan.id}>
                 <TableCell>
                   {new Date(scan.date).toLocaleDateString()}
@@ -77,7 +103,11 @@ export function RecentScans({ project }: RecentScansProps) {
                 <TableCell>
                   <Badge
                     variant={
-                      scan.status === "Completed" ? "default" : "destructive"
+                      scan.status === "Completed"
+                        ? "default"
+                        : scan.status === "In Progress"
+                          ? "secondary"
+                          : "destructive"
                     }
                   >
                     {scan.status}
