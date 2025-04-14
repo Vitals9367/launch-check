@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useParams } from "next/navigation"
+import { useState } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   ArrowLeft,
   Download,
@@ -17,13 +17,21 @@ import {
   ExternalLink,
   FileText,
   Shield,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Progress } from "@/components/ui/progress"
-import { VulnerabilityCard } from "@/components/molecules/vulnerability-card"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { VulnerabilityCard } from "@/components/molecules/vulnerability-card";
+import { Vulnerability } from "@/types/scanner";
 
 // Mock scan data
 const mockScanData = {
@@ -40,7 +48,8 @@ const mockScanData = {
     {
       name: "Cross-Site Scripting (XSS)",
       risk: "High",
-      description: "Found potential XSS vulnerability that could allow attackers to inject malicious scripts.",
+      description:
+        "Found potential XSS vulnerability that could allow attackers to inject malicious scripts.",
       location: "/search?q=<script>alert(1)</script>",
       cweid: "CWE-79",
       remedy:
@@ -56,7 +65,8 @@ const mockScanData = {
     {
       name: "SQL Injection",
       risk: "High",
-      description: "SQL injection vulnerability that could allow attackers to manipulate database queries.",
+      description:
+        "SQL injection vulnerability that could allow attackers to manipulate database queries.",
       location: "/users?id=1' OR '1'='1",
       cweid: "CWE-89",
       remedy:
@@ -73,7 +83,8 @@ const mockScanData = {
     {
       name: "Insecure Cookie",
       risk: "Medium",
-      description: "Cookies set without secure and HttpOnly flags expose sensitive information.",
+      description:
+        "Cookies set without secure and HttpOnly flags expose sensitive information.",
       location: "Set-Cookie: auth=token123; path=/",
       cweid: "CWE-614",
       remedy:
@@ -103,121 +114,143 @@ const mockScanData = {
     label: "Poor",
     description: "Serious security vulnerabilities detected",
   },
-}
+};
 
 export default function ScanReportPage() {
-  const params = useParams()
-  const scanId = params.scanId as string
-  const scan = mockScanData // In a real app, fetch the scan data based on scanId
+  const params = useParams();
+  const scanId = params.scanId as string;
+  const scan = mockScanData; // In a real app, fetch the scan data based on scanId
 
-  const [isRescanning, setIsRescanning] = useState(false)
+  const [isRescanning, setIsRescanning] = useState(false);
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
+    const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(date)
-  }
+    }).format(date);
+  };
 
   const handleRescan = () => {
-    setIsRescanning(true)
+    setIsRescanning(true);
     // In a real app, trigger a new scan
     setTimeout(() => {
-      setIsRescanning(false)
-    }, 2000)
-  }
+      setIsRescanning(false);
+    }, 2000);
+  };
 
   const handleDownloadReport = () => {
     // In a real app, download the report
-    alert("Downloading report...")
-  }
+    alert("Downloading report...");
+  };
 
   const getScoreColor = (score: string) => {
     switch (score) {
       case "A+":
       case "A":
-        return "text-green-600 bg-green-50 border-green-200"
+        return "text-green-600 bg-green-50 border-green-200";
       case "B":
-        return "text-blue-600 bg-blue-50 border-blue-200"
+        return "text-blue-600 bg-blue-50 border-blue-200";
       case "C":
-        return "text-yellow-600 bg-yellow-50 border-yellow-200"
+        return "text-yellow-600 bg-yellow-50 border-yellow-200";
       case "D":
-        return "text-orange-600 bg-orange-50 border-orange-200"
+        return "text-orange-600 bg-orange-50 border-orange-200";
       case "F":
-        return "text-red-600 bg-red-50 border-red-200"
+        return "text-red-600 bg-red-50 border-red-200";
       default:
-        return "text-gray-600 bg-gray-50 border-gray-200"
+        return "text-gray-600 bg-gray-50 border-gray-200";
     }
-  }
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "secure":
-        return <Badge className="bg-green-500">Secure</Badge>
+        return <Badge className="bg-green-500">Secure</Badge>;
       case "warning":
-        return <Badge className="bg-yellow-500">Warning</Badge>
+        return <Badge className="bg-yellow-500">Warning</Badge>;
       case "vulnerable":
-        return <Badge className="bg-red-500">Vulnerable</Badge>
+        return <Badge className="bg-red-500">Vulnerable</Badge>;
       default:
-        return <Badge>Unknown</Badge>
+        return <Badge>Unknown</Badge>;
     }
-  }
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "secure":
-        return <CheckCircle className="h-5 w-5 text-green-500" />
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
       case "warning":
-        return <AlertTriangle className="h-5 w-5 text-yellow-500" />
+        return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
       case "vulnerable":
-        return <AlertTriangle className="h-5 w-5 text-red-500" />
+        return <AlertTriangle className="h-5 w-5 text-red-500" />;
       default:
-        return null
+        return null;
     }
-  }
+  };
 
-  const highVulnerabilities = scan.vulnerabilities.filter((v) => v.risk === "High").length
-  const mediumVulnerabilities = scan.vulnerabilities.filter((v) => v.risk === "Medium").length
-  const lowVulnerabilities = scan.vulnerabilities.filter((v) => v.risk === "Low").length
+  const highVulnerabilities = scan.vulnerabilities.filter(
+    (v) => v.risk === "High",
+  ).length;
+  const mediumVulnerabilities = scan.vulnerabilities.filter(
+    (v) => v.risk === "Medium",
+  ).length;
+  const lowVulnerabilities = scan.vulnerabilities.filter(
+    (v) => v.risk === "Low",
+  ).length;
 
   return (
     <div>
       {/* Breadcrumb and actions */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+      <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
-          <div className="flex items-center mb-2">
-            <Link href="/dashboard/scans" className="text-gray-500 hover:text-gray-700 flex items-center">
-              <ArrowLeft className="h-4 w-4 mr-1" />
+          <div className="mb-2 flex items-center">
+            <Link
+              href="/dashboard/scans"
+              className="flex items-center text-gray-500 hover:text-gray-700"
+            >
+              <ArrowLeft className="mr-1 h-4 w-4" />
               <span>Back to Scans</span>
             </Link>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+          <h1 className="flex items-center text-2xl font-bold text-gray-900">
             {getStatusIcon(scan.status)}
             <span className="ml-2">Scan Report: {scan.website.name}</span>
           </h1>
-          <div className="flex items-center mt-1">
+          <div className="mt-1 flex items-center">
             <Link
               href={`/dashboard/websites/${scan.website.id}`}
-              className="text-sm text-blue-600 hover:underline flex items-center"
+              className="flex items-center text-sm text-blue-600 hover:underline"
             >
-              <Globe className="h-4 w-4 mr-1" />
+              <Globe className="mr-1 h-4 w-4" />
               {scan.website.name}
             </Link>
             <span className="mx-2 text-gray-400">•</span>
-            <span className="text-sm text-gray-500">{formatDate(scan.date)}</span>
+            <span className="text-sm text-gray-500">
+              {formatDate(scan.date)}
+            </span>
           </div>
         </div>
-        <div className="mt-4 md:mt-0 flex flex-wrap gap-2">
-          <Button variant="outline" className="flex items-center" onClick={handleDownloadReport}>
+        <div className="mt-4 flex flex-wrap gap-2 md:mt-0">
+          <Button
+            variant="outline"
+            className="flex items-center"
+            onClick={handleDownloadReport}
+          >
             <Download className="mr-2 h-4 w-4" />
             Download Report
           </Button>
-          <Button variant="outline" className="flex items-center" onClick={handleRescan} disabled={isRescanning}>
-            <RefreshCw className={`mr-2 h-4 w-4 ${isRescanning ? "animate-spin" : ""}`} />
+          <Button
+            variant="outline"
+            className="flex items-center"
+            onClick={handleRescan}
+            disabled={isRescanning}
+          >
+            <RefreshCw
+              className={`mr-2 h-4 w-4 ${isRescanning ? "animate-spin" : ""}`}
+            />
             {isRescanning ? "Rescanning..." : "Rescan"}
           </Button>
           <Button variant="outline" className="flex items-center">
@@ -231,17 +264,19 @@ export default function ScanReportPage() {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Scan Overview</CardTitle>
-          <CardDescription>Summary of the security scan results</CardDescription>
+          <CardDescription>
+            Summary of the security scan results
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
               <div className="space-y-4">
                 <div className="flex items-center">
-                  <Globe className="h-5 w-5 text-gray-500 mr-3" />
+                  <Globe className="mr-3 h-5 w-5 text-gray-500" />
                   <div>
                     <p className="text-sm text-gray-500">Website URL</p>
-                    <p className="font-medium flex items-center">
+                    <p className="flex items-center font-medium">
                       {scan.website.url}
                       <a
                         href={scan.website.url}
@@ -256,7 +291,7 @@ export default function ScanReportPage() {
                 </div>
 
                 <div className="flex items-center">
-                  <Calendar className="h-5 w-5 text-gray-500 mr-3" />
+                  <Calendar className="mr-3 h-5 w-5 text-gray-500" />
                   <div>
                     <p className="text-sm text-gray-500">Scan Date</p>
                     <p className="font-medium">{formatDate(scan.date)}</p>
@@ -264,7 +299,7 @@ export default function ScanReportPage() {
                 </div>
 
                 <div className="flex items-center">
-                  <Clock className="h-5 w-5 text-gray-500 mr-3" />
+                  <Clock className="mr-3 h-5 w-5 text-gray-500" />
                   <div>
                     <p className="text-sm text-gray-500">Scan Duration</p>
                     <p className="font-medium">{scan.duration}</p>
@@ -272,10 +307,12 @@ export default function ScanReportPage() {
                 </div>
 
                 <div className="flex items-center">
-                  <LinkIcon className="h-5 w-5 text-gray-500 mr-3" />
+                  <LinkIcon className="mr-3 h-5 w-5 text-gray-500" />
                   <div>
                     <p className="text-sm text-gray-500">URLs Scanned</p>
-                    <p className="font-medium">{scan.scannedUrls.length} URLs</p>
+                    <p className="font-medium">
+                      {scan.scannedUrls.length} URLs
+                    </p>
                   </div>
                 </div>
               </div>
@@ -283,16 +320,22 @@ export default function ScanReportPage() {
 
             <div>
               <div className="flex flex-col items-center">
-                <div className={`text-center p-6 rounded-lg mb-4 ${getScoreColor(scan.securityScore.score)}`}>
-                  <div className="flex items-center justify-center mb-2">
+                <div
+                  className={`mb-4 rounded-lg p-6 text-center ${getScoreColor(scan.securityScore.score)}`}
+                >
+                  <div className="mb-2 flex items-center justify-center">
                     <div
-                      className={`text-4xl font-bold h-16 w-16 rounded-full flex items-center justify-center border-2 ${getScoreColor(scan.securityScore.score)}`}
+                      className={`flex h-16 w-16 items-center justify-center rounded-full border-2 text-4xl font-bold ${getScoreColor(scan.securityScore.score)}`}
                     >
                       {scan.securityScore.score}
                     </div>
                   </div>
-                  <h3 className="text-lg font-semibold">{scan.securityScore.label} Security Rating</h3>
-                  <p className="text-sm mt-1">{scan.securityScore.description}</p>
+                  <h3 className="text-lg font-semibold">
+                    {scan.securityScore.label} Security Rating
+                  </h3>
+                  <p className="mt-1 text-sm">
+                    {scan.securityScore.description}
+                  </p>
                 </div>
 
                 <div className="w-full space-y-2">
@@ -303,7 +346,6 @@ export default function ScanReportPage() {
                   <Progress
                     value={highVulnerabilities > 0 ? 100 : 0}
                     className="h-2 bg-gray-100"
-                    indicatorClassName="bg-red-500"
                   />
 
                   <div className="flex justify-between text-sm">
@@ -313,7 +355,6 @@ export default function ScanReportPage() {
                   <Progress
                     value={mediumVulnerabilities > 0 ? 100 : 0}
                     className="h-2 bg-gray-100"
-                    indicatorClassName="bg-yellow-500"
                   />
 
                   <div className="flex justify-between text-sm">
@@ -323,7 +364,6 @@ export default function ScanReportPage() {
                   <Progress
                     value={lowVulnerabilities > 0 ? 100 : 0}
                     className="h-2 bg-gray-100"
-                    indicatorClassName="bg-blue-500"
                   />
                 </div>
               </div>
@@ -352,15 +392,20 @@ export default function ScanReportPage() {
             </CardHeader>
             <CardContent>
               {scan.vulnerabilities.length === 0 ? (
-                <div className="text-center py-8">
-                  <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
+                <div className="py-8 text-center">
+                  <CheckCircle className="mx-auto mb-3 h-12 w-12 text-green-500" />
                   <h3 className="font-medium text-gray-900">All Clear!</h3>
-                  <p className="text-gray-500 mt-1">No vulnerabilities were detected in this scan</p>
+                  <p className="mt-1 text-gray-500">
+                    No vulnerabilities were detected in this scan
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {scan.vulnerabilities.map((vulnerability, index) => (
-                    <VulnerabilityCard key={index} vulnerability={vulnerability} />
+                    <VulnerabilityCard
+                      key={index}
+                      vulnerability={vulnerability as Vulnerability}
+                    />
                   ))}
                 </div>
               )}
@@ -372,19 +417,25 @@ export default function ScanReportPage() {
           <Card>
             <CardHeader>
               <CardTitle>Scanned URLs</CardTitle>
-              <CardDescription>{scan.scannedUrls.length} URLs were scanned during this security check</CardDescription>
+              <CardDescription>
+                {scan.scannedUrls.length} URLs were scanned during this security
+                check
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
                 {scan.scannedUrls.map((url, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between rounded-lg bg-gray-50 p-3"
+                  >
                     <div className="flex items-center">
                       {url.status === "secure" ? (
-                        <CheckCircle className="h-4 w-4 text-green-500 mr-3" />
+                        <CheckCircle className="mr-3 h-4 w-4 text-green-500" />
                       ) : url.status === "warning" ? (
-                        <AlertTriangle className="h-4 w-4 text-yellow-500 mr-3" />
+                        <AlertTriangle className="mr-3 h-4 w-4 text-yellow-500" />
                       ) : (
-                        <AlertTriangle className="h-4 w-4 text-red-500 mr-3" />
+                        <AlertTriangle className="mr-3 h-4 w-4 text-red-500" />
                       )}
                       <div>
                         <p className="font-medium">
@@ -395,8 +446,15 @@ export default function ScanReportPage() {
                     </div>
                     <div className="flex items-center">
                       {url.vulnerabilities > 0 ? (
-                        <Badge className={url.status === "vulnerable" ? "bg-red-500" : "bg-yellow-500"}>
-                          {url.vulnerabilities} {url.vulnerabilities === 1 ? "issue" : "issues"}
+                        <Badge
+                          className={
+                            url.status === "vulnerable"
+                              ? "bg-red-500"
+                              : "bg-yellow-500"
+                          }
+                        >
+                          {url.vulnerabilities}{" "}
+                          {url.vulnerabilities === 1 ? "issue" : "issues"}
                         </Badge>
                       ) : (
                         <Badge className="bg-green-500">Secure</Badge>
@@ -413,20 +471,27 @@ export default function ScanReportPage() {
           <Card>
             <CardHeader>
               <CardTitle>Security Recommendations</CardTitle>
-              <CardDescription>Actionable steps to improve your website security</CardDescription>
+              <CardDescription>
+                Actionable steps to improve your website security
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
                 {scan.vulnerabilities.length > 0 ? (
                   scan.vulnerabilities.map((vulnerability, index) => (
-                    <div key={index} className="border-b pb-4 last:border-b-0 last:pb-0">
-                      <h3 className="font-medium text-lg mb-2 flex items-center">
-                        <Shield className="h-5 w-5 mr-2 text-blue-500" />
+                    <div
+                      key={index}
+                      className="border-b pb-4 last:border-b-0 last:pb-0"
+                    >
+                      <h3 className="mb-2 flex items-center text-lg font-medium">
+                        <Shield className="mr-2 h-5 w-5 text-blue-500" />
                         Fix: {vulnerability.name}
                       </h3>
-                      <p className="text-gray-700 mb-3">{vulnerability.remedy}</p>
+                      <p className="mb-3 text-gray-700">
+                        {vulnerability.remedy}
+                      </p>
                       <div className="flex items-center text-sm text-gray-500">
-                        <FileText className="h-4 w-4 mr-1" />
+                        <FileText className="mr-1 h-4 w-4" />
                         <span>Reference: </span>
                         <a
                           href={vulnerability.references[0]}
@@ -440,22 +505,25 @@ export default function ScanReportPage() {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-8">
-                    <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
+                  <div className="py-8 text-center">
+                    <CheckCircle className="mx-auto mb-3 h-12 w-12 text-green-500" />
                     <h3 className="font-medium text-gray-900">Great job!</h3>
-                    <p className="text-gray-500 mt-1">Your website is secure. Continue to monitor regularly.</p>
+                    <p className="mt-1 text-gray-500">
+                      Your website is secure. Continue to monitor regularly.
+                    </p>
                   </div>
                 )}
               </div>
             </CardContent>
             <CardFooter>
               <p className="text-sm text-gray-500">
-                These recommendations are based on industry best practices and the OWASP Top 10 security risks.
+                These recommendations are based on industry best practices and
+                the OWASP Top 10 security risks.
               </p>
             </CardFooter>
           </Card>
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

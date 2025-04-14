@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -9,17 +7,19 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { useCurrentUser } from "@/hooks/use-current-user";
 import LogoutButton from "@/components/molecules/logout-button";
 import DeleteAccountButton from "@/components/molecules/delete-account-button";
 import { LoadingScreen } from "@/components/organisms/loading-screen";
+import { auth } from "@/server/auth";
 
-export default function ProfilePage() {
-  const user = useCurrentUser();
+export default async function ProfilePage() {
+  const session = await auth();
 
-  if (!user) {
+  if (!session?.user) {
     return <LoadingScreen />;
   }
+
+  const user = session.user;
 
   return (
     <div>

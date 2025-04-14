@@ -1,5 +1,3 @@
-"use client";
-
 import { Navigation } from "@/components/layout/dashboard-layout/sidebar-navigation";
 
 type SidebarProps = {

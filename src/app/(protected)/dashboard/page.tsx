@@ -1,11 +1,24 @@
-"use client"
-import Link from "next/link"
-import { AlertTriangle, CheckCircle, Globe, Clock, Plus, BarChart } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Link from "next/link";
+import {
+  AlertTriangle,
+  CheckCircle,
+  Globe,
+  Clock,
+  Plus,
+  BarChart,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Mock data
 const recentScans = [
@@ -37,7 +50,7 @@ const recentScans = [
     status: "secure",
     vulnerabilities: 0,
   },
-]
+];
 
 // Mock websites data
 const mockWebsites = [
@@ -65,33 +78,36 @@ const mockWebsites = [
     status: "warning",
     vulnerabilities: 1,
   },
-]
+];
 
 // Calculate summary statistics
-const totalWebsites = mockWebsites.length
-const totalUrls = 18
-const totalVulnerabilities = mockWebsites.reduce((sum, website) => sum + website.vulnerabilities, 0)
+const totalWebsites = mockWebsites.length;
+const totalUrls = 18;
+const totalVulnerabilities = mockWebsites.reduce(
+  (sum, website) => sum + website.vulnerabilities,
+  0,
+);
 
 export default function DashboardPage() {
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
+    const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-US", {
       month: "short",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(date)
-  }
+    }).format(date);
+  };
 
   return (
     <div>
       {/* Dashboard Content */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+      <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-500">Monitor your website security</p>
         </div>
-        <div className="mt-4 md:mt-0 flex space-x-3">
+        <div className="mt-4 flex space-x-3 md:mt-0">
           <Link href="/dashboard/websites">
             <Button className="bg-red-600 hover:bg-red-700">
               <Plus className="mr-2 h-4 w-4" />
@@ -102,7 +118,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -110,7 +126,7 @@ export default function DashboardPage() {
                 <p className="text-sm font-medium text-gray-500">Websites</p>
                 <h3 className="text-2xl font-bold">{totalWebsites}</h3>
               </div>
-              <div className="p-2 bg-purple-50 rounded-full">
+              <div className="rounded-full bg-purple-50 p-2">
                 <Globe className="h-6 w-6 text-purple-500" />
               </div>
             </div>
@@ -121,10 +137,12 @@ export default function DashboardPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500">URLs Scanned</p>
+                <p className="text-sm font-medium text-gray-500">
+                  URLs Scanned
+                </p>
                 <h3 className="text-2xl font-bold">{totalUrls}</h3>
               </div>
-              <div className="p-2 bg-green-50 rounded-full">
+              <div className="rounded-full bg-green-50 p-2">
                 <BarChart className="h-6 w-6 text-green-500" />
               </div>
             </div>
@@ -135,10 +153,12 @@ export default function DashboardPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500">Vulnerabilities</p>
+                <p className="text-sm font-medium text-gray-500">
+                  Vulnerabilities
+                </p>
                 <h3 className="text-2xl font-bold">{totalVulnerabilities}</h3>
               </div>
-              <div className="p-2 bg-red-50 rounded-full">
+              <div className="rounded-full bg-red-50 p-2">
                 <AlertTriangle className="h-6 w-6 text-red-500" />
               </div>
             </div>
@@ -159,15 +179,17 @@ export default function DashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>Security Score</CardTitle>
-              <CardDescription>Overall security rating across all your websites</CardDescription>
+              <CardDescription>
+                Overall security rating across all your websites
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center space-x-4">
-                <div className="bg-yellow-100 text-yellow-800 text-2xl font-bold h-16 w-16 rounded-full flex items-center justify-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100 text-2xl font-bold text-yellow-800">
                   B
                 </div>
                 <div className="flex-1">
-                  <div className="flex justify-between mb-1">
+                  <div className="mb-1 flex justify-between">
                     <span className="text-sm font-medium">75/100</span>
                     <span className="text-sm font-medium">Good</span>
                   </div>
@@ -175,7 +197,10 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div className="mt-4 text-sm text-gray-500">
-                <p>{totalVulnerabilities} issues need attention across your websites</p>
+                <p>
+                  {totalVulnerabilities} issues need attention across your
+                  websites
+                </p>
               </div>
             </CardContent>
             <CardFooter>
@@ -189,31 +214,48 @@ export default function DashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>Recent Scans</CardTitle>
-              <CardDescription>Latest security scans across your websites</CardDescription>
+              <CardDescription>
+                Latest security scans across your websites
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {recentScans.map((scan) => (
-                  <div key={scan.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div
+                    key={scan.id}
+                    className="flex items-center justify-between rounded-lg bg-gray-50 p-3"
+                  >
                     <div className="flex items-center">
                       {scan.status === "secure" ? (
-                        <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                        <CheckCircle className="mr-3 h-5 w-5 text-green-500" />
                       ) : scan.status === "warning" ? (
-                        <AlertTriangle className="h-5 w-5 text-yellow-500 mr-3" />
+                        <AlertTriangle className="mr-3 h-5 w-5 text-yellow-500" />
                       ) : (
-                        <AlertTriangle className="h-5 w-5 text-red-500 mr-3" />
+                        <AlertTriangle className="mr-3 h-5 w-5 text-red-500" />
                       )}
                       <div>
-                        <Link href={`/dashboard/websites/${scan.id}`} className="font-medium hover:underline">
+                        <Link
+                          href={`/dashboard/websites/${scan.id}`}
+                          className="font-medium hover:underline"
+                        >
                           {scan.website}
                         </Link>
-                        <p className="text-xs text-gray-500">{formatDate(scan.date)}</p>
+                        <p className="text-xs text-gray-500">
+                          {formatDate(scan.date)}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center">
                       {scan.vulnerabilities > 0 ? (
-                        <Badge className={scan.status === "vulnerable" ? "bg-red-500" : "bg-yellow-500"}>
-                          {scan.vulnerabilities} {scan.vulnerabilities === 1 ? "issue" : "issues"}
+                        <Badge
+                          className={
+                            scan.status === "vulnerable"
+                              ? "bg-red-500"
+                              : "bg-yellow-500"
+                          }
+                        >
+                          {scan.vulnerabilities}{" "}
+                          {scan.vulnerabilities === 1 ? "issue" : "issues"}
                         </Badge>
                       ) : (
                         <Badge className="bg-green-500">Secure</Badge>
@@ -225,7 +267,10 @@ export default function DashboardPage() {
             </CardContent>
             <CardFooter>
               <Button variant="outline" className="w-full">
-                <Link href="/dashboard/scans" className="flex items-center justify-center w-full">
+                <Link
+                  href="/dashboard/scans"
+                  className="flex w-full items-center justify-center"
+                >
                   View All Scans
                 </Link>
               </Button>
@@ -242,15 +287,18 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-4">
                 {mockWebsites.map((website) => (
-                  <Link key={website.id} href={`/dashboard/websites/${website.id}`}>
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
+                  <Link
+                    key={website.id}
+                    href={`/dashboard/websites/${website.id}`}
+                  >
+                    <div className="flex cursor-pointer items-center justify-between rounded-lg bg-gray-50 p-3 hover:bg-gray-100">
                       <div className="flex items-center">
                         {website.status === "secure" ? (
-                          <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                          <CheckCircle className="mr-3 h-5 w-5 text-green-500" />
                         ) : website.status === "warning" ? (
-                          <AlertTriangle className="h-5 w-5 text-yellow-500 mr-3" />
+                          <AlertTriangle className="mr-3 h-5 w-5 text-yellow-500" />
                         ) : (
-                          <AlertTriangle className="h-5 w-5 text-red-500 mr-3" />
+                          <AlertTriangle className="mr-3 h-5 w-5 text-red-500" />
                         )}
                         <div>
                           <p className="font-medium">{website.name}</p>
@@ -259,8 +307,15 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex items-center">
                         {website.vulnerabilities > 0 ? (
-                          <Badge className={website.status === "vulnerable" ? "bg-red-500" : "bg-yellow-500"}>
-                            {website.vulnerabilities} {website.vulnerabilities === 1 ? "issue" : "issues"}
+                          <Badge
+                            className={
+                              website.status === "vulnerable"
+                                ? "bg-red-500"
+                                : "bg-yellow-500"
+                            }
+                          >
+                            {website.vulnerabilities}{" "}
+                            {website.vulnerabilities === 1 ? "issue" : "issues"}
                           </Badge>
                         ) : (
                           <Badge className="bg-green-500">Secure</Badge>
@@ -273,7 +328,10 @@ export default function DashboardPage() {
             </CardContent>
             <CardFooter>
               <Button variant="outline" className="w-full">
-                <Link href="/dashboard/websites" className="flex items-center justify-center w-full">
+                <Link
+                  href="/dashboard/websites"
+                  className="flex w-full items-center justify-center"
+                >
                   View All Websites
                 </Link>
               </Button>
@@ -285,13 +343,17 @@ export default function DashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>Scan History</CardTitle>
-              <CardDescription>View all security scans across your websites</CardDescription>
+              <CardDescription>
+                View all security scans across your websites
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <Clock className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+              <div className="py-8 text-center">
+                <Clock className="mx-auto mb-3 h-12 w-12 text-gray-300" />
                 <h3 className="font-medium text-gray-900">View scan history</h3>
-                <p className="text-gray-500 mt-1">Go to the Scan History page to see all your scans</p>
+                <p className="mt-1 text-gray-500">
+                  Go to the Scan History page to see all your scans
+                </p>
                 <Link href="/dashboard/scans">
                   <Button className="mt-4">View Scan History</Button>
                 </Link>
@@ -301,5 +363,5 @@ export default function DashboardPage() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

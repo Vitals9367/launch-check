@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { Shield, Menu, X } from "lucide-react";
 import { UserButton } from "@/components/molecules/user-button";

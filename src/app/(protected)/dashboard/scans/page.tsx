@@ -1,16 +1,42 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { CheckCircle, AlertTriangle, Download, Calendar, Clock, Filter, Globe, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
+import { useState } from "react";
+import {
+  CheckCircle,
+  AlertTriangle,
+  Download,
+  Calendar,
+  Clock,
+  Filter,
+  Globe,
+  X,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 // Mock data for scan history
 const mockScans = [
@@ -74,7 +100,7 @@ const mockScans = [
     duration: "3m 15s",
     projectName: "Marketing Website",
   },
-]
+];
 
 export default function ScansPage() {
   const [filters, setFilters] = useState({
@@ -82,43 +108,48 @@ export default function ScansPage() {
     project: "all",
     dateRange: "all",
     search: "",
-  })
-  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  });
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
+    const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-US", {
       month: "short",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(date)
-  }
+    }).format(date);
+  };
 
   // Filter scans based on the current filters
   const filteredScans = mockScans.filter((scan) => {
     // Filter by status
     if (filters.status !== "all" && scan.status !== filters.status) {
-      return false
+      return false;
     }
 
     // Filter by project
     if (filters.project !== "all" && scan.projectName !== filters.project) {
-      return false
+      return false;
     }
 
     // Filter by search term (website name)
-    if (filters.search && !scan.website.toLowerCase().includes(filters.search.toLowerCase())) {
-      return false
+    if (
+      filters.search &&
+      !scan.website.toLowerCase().includes(filters.search.toLowerCase())
+    ) {
+      return false;
     }
 
     // Date range filtering could be added here
 
-    return true
-  })
+    return true;
+  });
 
   // Get unique project names for the filter
-  const uniqueProjects = Array.from(new Set(mockScans.map((scan) => scan.projectName)))
+  const uniqueProjects = Array.from(
+    new Set(mockScans.map((scan) => scan.projectName)),
+  );
 
   // Clear all filters
   const clearFilters = () => {
@@ -127,15 +158,17 @@ export default function ScansPage() {
       project: "all",
       dateRange: "all",
       search: "",
-    })
-  }
+    });
+  };
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+      <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Scan History</h1>
-          <p className="text-gray-500">View and manage your security scan results</p>
+          <p className="text-gray-500">
+            View and manage your security scan results
+          </p>
         </div>
         <div className="mt-4 md:mt-0">
           <Button className="bg-red-600 hover:bg-red-700">
@@ -154,10 +187,17 @@ export default function ScansPage() {
                 placeholder="Search scans..."
                 className="pl-10"
                 value={filters.search}
-                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, search: e.target.value })
+                }
               />
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 transform">
+                <svg
+                  className="h-4 w-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -182,10 +222,15 @@ export default function ScansPage() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80 p-4">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="mb-4 flex items-center justify-between">
                     <h4 className="font-medium">Filters</h4>
-                    <Button variant="ghost" size="sm" className="h-8 px-2" onClick={clearFilters}>
-                      <X className="h-4 w-4 mr-1" />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 px-2"
+                      onClick={clearFilters}
+                    >
+                      <X className="mr-1 h-4 w-4" />
                       Clear all
                     </Button>
                   </div>
@@ -198,7 +243,9 @@ export default function ScansPage() {
                           <Checkbox
                             id="status-all"
                             checked={filters.status === "all"}
-                            onCheckedChange={() => setFilters({ ...filters, status: "all" })}
+                            onCheckedChange={() =>
+                              setFilters({ ...filters, status: "all" })
+                            }
                           />
                           <label htmlFor="status-all" className="text-sm">
                             All
@@ -208,7 +255,9 @@ export default function ScansPage() {
                           <Checkbox
                             id="status-secure"
                             checked={filters.status === "secure"}
-                            onCheckedChange={() => setFilters({ ...filters, status: "secure" })}
+                            onCheckedChange={() =>
+                              setFilters({ ...filters, status: "secure" })
+                            }
                           />
                           <label htmlFor="status-secure" className="text-sm">
                             Secure
@@ -218,7 +267,9 @@ export default function ScansPage() {
                           <Checkbox
                             id="status-warning"
                             checked={filters.status === "warning"}
-                            onCheckedChange={() => setFilters({ ...filters, status: "warning" })}
+                            onCheckedChange={() =>
+                              setFilters({ ...filters, status: "warning" })
+                            }
                           />
                           <label htmlFor="status-warning" className="text-sm">
                             Warning
@@ -228,9 +279,14 @@ export default function ScansPage() {
                           <Checkbox
                             id="status-vulnerable"
                             checked={filters.status === "vulnerable"}
-                            onCheckedChange={() => setFilters({ ...filters, status: "vulnerable" })}
+                            onCheckedChange={() =>
+                              setFilters({ ...filters, status: "vulnerable" })
+                            }
                           />
-                          <label htmlFor="status-vulnerable" className="text-sm">
+                          <label
+                            htmlFor="status-vulnerable"
+                            className="text-sm"
+                          >
                             Vulnerable
                           </label>
                         </div>
@@ -243,7 +299,9 @@ export default function ScansPage() {
                       <Label>Project</Label>
                       <Select
                         value={filters.project}
-                        onValueChange={(value) => setFilters({ ...filters, project: value })}
+                        onValueChange={(value) =>
+                          setFilters({ ...filters, project: value })
+                        }
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select a project" />
@@ -265,7 +323,9 @@ export default function ScansPage() {
                       <Label>Date Range</Label>
                       <Select
                         value={filters.dateRange}
-                        onValueChange={(value) => setFilters({ ...filters, dateRange: value })}
+                        onValueChange={(value) =>
+                          setFilters({ ...filters, dateRange: value })
+                        }
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select time period" />
@@ -290,33 +350,51 @@ export default function ScansPage() {
                 <SelectContent>
                   <SelectItem value="newest">Newest First</SelectItem>
                   <SelectItem value="oldest">Oldest First</SelectItem>
-                  <SelectItem value="vulnerabilities">Most Vulnerabilities</SelectItem>
+                  <SelectItem value="vulnerabilities">
+                    Most Vulnerabilities
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           {/* Active Filters */}
-          {(filters.status !== "all" || filters.project !== "all" || filters.dateRange !== "all" || filters.search) && (
-            <div className="flex flex-wrap gap-2 mt-4">
+          {(filters.status !== "all" ||
+            filters.project !== "all" ||
+            filters.dateRange !== "all" ||
+            filters.search) && (
+            <div className="mt-4 flex flex-wrap gap-2">
               {filters.status !== "all" && (
-                <Badge variant="outline" className="flex items-center gap-1 px-3 py-1">
+                <Badge
+                  variant="outline"
+                  className="flex items-center gap-1 px-3 py-1"
+                >
                   Status: {filters.status}
-                  <button onClick={() => setFilters({ ...filters, status: "all" })}>
-                    <X className="h-3 w-3 ml-1" />
+                  <button
+                    onClick={() => setFilters({ ...filters, status: "all" })}
+                  >
+                    <X className="ml-1 h-3 w-3" />
                   </button>
                 </Badge>
               )}
               {filters.project !== "all" && (
-                <Badge variant="outline" className="flex items-center gap-1 px-3 py-1">
+                <Badge
+                  variant="outline"
+                  className="flex items-center gap-1 px-3 py-1"
+                >
                   Project: {filters.project}
-                  <button onClick={() => setFilters({ ...filters, project: "all" })}>
-                    <X className="h-3 w-3 ml-1" />
+                  <button
+                    onClick={() => setFilters({ ...filters, project: "all" })}
+                  >
+                    <X className="ml-1 h-3 w-3" />
                   </button>
                 </Badge>
               )}
               {filters.dateRange !== "all" && (
-                <Badge variant="outline" className="flex items-center gap-1 px-3 py-1">
+                <Badge
+                  variant="outline"
+                  className="flex items-center gap-1 px-3 py-1"
+                >
                   Date:{" "}
                   {filters.dateRange === "today"
                     ? "Today"
@@ -325,16 +403,23 @@ export default function ScansPage() {
                       : filters.dateRange === "month"
                         ? "Last 30 Days"
                         : "Last 90 Days"}
-                  <button onClick={() => setFilters({ ...filters, dateRange: "all" })}>
-                    <X className="h-3 w-3 ml-1" />
+                  <button
+                    onClick={() => setFilters({ ...filters, dateRange: "all" })}
+                  >
+                    <X className="ml-1 h-3 w-3" />
                   </button>
                 </Badge>
               )}
               {filters.search && (
-                <Badge variant="outline" className="flex items-center gap-1 px-3 py-1">
+                <Badge
+                  variant="outline"
+                  className="flex items-center gap-1 px-3 py-1"
+                >
                   Search: {filters.search}
-                  <button onClick={() => setFilters({ ...filters, search: "" })}>
-                    <X className="h-3 w-3 ml-1" />
+                  <button
+                    onClick={() => setFilters({ ...filters, search: "" })}
+                  >
+                    <X className="ml-1 h-3 w-3" />
                   </button>
                 </Badge>
               )}
@@ -348,60 +433,77 @@ export default function ScansPage() {
         <CardHeader>
           <CardTitle>Scan Results</CardTitle>
           <CardDescription>
-            {filteredScans.length} {filteredScans.length === 1 ? "scan" : "scans"} found
+            {filteredScans.length}{" "}
+            {filteredScans.length === 1 ? "scan" : "scans"} found
           </CardDescription>
         </CardHeader>
         <CardContent>
           {filteredScans.length === 0 ? (
-            <div className="text-center p-8">
-              <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-              <h3 className="font-medium text-gray-900">No scan results found</h3>
-              <p className="text-gray-500 mt-1">Try adjusting your filters or run a new scan</p>
-              <Button className="mt-4 bg-red-600 hover:bg-red-700">Run a New Scan</Button>
+            <div className="p-8 text-center">
+              <Calendar className="mx-auto mb-3 h-12 w-12 text-gray-300" />
+              <h3 className="font-medium text-gray-900">
+                No scan results found
+              </h3>
+              <p className="mt-1 text-gray-500">
+                Try adjusting your filters or run a new scan
+              </p>
+              <Button className="mt-4 bg-red-600 hover:bg-red-700">
+                Run a New Scan
+              </Button>
             </div>
           ) : (
             <div className="space-y-4">
               {filteredScans.map((scan) => (
                 <div
                   key={scan.id}
-                  className="flex flex-col md:flex-row justify-between p-4 border rounded-lg hover:bg-gray-50"
+                  className="flex flex-col justify-between rounded-lg border p-4 hover:bg-gray-50 md:flex-row"
                 >
                   <div className="flex items-start md:items-center">
                     {scan.status === "secure" ? (
-                      <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-1 md:mt-0 flex-shrink-0" />
+                      <CheckCircle className="mr-3 mt-1 h-5 w-5 flex-shrink-0 text-green-500 md:mt-0" />
                     ) : scan.status === "warning" ? (
-                      <AlertTriangle className="h-5 w-5 text-yellow-500 mr-3 mt-1 md:mt-0 flex-shrink-0" />
+                      <AlertTriangle className="mr-3 mt-1 h-5 w-5 flex-shrink-0 text-yellow-500 md:mt-0" />
                     ) : (
-                      <AlertTriangle className="h-5 w-5 text-red-500 mr-3 mt-1 md:mt-0 flex-shrink-0" />
+                      <AlertTriangle className="mr-3 mt-1 h-5 w-5 flex-shrink-0 text-red-500 md:mt-0" />
                     )}
                     <div className="flex flex-col">
                       <div className="flex items-center">
                         <h3 className="font-medium">{scan.website}</h3>
-                        <Badge variant="outline" className="ml-2 h-5 px-2 text-xs">
-                          <Globe className="h-3 w-3 mr-1" />
+                        <Badge
+                          variant="outline"
+                          className="ml-2 h-5 px-2 text-xs"
+                        >
+                          <Globe className="mr-1 h-3 w-3" />
                           {scan.projectName}
                         </Badge>
                       </div>
-                      <div className="flex flex-wrap gap-x-4 text-xs text-gray-500 mt-1">
+                      <div className="mt-1 flex flex-wrap gap-x-4 text-xs text-gray-500">
                         <div className="flex items-center">
-                          <Calendar className="h-3 w-3 mr-1" />
+                          <Calendar className="mr-1 h-3 w-3" />
                           {formatDate(scan.date)}
                         </div>
                         <div className="flex items-center">
-                          <Clock className="h-3 w-3 mr-1" />
+                          <Clock className="mr-1 h-3 w-3" />
                           {scan.duration}
                         </div>
                         <div className="flex items-center">
-                          <Globe className="h-3 w-3 mr-1" />
+                          <Globe className="mr-1 h-3 w-3" />
                           {scan.urls} URLs
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-3 mt-3 md:mt-0">
+                  <div className="mt-3 flex items-center space-x-3 md:mt-0">
                     {scan.vulnerabilities > 0 ? (
-                      <Badge className={scan.status === "vulnerable" ? "bg-red-500" : "bg-yellow-500"}>
-                        {scan.vulnerabilities} {scan.vulnerabilities === 1 ? "issue" : "issues"}
+                      <Badge
+                        className={
+                          scan.status === "vulnerable"
+                            ? "bg-red-500"
+                            : "bg-yellow-500"
+                        }
+                      >
+                        {scan.vulnerabilities}{" "}
+                        {scan.vulnerabilities === 1 ? "issue" : "issues"}
                       </Badge>
                     ) : (
                       <Badge className="bg-green-500">Secure</Badge>
@@ -432,5 +534,5 @@ export default function ScansPage() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
