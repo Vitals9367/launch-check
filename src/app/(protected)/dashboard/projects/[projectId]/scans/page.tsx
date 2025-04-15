@@ -26,19 +26,19 @@ interface ScanStatus {
 }
 
 const STATUS_STYLES: Record<string, ScanStatus> = {
-  Completed: {
+  completed: {
     label: "Completed",
     color: "text-green-600",
     bgColor: "bg-green-50",
     icon: <CheckCircle2 className="h-4 w-4" />,
   },
-  Failed: {
+  failed: {
     label: "Failed",
     color: "text-red-600",
     bgColor: "bg-red-50",
     icon: <AlertTriangle className="h-4 w-4" />,
   },
-  "In Progress": {
+  in_progress: {
     label: "In Progress",
     color: "text-blue-600",
     bgColor: "bg-blue-50",
@@ -46,12 +46,37 @@ const STATUS_STYLES: Record<string, ScanStatus> = {
   },
 };
 
+function calculateDuration(startedAt: string, completedAt?: string): string {
+  const start = new Date(startedAt);
+  const end = completedAt ? new Date(completedAt) : new Date();
+  const durationMs = end.getTime() - start.getTime();
+  const minutes = Math.floor(durationMs / (1000 * 60));
+
+  if (!completedAt) {
+    return "Running...";
+  }
+
+  return `${minutes}m`;
+}
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
 export default async function ProjectScansPage({
   params,
 }: {
   params: { projectId: string };
 }) {
-  const { projectId } = await params;
+  const { projectId } = params;
 
   const scans = await api.scans.getScans({
     projectId: projectId as string,
@@ -87,7 +112,7 @@ export default async function ProjectScansPage({
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
                   <SelectItem value="failed">Failed</SelectItem>
-                  <SelectItem value="in-progress">In Progress</SelectItem>
+                  <SelectItem value="in_progress">In Progress</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -96,15 +121,18 @@ export default async function ProjectScansPage({
 
         <CardContent>
           <div className="divide-y divide-gray-100">
-            {scans.map((scan, index) => {
-              const status = scan.status as keyof typeof STATUS_STYLES;
-              const statusStyle = STATUS_STYLES[status];
+            {scans.map((scan) => {
+              const statusStyle = STATUS_STYLES[scan.status];
+              const duration = calculateDuration(
+                scan.startedAt,
+                scan.completedAt,
+              );
 
               if (!statusStyle) return null;
 
               return (
                 <div
-                  key={index}
+                  key={scan.id}
                   className="flex items-center justify-between py-4"
                 >
                   <div className="flex items-center gap-4">
@@ -114,37 +142,39 @@ export default async function ProjectScansPage({
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-medium text-gray-900">
-                          {scan.date}
+                          {formatDate(scan.startedAt)}
                         </span>
                         <span className={cn("text-sm", statusStyle.color)}>
                           {statusStyle.label}
                         </span>
                       </div>
                       <div className="mt-1 flex items-center gap-3 text-sm">
-                        {scan.critical > 0 && (
+                        {scan.summary.critical > 0 && (
                           <span className="text-red-600">
-                            {scan.critical} Critical
+                            {scan.summary.critical} Critical
                           </span>
                         )}
-                        {scan.high > 0 && (
+                        {scan.summary.high > 0 && (
                           <span className="text-orange-500">
-                            {scan.high} High
+                            {scan.summary.high} High
                           </span>
                         )}
-                        {scan.medium > 0 && (
+                        {scan.summary.medium > 0 && (
                           <span className="text-yellow-500">
-                            {scan.medium} Medium
+                            {scan.summary.medium} Medium
                           </span>
                         )}
-                        {scan.low > 0 && (
-                          <span className="text-blue-500">{scan.low} Low</span>
+                        {scan.summary.low > 0 && (
+                          <span className="text-blue-500">
+                            {scan.summary.low} Low
+                          </span>
                         )}
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     <Clock className="h-4 w-4" />
-                    <span>{scan.duration}</span>
+                    <span>{duration}</span>
                   </div>
                 </div>
               );
