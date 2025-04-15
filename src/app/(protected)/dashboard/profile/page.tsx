@@ -7,9 +7,9 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import LogoutButton from "@/components/molecules/logout-button";
-import DeleteAccountButton from "@/components/molecules/delete-account-button";
-import { LoadingScreen } from "@/components/organisms/loading-screen";
+import LogoutButton from "@/components/logout-button";
+import DeleteAccountButton from "@/components/profile/delete-account-button";
+import { LoadingScreen } from "@/components/loading/loading-screen";
 import { auth } from "@/server/auth";
 
 export default async function ProfilePage() {

@@ -1,5 +1,5 @@
-import { ProjectsContainer } from "@/components/organisms/projects/projects-container";
-import { ErrorBoundary } from "@/components/organisms/error-boundary";
+import { ProjectsContainer } from "@/components/projects/projects-container";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 export default async function ProjectsPage() {
   return (

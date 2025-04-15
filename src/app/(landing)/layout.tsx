@@ -2,7 +2,7 @@ import type React from "react";
 import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
-import LandingLayout from "@/components/layout/landing-layout/layout";
+import LandingLayout from "@/components/layouts/landing-layout/layout";
 
 export const metadata: Metadata = {
   title: "LaunchCheck | Security Scanner Built for Indie Hackers",

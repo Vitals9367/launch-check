@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { ProjectHeader } from "@/components/organisms/project/project-header";
-import { ProjectOverview } from "@/components/organisms/project/project-overview";
-import { RecentScans } from "@/components/organisms/project/recent-scans";
+import { ProjectHeader } from "@/components/project/project-header";
+import { ProjectOverview } from "@/components/project/project-overview";
+import { FindingsSection } from "@/components/findings/findings-section";
 import { api } from "@/trpc/server";
 
 export default async function ProjectPage({
@@ -20,10 +20,10 @@ export default async function ProjectPage({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <ProjectHeader project={project} />
       <ProjectOverview project={project} />
-      <RecentScans project={project} />
+      <FindingsSection projectId={projectId} project={project} />
     </div>
   );
 }

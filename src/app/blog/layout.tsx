@@ -2,8 +2,8 @@ import type React from "react";
 import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
-import { Header } from "@/components/layout/landing-layout/header";
-import { Footer } from "@/components/layout/landing-layout/footer";
+import { Header } from "@/components/layouts/landing-layout/header";
+import { Footer } from "@/components/layouts/landing-layout/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 

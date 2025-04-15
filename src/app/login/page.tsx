@@ -4,7 +4,7 @@ import type React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FaGoogle, FaGithub } from "react-icons/fa";
-import { LoadingScreen } from "@/components/organisms/loading-screen";
+import { LoadingScreen } from "@/components/loading/loading-screen";
 
 import {
   Card,

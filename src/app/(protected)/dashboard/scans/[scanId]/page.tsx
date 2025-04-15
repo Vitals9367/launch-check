@@ -30,7 +30,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { VulnerabilityCard } from "@/components/molecules/vulnerability-card";
+import { VulnerabilityCard } from "@/components/vulnerability-card";
 import { Vulnerability } from "@/types/scanner";
 
 // Mock scan data
