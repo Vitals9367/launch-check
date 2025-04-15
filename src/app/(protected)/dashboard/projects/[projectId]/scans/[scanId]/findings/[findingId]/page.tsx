@@ -1,4 +1,4 @@
-import { AlertTriangle, Book, LinkIcon } from "lucide-react";
+import { AlertTriangle, Book, LinkIcon, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -11,6 +11,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/trpc/server";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { CodeBlock } from "@/components/code-block";
+import { notFound } from "next/navigation";
 
 export default async function FindingPage({
   params,
@@ -25,6 +27,10 @@ export default async function FindingPage({
     findingId: findingId as string,
   });
 
+  if (!finding) {
+    notFound();
+  }
+
   const severityColors = {
     critical: "bg-red-50 text-red-700 border-red-200",
     high: "bg-orange-50 text-orange-700 border-orange-200",
@@ -38,20 +44,30 @@ export default async function FindingPage({
     high: "bg-red-50 text-red-700",
   };
 
-  if (!finding) {
-    return (
-      <div className="container mx-auto py-8">
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-          <h2 className="text-lg font-semibold text-red-700">
-            Finding Not Found
-          </h2>
-          <p className="mt-1 text-red-600">
-            The requested finding could not be found.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const SEVERITY_STYLES = {
+    critical: {
+      color: "text-red-600",
+      bgColor: "bg-red-50",
+      borderColor: "border-red-200",
+    },
+    high: {
+      color: "text-orange-600",
+      bgColor: "bg-orange-50",
+      borderColor: "border-orange-200",
+    },
+    medium: {
+      color: "text-yellow-600",
+      bgColor: "bg-yellow-50",
+      borderColor: "border-yellow-200",
+    },
+    low: {
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+      borderColor: "border-blue-200",
+    },
+  };
+
+  const severityStyle = SEVERITY_STYLES[finding.severity];
 
   return (
     <div className="container mx-auto space-y-6 py-8">
@@ -142,15 +158,19 @@ export default async function FindingPage({
                   >
                     <div>
                       <h4 className="mb-2 font-medium">Vulnerable Code</h4>
-                      <pre className="overflow-x-auto rounded-lg bg-gray-900 p-4 text-gray-100">
-                        <code>{tech.vulnerableCode}</code>
-                      </pre>
+                      <CodeBlock
+                        code={tech.vulnerableCode}
+                        language={tech.language}
+                        className="bg-red-950/5"
+                      />
                     </div>
                     <div>
                       <h4 className="mb-2 font-medium">Fixed Code</h4>
-                      <pre className="overflow-x-auto rounded-lg bg-gray-900 p-4 text-gray-100">
-                        <code>{tech.fixedCode}</code>
-                      </pre>
+                      <CodeBlock
+                        code={tech.fixedCode}
+                        language={tech.language}
+                        className="bg-green-950/5"
+                      />
                     </div>
                   </TabsContent>
                 ))}
@@ -181,7 +201,7 @@ export default async function FindingPage({
                     <span>
                       {finding.cwe.id}: {finding.cwe.name}
                     </span>
-                    <LinkIcon className="h-3 w-3" />
+                    <ExternalLink className="h-3 w-3" />
                   </a>
                 </div>
               )}
@@ -198,7 +218,7 @@ export default async function FindingPage({
                         className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
                       >
                         <span>{ref.title}</span>
-                        <LinkIcon className="h-3 w-3" />
+                        <ExternalLink className="h-3 w-3" />
                       </a>
                     </li>
                   ))}
