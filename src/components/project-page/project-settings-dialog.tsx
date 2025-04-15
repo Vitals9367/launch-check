@@ -34,8 +34,15 @@ export function ProjectSettingsDialog() {
   const { onOpen: onOpenDelete } = useDeleteProjectDialogStore();
   const utils = api.useUtils();
   const router = useRouter();
-  const [projectName, setProjectName] = useState("");
-  const [targetUrl, setTargetUrl] = useState("");
+  const [projectName, setProjectName] = useState(project?.name);
+  const [targetUrl, setTargetUrl] = useState(project?.targetUrl);
+
+  useEffect(() => {
+    if (project) {
+      setProjectName(project.name);
+      setTargetUrl(project.targetUrl);
+    }
+  }, [project]);
 
   const updateProject = api.projects.update.useMutation({
     onSuccess: async () => {
@@ -52,7 +59,7 @@ export function ProjectSettingsDialog() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!projectName.trim() || !targetUrl.trim() || !project?.id) {
+    if (!projectName?.trim() || !targetUrl?.trim() || !project?.id) {
       return;
     }
 
@@ -69,14 +76,6 @@ export function ProjectSettingsDialog() {
       targetUrl: targetUrl.trim(),
     });
   };
-
-  // Update state when project changes
-  useEffect(() => {
-    if (project) {
-      setProjectName(project.name || "");
-      setTargetUrl(project.targetUrl || "");
-    }
-  }, [project]);
 
   if (!project) return null;
 
