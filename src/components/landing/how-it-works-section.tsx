@@ -1,6 +1,6 @@
 "use client";
 
-import SecurityReportSection from "./SecurityReport";
+import SecurityReportSection from "./security-report-section";
 
 export function HowItWorksSection() {
   return (

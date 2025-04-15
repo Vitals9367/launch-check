@@ -10,7 +10,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import PostHogPageView from "@/components/PostHogPageView";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
-import DialogManager from "@/components/ui/dialog-manager";
+import DialogManager from "@/components/dialog-manager";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {

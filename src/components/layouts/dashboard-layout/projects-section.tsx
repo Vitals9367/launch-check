@@ -31,12 +31,6 @@ export function useProjectsSection(): NavigationSection {
           icon: FolderClosed,
           label: project.name,
           isActive: project.id === currentProjectId,
-          rightElement: (
-            <ProjectStatusIndicator
-              status={status}
-              vulnerabilities={vulnerabilities}
-            />
-          ),
         };
       }) ?? []),
       {

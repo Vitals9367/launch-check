@@ -1,9 +1,9 @@
-import { HeroSection } from "@/components/landing/HeroSection";
-import { SecurityRisksSection } from "@/components/landing/SecurityRisksSection";
-import { FeaturesSection } from "@/components/landing/FeaturesSection";
-import { FounderSection } from "@/components/landing/FounderSection";
-import { WaitlistSection } from "@/components/landing/WaitlistSection";
-import { FAQSection } from "@/components/landing/FAQSection";
+import { HeroSection } from "@/components/landing/hero-section";
+import { SecurityRisksSection } from "@/components/landing/security-risks-section";
+import { FeaturesSection } from "@/components/landing/feature-section";
+import { FounderSection } from "@/components/landing/founder-section";
+import { WaitlistSection } from "@/components/landing/waitlist-section";
+import { FAQSection } from "@/components/landing/faq-section";
 
 export default function Home() {
   return (

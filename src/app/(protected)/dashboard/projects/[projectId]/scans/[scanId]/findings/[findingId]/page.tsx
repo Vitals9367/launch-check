@@ -1,12 +1,4 @@
-"use client";
-
-import {
-  AlertTriangle,
-  Book,
-  Code,
-  FileCode,
-  Link as LinkIcon,
-} from "lucide-react";
+import { AlertTriangle, Book, LinkIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -17,127 +9,21 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { FindingsFilters } from "@/components/findings/findings-filters";
-import { useState } from "react";
+import { api } from "@/trpc/server";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 
-type Severity = "critical" | "high" | "medium" | "low";
+export default async function FindingPage({
+  params,
+}: {
+  params: { projectId: string; scanId: string; findingId: string };
+}) {
+  const { projectId, scanId, findingId } = await params;
 
-interface Technology {
-  name: string;
-  language: string;
-  vulnerableCode: string;
-  fixedCode: string;
-}
-
-interface Finding {
-  id: string;
-  name: string;
-  severity: "critical" | "high" | "medium" | "low";
-  description: string;
-  impact: string;
-  remediation: string;
-  effort: "low" | "medium" | "high";
-  location: string;
-  detectedAt: string;
-  cwe?: {
-    id: string;
-    name: string;
-    url: string;
-  };
-  technologies: Technology[];
-  references: Array<{
-    title: string;
-    url: string;
-  }>;
-}
-
-// This would typically come from your API
-const mockFinding: Finding = {
-  id: "sql-injection-001",
-  name: "SQL Injection Vulnerability",
-  severity: "critical",
-  description:
-    "The application constructs SQL queries using string concatenation with user-supplied input, making it vulnerable to SQL injection attacks.",
-  impact:
-    "An attacker could manipulate the SQL query to access, modify, or delete unauthorized data from the database. This could lead to data breaches, unauthorized access, or complete system compromise.",
-  remediation:
-    "Use parameterized queries or an ORM to ensure proper escaping of user input. Never concatenate user input directly into SQL queries.",
-  effort: "medium",
-  location: "src/api/users/create.ts:42",
-  detectedAt: "2024-03-15T10:30:00Z",
-  cwe: {
-    id: "CWE-89",
-    name: "SQL Injection",
-    url: "https://cwe.mitre.org/data/definitions/89.html",
-  },
-  technologies: [
-    {
-      name: "Node.js with MySQL",
-      language: "typescript",
-      vulnerableCode: `// ❌ Vulnerable code
-const getUserData = async (userId: string) => {
-  const query = \`SELECT * FROM users WHERE id = '\${userId}'\`;
-  return await db.query(query);
-};`,
-      fixedCode: `// ✅ Fixed code using prepared statements
-const getUserData = async (userId: string) => {
-  const query = "SELECT * FROM users WHERE id = ?";
-  return await db.query(query, [userId]);
-};
-
-// ✅ Alternative using an ORM (Prisma)
-const getUserData = async (userId: string) => {
-  return await prisma.user.findUnique({
-    where: { id: userId }
+  const finding = await api.findings.getById({
+    projectId: projectId as string,
+    scanId: scanId as string,
+    findingId: findingId as string,
   });
-};`,
-    },
-    {
-      name: "Python with SQLAlchemy",
-      language: "python",
-      vulnerableCode: `# ❌ Vulnerable code
-def get_user_data(user_id):
-    query = f"SELECT * FROM users WHERE id = '{user_id}'"
-    return db.execute(query)`,
-      fixedCode: `# ✅ Fixed code using SQLAlchemy ORM
-def get_user_data(user_id):
-    return db.session.query(User).filter(User.id == user_id).first()
-
-# ✅ Alternative using parameterized query
-def get_user_data(user_id):
-    query = text("SELECT * FROM users WHERE id = :user_id")
-    return db.session.execute(query, {"user_id": user_id})`,
-    },
-  ],
-  references: [
-    {
-      title: "OWASP SQL Injection Prevention Cheat Sheet",
-      url: "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html",
-    },
-    {
-      title: "CWE-89: SQL Injection",
-      url: "https://cwe.mitre.org/data/definitions/89.html",
-    },
-  ],
-};
-
-export default function FindingPage() {
-  const finding = mockFinding; // Replace with actual API call
-  const [selectedSeverities, setSelectedSeverities] = useState<Set<Severity>>(
-    new Set(["critical", "high", "medium", "low"]),
-  );
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSeverityChange = (severity: Severity) => {
-    const newSeverities = new Set(selectedSeverities);
-    if (newSeverities.has(severity)) {
-      newSeverities.delete(severity);
-    } else {
-      newSeverities.add(severity);
-    }
-    setSelectedSeverities(newSeverities);
-  };
 
   const severityColors = {
     critical: "bg-red-50 text-red-700 border-red-200",
@@ -152,45 +38,62 @@ export default function FindingPage() {
     high: "bg-red-50 text-red-700",
   };
 
+  if (!finding) {
+    return (
+      <div className="container mx-auto py-8">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+          <h2 className="text-lg font-semibold text-red-700">
+            Finding Not Found
+          </h2>
+          <p className="mt-1 text-red-600">
+            The requested finding could not be found.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto space-y-6 py-8">
-      {/* Header */}
-      <div className="flex flex-col gap-6">
-        <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">
-              {finding.name}
-            </h1>
-            <p className="text-sm text-gray-500">
-              Detected {new Date(finding.detectedAt).toLocaleDateString()} in{" "}
-              <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm">
-                {finding.location}
-              </code>
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Badge
-              variant="secondary"
-              className={cn("capitalize", severityColors[finding.severity])}
-            >
-              <AlertTriangle className="mr-1 h-3 w-3" />
-              {finding.severity} Severity
-            </Badge>
-            <Badge
-              variant="secondary"
-              className={cn("capitalize", effortColors[finding.effort])}
-            >
-              {finding.effort} effort to fix
-            </Badge>
-          </div>
-        </div>
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        items={[
+          { label: "Projects", href: "/dashboard/projects" },
+          { label: "Project", href: `/dashboard/projects/${projectId}` },
+          {
+            label: "Scan",
+            href: `/dashboard/projects/${projectId}/scans/${scanId}`,
+          },
+          { label: "Finding Details" },
+        ]}
+      />
 
-        <FindingsFilters
-          selectedSeverities={selectedSeverities}
-          onSeverityChange={handleSeverityChange}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-        />
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold tracking-tight">{finding.name}</h1>
+          <p className="text-sm text-gray-500">
+            Detected {new Date(finding.detectedAt).toLocaleDateString()} in{" "}
+            <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm">
+              {finding.location}
+            </code>
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="secondary"
+            className={cn("capitalize", severityColors[finding.severity])}
+          >
+            <AlertTriangle className="mr-1 h-3 w-3" />
+            {finding.severity} Severity
+          </Badge>
+          <Badge
+            variant="secondary"
+            className={cn("capitalize", effortColors[finding.effort])}
+          >
+            {finding.effort} effort to fix
+          </Badge>
+        </div>
       </div>
 
       <div className="grid grid-cols-3 gap-6">
@@ -257,74 +160,50 @@ export default function FindingPage() {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
-          {finding.cwe && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Book className="h-4 w-4" />
-                  CWE Reference
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <a
-                  href={finding.cwe.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
-                >
-                  <span>
-                    {finding.cwe.id}: {finding.cwe.name}
-                  </span>
-                  <LinkIcon className="h-3 w-3" />
-                </a>
-              </CardContent>
-            </Card>
-          )}
-
+        <div>
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <FileCode className="h-4 w-4" />
+                <Book className="h-4 w-4" />
                 Additional Resources
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                {finding.references.map((ref) => (
-                  <li key={ref.url}>
-                    <a
-                      href={ref.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
-                    >
-                      <span>{ref.title}</span>
-                      <LinkIcon className="h-3 w-3" />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
+            <CardContent className="space-y-4">
+              {finding.cwe && (
+                <div className="space-y-2">
+                  <h4 className="font-medium">CWE Reference</h4>
+                  <a
+                    href={finding.cwe.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                  >
+                    <span>
+                      {finding.cwe.id}: {finding.cwe.name}
+                    </span>
+                    <LinkIcon className="h-3 w-3" />
+                  </a>
+                </div>
+              )}
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Code className="h-4 w-4" />
-                Quick Actions
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="outline" className="w-full justify-start">
-                View File Location
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                Mark as Fixed
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                Create Jira Issue
-              </Button>
+              <div className="space-y-2">
+                <h4 className="font-medium">Related Documentation</h4>
+                <ul className="space-y-2">
+                  {finding.references.map((ref) => (
+                    <li key={ref.url}>
+                      <a
+                        href={ref.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                      >
+                        <span>{ref.title}</span>
+                        <LinkIcon className="h-3 w-3" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </CardContent>
           </Card>
         </div>

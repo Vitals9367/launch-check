@@ -4,43 +4,35 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertOctagon, Clock, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { FindingsList } from "@/components/findings/findings-list";
+import { ScanFindingsList } from "@/components/scan-findings/scan-findings-list";
 
-// Mock scan data - replace with actual API call
-const mockScanData = {
-  id: "1",
-  status: "completed",
-  startedAt: "2024-03-20T10:00:00Z",
-  completedAt: "2024-03-20T10:05:00Z",
-  summary: {
-    total: 42,
-    critical: 2,
-    high: 5,
-    medium: 15,
-    low: 20,
-  },
-};
+export default async function ScanPage({
+  params,
+}: {
+  params: { projectId: string; scanId: string };
+}) {
+  const { projectId, scanId } = await params;
 
-interface PageProps {
-  params: {
-    projectId: string;
-    scanId: string;
-  };
-}
-
-export default async function ScanPage({ params }: PageProps) {
-  const { projectId, scanId } = params;
-
-  const project = await api.projects.getById({
-    id: projectId,
+  const scan = await api.scans.getById({
+    projectId: projectId as string,
+    scanId: scanId as string,
   });
 
-  if (!project) {
+  if (!scan) {
     notFound();
   }
 
-  // TODO: Replace with actual scan data fetch
-  const scan = mockScanData;
+  const statusColors = {
+    in_progress: "bg-blue-50 text-blue-700",
+    completed: "bg-green-50 text-green-700",
+    failed: "bg-red-50 text-red-700",
+  };
+
+  const statusLabels = {
+    in_progress: "In Progress",
+    completed: "Completed",
+    failed: "Failed",
+  };
 
   return (
     <div className="space-y-6">
@@ -60,8 +52,12 @@ export default async function ScanPage({ params }: PageProps) {
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span>Scan Details</span>
-                <span className="rounded-full bg-green-50 px-3 py-1 text-sm font-medium text-green-700">
-                  {scan.status}
+                <span
+                  className={`rounded-full px-3 py-1 text-sm font-medium ${
+                    statusColors[scan.status]
+                  }`}
+                >
+                  {statusLabels[scan.status]}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -122,7 +118,7 @@ export default async function ScanPage({ params }: PageProps) {
               </div>
 
               <TabsContent value="findings" className="mt-0">
-                <FindingsList projectId={projectId} scanId={scanId} />
+                <ScanFindingsList vulnerabilities={scan.vulnerabilities} />
               </TabsContent>
             </Tabs>
           </CardHeader>

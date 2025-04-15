@@ -6,7 +6,7 @@ import {
   Clock,
   Zap,
 } from "lucide-react";
-import { SecurityRisksCarousel } from "./SecurityRisksCarousel";
+import { SecurityRisksCarousel } from "./security-risks-carousel-section";
 
 const risks = [
   {

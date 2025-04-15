@@ -6,7 +6,7 @@ import { ProjectsLoading } from "./projects-loading";
 import { ProjectsEmpty } from "./projects-empty";
 import { SelectableItem } from "@/components/ui/selectable-item";
 import { useState } from "react";
-import { ProjectItem } from "./project-item/project-item";
+import { ProjectItem } from "../project-card/project-item";
 
 export function ProjectsList() {
   const { data: projects, isLoading } = api.projects.fetch.useQuery();

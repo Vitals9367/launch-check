@@ -19,19 +19,19 @@ import {
 
 type Severity = "critical" | "high" | "medium" | "low";
 
-interface FindingsFiltersProps {
+interface ScanFindingsFiltersProps {
   selectedSeverities: Set<Severity>;
   onSeverityChange: (severity: Severity) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
 }
 
-export function FindingsFilters({
+export function ScanFindingsFilters({
   selectedSeverities,
   onSeverityChange,
   searchQuery,
   onSearchChange,
-}: FindingsFiltersProps) {
+}: ScanFindingsFiltersProps) {
   const exportData = (format: "pdf" | "csv" | "json") => {
     // TODO: Implement actual export functionality
     console.log(`Exporting as ${format}...`);

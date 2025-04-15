@@ -1,19 +1,18 @@
 import { Card, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { History, AlertOctagon } from "lucide-react";
-import { FindingsList } from "./findings-list";
-import { RecentScans } from "../project/recent-scans";
+import { ScanFindingsList } from "@/components/scan-findings/scan-findings-list";
+import { ScanList } from "@/components/scans/scan-list";
 import { Project } from "@/server/db/schema/projects";
 
 interface FindingsSectionProps {
-  projectId: string;
   project: Project;
 }
 
-export function FindingsSection({ projectId, project }: FindingsSectionProps) {
+export function FindingsSection({ project }: FindingsSectionProps) {
   return (
     <section>
-      <Card className="border-2 bg-white">
+      <Card className="bg-white">
         <CardHeader>
           <Tabs defaultValue="findings" className="w-full">
             <TabsList className="mb-4 grid w-[400px] grid-cols-2">
@@ -28,11 +27,11 @@ export function FindingsSection({ projectId, project }: FindingsSectionProps) {
             </TabsList>
 
             <TabsContent value="findings" className="mt-0">
-              <FindingsList projectId={projectId} />
+              <ScanFindingsList vulnerabilities={[]} />
             </TabsContent>
 
             <TabsContent value="scans" className="mt-0">
-              <RecentScans project={project} />
+              <ScanList scans={[]} />
             </TabsContent>
           </Tabs>
         </CardHeader>

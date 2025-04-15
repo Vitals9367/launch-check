@@ -10,7 +10,7 @@ import { z } from "zod";
 import { api } from "@/trpc/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import WaitlistFeedbackModal from "./WaitlistFeedbackModal";
+import WaitlistFeedbackModal from "./waitlist-feedback-dialog";
 import { usePostHog } from "posthog-js/react";
 
 const waitlistSchema = z.object({

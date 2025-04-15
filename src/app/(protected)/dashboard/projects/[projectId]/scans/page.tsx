@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ProjectHeader } from "@/components/project/project-header";
 import {
   CheckCircle2,
   AlertTriangle,
@@ -47,34 +46,23 @@ const STATUS_STYLES: Record<string, ScanStatus> = {
   },
 };
 
-// Mock data - replace with actual data from your API
-const MOCK_SCANS = Array.from({ length: 10 }, (_, i) => ({
-  date: new Date(2024, 2, 15 - i).toLocaleDateString(),
-  status: i % 3 === 0 ? "Completed" : i % 3 === 1 ? "Failed" : "In Progress",
-  critical: i % 3 === 0 ? Math.floor(Math.random() * 3) : 0,
-  high: i % 3 === 0 ? Math.floor(Math.random() * 5) : 0,
-  medium: i % 3 === 0 ? Math.floor(Math.random() * 8) : 0,
-  low: i % 3 === 0 ? Math.floor(Math.random() * 12) : 0,
-  duration: i % 3 === 2 ? "Running..." : `${Math.floor(Math.random() * 60)}m`,
-}));
-
 export default async function ProjectScansPage({
   params,
 }: {
   params: { projectId: string };
 }) {
-  const project = await api.projects.getById({
-    id: params.projectId,
+  const { projectId } = await params;
+
+  const scans = await api.scans.getScans({
+    projectId: projectId as string,
   });
 
-  if (!project) {
+  if (!scans) {
     notFound();
   }
 
   return (
     <div className="space-y-8">
-      <ProjectHeader project={project} />
-
       <Card className="border-2">
         <CardHeader>
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -108,7 +96,7 @@ export default async function ProjectScansPage({
 
         <CardContent>
           <div className="divide-y divide-gray-100">
-            {MOCK_SCANS.map((scan, index) => {
+            {scans.map((scan, index) => {
               const status = scan.status as keyof typeof STATUS_STYLES;
               const statusStyle = STATUS_STYLES[status];
 

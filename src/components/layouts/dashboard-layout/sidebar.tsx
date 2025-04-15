@@ -1,4 +1,4 @@
-import { Navigation } from "@/components/layouts/dashboard-layout/sidebar-navigation";
+import { Navigation } from "./sidebar-navigation";
 
 type SidebarProps = {
   isOpen: boolean;
