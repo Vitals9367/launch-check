@@ -14,6 +14,27 @@ const createProject = protectedProcedure
     });
   });
 
+const updateProject = protectedProcedure
+  .input(
+    z.object({
+      id: z.string(),
+      name: z.string().optional(),
+      targetUrl: z.string().optional(),
+    }),
+  )
+  .mutation(async ({ ctx, input }) => {
+    const { id, ...updateData } = input;
+    return await ctx.db
+      .update(projects)
+      .set({
+        ...updateData,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(
+        and(eq(projects.id, id), eq(projects.userId, ctx.session.user.id)),
+      );
+  });
+
 const fetchProjects = protectedProcedure.query(async ({ ctx }) => {
   return await ctx.db
     .select()
@@ -68,6 +89,7 @@ export type ProjectStats = z.infer<typeof ProjectStatsSchema>;
 export const projectsRouter = createTRPCRouter({
   fetch: fetchProjects,
   create: createProject,
+  update: updateProject,
   delete: deleteProject,
   getById: getProjectById,
   getStats: protectedProcedure

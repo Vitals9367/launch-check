@@ -16,10 +16,14 @@ import { useProjectSettingsDialogStore } from "@/store/use-project-settings-stor
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useDeleteProjectDialogStore } from "@/store/use-delete-project-dialog-store";
+import { api } from "@/trpc/react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface ProjectSettingsDialogProps {
   projectId: string;
   projectName: string;
+  targetUrl?: string;
   scanFrequency?: "daily" | "weekly" | "monthly";
   notificationsEnabled?: boolean;
 }
@@ -28,6 +32,51 @@ export function ProjectSettingsDialog() {
   const { isOpen, project, onClose, onOpenChange } =
     useProjectSettingsDialogStore();
   const { onOpen: onOpenDelete } = useDeleteProjectDialogStore();
+  const utils = api.useUtils();
+  const router = useRouter();
+  const [projectName, setProjectName] = useState("");
+  const [targetUrl, setTargetUrl] = useState("");
+
+  const updateProject = api.projects.update.useMutation({
+    onSuccess: async () => {
+      // Invalidate projects query to trigger a refresh
+      await utils.projects.fetch.invalidate();
+      // Invalidate the individual project query
+      await utils.projects.getById.invalidate({ id: project?.id });
+      // Refresh the page to update server components
+      router.refresh();
+      // Close dialog and reset form
+      onOpenChange(false);
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!projectName.trim() || !targetUrl.trim() || !project?.id) {
+      return;
+    }
+
+    if (
+      projectName.trim() === project?.name &&
+      targetUrl.trim() === project?.targetUrl
+    ) {
+      return;
+    }
+
+    updateProject.mutate({
+      id: project.id,
+      name: projectName.trim(),
+      targetUrl: targetUrl.trim(),
+    });
+  };
+
+  // Update state when project changes
+  useEffect(() => {
+    if (project) {
+      setProjectName(project.name || "");
+      setTargetUrl(project.targetUrl || "");
+    }
+  }, [project]);
 
   if (!project) return null;
 
@@ -49,15 +98,39 @@ export function ProjectSettingsDialog() {
         <Separator />
 
         <div className="space-y-6">
-          <div className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm font-medium">
                 Project Name
               </Label>
               <Input
                 id="name"
-                defaultValue={project?.name}
+                name="name"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
                 placeholder="Enter project name"
+                required
+                className={cn(
+                  "h-10 px-3",
+                  "border border-gray-200",
+                  "focus:border-transparent focus:ring-2 focus:ring-blue-500",
+                  "placeholder:text-gray-400",
+                )}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="targetUrl" className="text-sm font-medium">
+                Target URL
+              </Label>
+              <Input
+                id="targetUrl"
+                name="targetUrl"
+                value={targetUrl}
+                onChange={(e) => setTargetUrl(e.target.value)}
+                placeholder="https://example.com"
+                type="url"
+                required
                 className={cn(
                   "h-10 px-3",
                   "border border-gray-200",
@@ -95,7 +168,7 @@ export function ProjectSettingsDialog() {
                 Enable notifications
               </Label>
             </div> */}
-          </div>
+          </form>
         </div>
 
         <Separator className="my-5" />
@@ -110,7 +183,8 @@ export function ProjectSettingsDialog() {
             Delete Project
           </Button>
           <Button
-            type="submit"
+            type="button"
+            onClick={handleSubmit}
             className="w-full justify-center gap-2 bg-blue-600 hover:bg-blue-700 sm:w-1/2"
           >
             <Settings className="h-4 w-4" />
