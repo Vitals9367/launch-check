@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeft, Clock, Calendar, Tag, Badge } from "lucide-react";
 import Link from "next/link";
-import { getPostSlugs, getPostBySlug } from "@/app/lib/mdx";
+import { getPostSlugs, getPostBySlug } from "@/lib/mdx";
 import { Metadata } from "next";
 import Markdown from "markdown-to-jsx";
 import moment from "moment";

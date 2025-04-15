@@ -3,7 +3,7 @@
     /* Base Options: */
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "target": "es2024",
+    "target": "ESNext",
     "allowJs": true,
     "resolveJsonModule": true,
     "moduleDetection": "force",
@@ -31,11 +31,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@/components/*": ["./src/app/components/*"],
-      "@/hooks/*": ["./src/app/hooks/*"],
-      "@/types/*": ["./src/app/types/*"],
-      "@/actions/*": ["src/app/actions/*"],
-      "@/lib/*": ["src/app/lib/*"]
+      "@/components/*": ["src/components/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/types/*": ["src/types/*"],
+      "@/actions/*": ["src/actions/*"],
+      "@/lib/*": ["src/lib/*"]
     }
   },
   "include": [
