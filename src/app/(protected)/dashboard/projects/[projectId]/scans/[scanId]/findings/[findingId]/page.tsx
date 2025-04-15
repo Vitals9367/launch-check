@@ -189,41 +189,18 @@ export default async function FindingPage({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {finding.cwe && (
-                <div className="space-y-2">
-                  <h4 className="font-medium">CWE Reference</h4>
-                  <a
-                    href={finding.cwe.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
-                  >
-                    <span>
-                      {finding.cwe.id}: {finding.cwe.name}
-                    </span>
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <h4 className="font-medium">Related Documentation</h4>
-                <ul className="space-y-2">
-                  {finding.references.map((ref) => (
-                    <li key={ref.url}>
-                      <a
-                        href={ref.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
-                      >
-                        <span>{ref.title}</span>
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {finding.references.map((reference) => (
+                <a
+                  key={reference.url}
+                  href={reference.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                >
+                  <span>{reference.title}</span>
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              ))}
             </CardContent>
           </Card>
         </div>

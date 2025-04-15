@@ -52,11 +52,6 @@ export const mockFinding: Finding = {
   effort: "medium",
   location: "src/api/users/create.ts:42",
   detectedAt: "2024-03-15T10:30:00Z",
-  cwe: {
-    id: "CWE-89",
-    name: "SQL Injection",
-    url: "https://cwe.mitre.org/data/definitions/89.html",
-  },
   technologies: [
     {
       name: "Node.js with MySQL",
