@@ -1,5 +1,5 @@
+import { Vulnerability } from "@/server/mocks/scans";
 import ScanFinding from "./scan-finding";
-import { Vulnerability } from "@/server/routers/scans";
 
 interface ScanFindingsListProps {
   vulnerabilities: Vulnerability[];
@@ -17,7 +17,7 @@ export function ScanFindingsList({ vulnerabilities }: ScanFindingsListProps) {
   return (
     <div className="space-y-4">
       {vulnerabilities.map((vulnerability) => (
-        <ScanFinding {...vulnerability} />
+        <ScanFinding key={vulnerability.id} {...vulnerability} />
       ))}
     </div>
   );

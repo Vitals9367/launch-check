@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { type Scan } from "@/server/routers/scans";
+import { Scan } from "@/server/mocks/scans";
 
 const STATUS_STYLES = {
   in_progress: {

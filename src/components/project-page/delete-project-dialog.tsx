@@ -41,11 +41,7 @@ export function DeleteProjectDialog() {
     // Close dialog and clear selection
     onOpenChange(false);
     clearSelectedProjects();
-
-    // Navigate back to projects list if we're on a project page
-    if (window.location.pathname.includes("/projects/")) {
-      router.push(projectRoute);
-    }
+    router.push(projectRoute);
   };
 
   const projectCount = projectIds.length;

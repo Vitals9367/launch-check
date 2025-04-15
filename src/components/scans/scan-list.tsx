@@ -1,5 +1,5 @@
+import { Scan } from "@/server/mocks/scans";
 import { ScanItem } from "./scan";
-import { Scan } from "@/server/routers/scans";
 
 interface ScanListProps {
   scans: Scan[];

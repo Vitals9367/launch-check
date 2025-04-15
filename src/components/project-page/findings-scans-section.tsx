@@ -4,12 +4,27 @@ import { History, AlertOctagon } from "lucide-react";
 import { ScanFindingsList } from "@/components/scan-findings/scan-findings-list";
 import { ScanList } from "@/components/scans/scan-list";
 import { Project } from "@/server/db/schema/projects";
-
+import { api } from "@/trpc/server";
+import { Vulnerability } from "@/server/mocks/scans";
 interface FindingsSectionProps {
   project: Project;
 }
 
-export function FindingsSection({ project }: FindingsSectionProps) {
+export async function FindingsSection({ project }: FindingsSectionProps) {
+  const scans = await api.scans.getScans({
+    projectId: project.id,
+  });
+
+  const scan = scans?.[0];
+  let vulnerabilities: Vulnerability[] = [];
+
+  if (scan) {
+    vulnerabilities = await api.scans.getVulnerabilities({
+      projectId: project.id,
+      scanId: scan.id,
+    });
+  }
+
   return (
     <section>
       <Card className="bg-white">
@@ -27,11 +42,11 @@ export function FindingsSection({ project }: FindingsSectionProps) {
             </TabsList>
 
             <TabsContent value="findings" className="mt-0">
-              <ScanFindingsList vulnerabilities={[]} />
+              <ScanFindingsList vulnerabilities={vulnerabilities} />
             </TabsContent>
 
             <TabsContent value="scans" className="mt-0">
-              <ScanList scans={[]} />
+              <ScanList scans={scans ?? []} />
             </TabsContent>
           </Tabs>
         </CardHeader>
