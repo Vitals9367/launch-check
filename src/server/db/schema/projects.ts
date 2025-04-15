@@ -9,6 +9,7 @@ export const projects = pgTable(
       .notNull()
       .default(sql`gen_random_uuid()`),
     name: text().notNull(),
+    targetUrl: text().notNull(),
     userId: text().notNull(),
     createdAt: timestamp({ precision: 3, mode: "string" })
       .default(sql`CURRENT_TIMESTAMP`)

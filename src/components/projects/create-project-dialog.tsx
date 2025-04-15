@@ -21,6 +21,8 @@ export function CreateProjectDialog() {
     useCreateProjectDialogStore();
 
   const [projectName, setProjectName] = useState("");
+  const [targetUrl, setTargetUrl] = useState("");
+
   const router = useRouter();
   const utils = api.useUtils();
 
@@ -31,15 +33,19 @@ export function CreateProjectDialog() {
       // Close dialog and reset form
       onOpenChange(false);
       setProjectName("");
+      setTargetUrl("");
     },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!projectName.trim()) return;
+    if (!projectName.trim() || !targetUrl.trim()) {
+      return;
+    }
 
     createProject.mutate({
       name: projectName.trim(),
+      targetUrl: targetUrl.trim(),
     });
   };
 
@@ -60,6 +66,16 @@ export function CreateProjectDialog() {
               placeholder="My Project"
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="target-url">Target URL</Label>
+            <Input
+              id="target-url"
+              placeholder="My Website URL"
+              value={targetUrl}
+              onChange={(e) => setTargetUrl(e.target.value)}
               required
             />
           </div>

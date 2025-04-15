@@ -20,10 +20,23 @@ export async function ProjectHeader({ project }: ProjectHeaderProps) {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{project.name}</h1>
-          <div className="flex items-center gap-4 text-sm text-gray-500">
+          <div className="flex items-center gap-2 text-sm text-gray-500">
             <span>
               Created {new Date(project.createdAt).toLocaleDateString()}
             </span>
+            {project.targetUrl && (
+              <span className="flex items-center">
+                <span className="mr-1">•</span>
+                <Link
+                  href={project.targetUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-600 hover:underline"
+                >
+                  {project.targetUrl.replace(/^https?:\/\//, "")}
+                </Link>
+              </span>
+            )}
           </div>
         </div>
       </div>
