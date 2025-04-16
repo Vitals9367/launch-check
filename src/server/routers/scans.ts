@@ -5,6 +5,14 @@ import {
   mockScanList,
   mockVulnerabilities,
 } from "@/server/mocks/scans";
+import { Queue } from "bullmq";
+import { env } from "@/env";
+
+const scanQueue = new Queue(env.REDIS_SCAN_QUEUE_NAME, {
+  connection: {
+    host: env.REDIS_URL,
+  },
+});
 
 export const scansRouter = createTRPCRouter({
   getLastScan: protectedProcedure
@@ -60,5 +68,14 @@ export const scansRouter = createTRPCRouter({
     .query(async ({ input }) => {
       // TODO: Replace with actual database query
       return mockScanList;
+    }),
+
+  createScan: protectedProcedure
+    .input(z.object({ projectId: z.string() }))
+    .mutation(async ({ input }) => {
+      // TODO: Replace with actual database query
+      await scanQueue.add(env.REDIS_SCAN_QUEUE_NAME, {
+        projectId: input.projectId,
+      });
     }),
 });
