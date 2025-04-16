@@ -98,15 +98,15 @@ export function WaitlistSection() {
 
               <div className="animate-slide-down flex items-center space-x-4 text-sm [animation-delay:600ms]">
                 <div className="flex items-center">
-                  <div className="mr-2 h-2 w-2 animate-pulse rounded-full bg-yellow-500"></div>
-                  <span className="font-medium">Limited spots available</span>
-                </div>
-                <div className="flex items-center">
                   <div className="mr-2 h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
                   <span className="font-medium">
                     {waitlistEntries &&
-                      `${waitlistEntries?.length}+ people on the waitlist`}
+                      `${waitlistEntries?.length} people already joined`}
                   </span>
+                </div>
+                <div className="flex items-center">
+                  <div className="mr-2 h-2 w-2 animate-pulse rounded-full bg-yellow-500"></div>
+                  <span className="font-medium">Limited spots available</span>
                 </div>
               </div>
 

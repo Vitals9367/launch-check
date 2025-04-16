@@ -21,11 +21,6 @@ const faqs = [
       "The scanner covers all major security threats including OWASP Top 10, CWE Top 25, and SANS Top 25 vulnerabilities. This includes SQL injection, XSS, authentication issues, data exposure risks, and security misconfigurations.",
   },
   {
-    question: "Can I integrate this with my CI/CD pipeline?",
-    answer:
-      "Yes! The tool provides easy integration with popular CI/CD platforms. You can automatically run security checks after each deploy or on a schedule that works for your team.",
-  },
-  {
     question: "How are false positives handled?",
     answer:
       "The advanced scanning engine uses context-aware analysis to minimize false positives. You can customize scanning rules and sensitivity levels to match your needs.",
