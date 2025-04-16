@@ -253,10 +253,9 @@ export function WaitlistSection() {
                   <div className="flex items-center">
                     <div className="mr-2 h-2 w-2 animate-pulse rounded-full bg-red-500"></div>
                     <span>
-                      "I've been greeted by email as "null", been locked out of
-                      an account without a forgot password feature and found
-                      poorly styled dashboards meaning I can't see what it is I
-                      signed up to do."
+                      "This looks awesome dude! We all know some of the drama
+                      recently about using AI tools to build products but they
+                      are not totally secure."
                     </span>
                   </div>
                 </div>

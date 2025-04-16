@@ -12,15 +12,15 @@ export function HeroSection() {
             <div className="inline-flex items-center rounded-full bg-red-100/80 px-2.5 py-1.5 text-[13px] text-red-700 backdrop-blur-sm sm:px-3 sm:text-sm">
               <Shield className="mr-1.5 h-3.5 w-3.5 flex-shrink-0" />
               <span className="whitespace-nowrap">
-                For Indie SaaS Founders & Small Teams
+                For Solo Developers & Small Teams
               </span>
             </div>
             <h1 className="text-4xl font-bold leading-tight text-gray-900 md:text-5xl lg:text-6xl">
               Ship Fast Without Getting Hacked
             </h1>
             <p className="max-w-lg text-xl text-gray-600">
-              Get peace of mind with automated security tests that run 24/7,
-              catching vulnerabilities while you focus on building your product.
+              Automated security checks that run 24/7—so you can ship features
+              fast without worrying about hidden vulnerabilities.
             </p>
 
             <div className="flex flex-col gap-3 sm:flex-row">
