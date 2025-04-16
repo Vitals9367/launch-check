@@ -5,6 +5,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { LoadingScreen } from "@/components/loading/loading-screen";
+import { motion } from "framer-motion";
+import { Shield } from "lucide-react";
 
 import {
   Card,
@@ -22,12 +24,12 @@ const providers = [
   {
     id: "github",
     name: "GitHub",
-    icon: <FaGithub className="mr-2 h-5 w-5" />,
+    icon: <FaGithub className="h-5 w-5" />,
   },
   {
     id: "google",
     name: "Google",
-    icon: <FaGoogle className="mr-2 h-5 w-5" />,
+    icon: <FaGoogle className="h-5 w-5" />,
   },
 ];
 
@@ -64,55 +66,60 @@ export default function LoginPage() {
   return (
     <>
       {isLoading && <LoadingScreen message="Signing you in..." />}
-      <main className="flex h-screen flex-1 items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <Card className="border-gray-200 shadow-sm">
-            <CardHeader className="space-y-1 text-center">
-              <CardTitle className="text-2xl font-bold">
-                Sign in to Launch Check
-              </CardTitle>
-              <CardDescription>
-                Continue with your preferred social account
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid gap-4">
-                {providers.map((provider) => (
-                  <Button
-                    key={provider.id}
-                    variant="outline"
-                    className="h-11 border-gray-300"
-                    disabled={isLoading}
-                    onClick={() => handleSignIn(provider.id)}
-                  >
-                    {provider.icon}
-                    Continue with {provider.name}
-                  </Button>
-                ))}
+      <main className="flex min-h-screen flex-col bg-gray-50">
+        <div className="flex flex-1 flex-col items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="w-full max-w-md space-y-6"
+          >
+            {/* Logo and Brand */}
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              className="flex flex-col items-center space-y-2"
+            >
+              <div className="flex items-center justify-center rounded-lg bg-white p-3 shadow-sm">
+                <Shield className="h-8 w-8 text-red-600" />
               </div>
-            </CardContent>
-            {/* <CardFooter className="flex flex-col space-y-4">
-              <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <Link
-                  href="/signup"
-                  className="font-medium text-red-600 hover:text-red-700"
-                >
-                  Sign up
-                </Link>
-              </div>
-              <div className="text-center text-xs text-gray-500">
-                By signing in, you agree to our{" "}
-                <Link href="/terms" className="underline hover:text-gray-800">
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link href="/privacy" className="underline hover:text-gray-800">
-                  Privacy Policy
-                </Link>
-              </div>
-            </CardFooter> */}
-          </Card>
+              <h1 className="text-2xl font-bold text-gray-900">Launch Check</h1>
+            </motion.div>
+
+            <Card className="border-gray-200 bg-white/80 shadow-sm">
+              <CardHeader className="space-y-1 text-center">
+                <CardTitle className="text-xl font-semibold text-gray-900">
+                  Welcome
+                </CardTitle>
+                <CardDescription className="text-gray-500">
+                  Sign in to continue to Launch Check
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4 pt-2">
+                <div className="grid gap-3">
+                  {providers.map((provider, index) => (
+                    <motion.div
+                      key={provider.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 + index * 0.1 }}
+                    >
+                      <Button
+                        variant="outline"
+                        className="h-10 w-full border-gray-200 bg-white font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50"
+                        disabled={isLoading}
+                        onClick={() => handleSignIn(provider.id)}
+                      >
+                        <span className="mr-2">{provider.icon}</span>
+                        Continue with {provider.name}
+                      </Button>
+                    </motion.div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </main>
     </>
