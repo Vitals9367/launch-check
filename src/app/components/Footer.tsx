@@ -88,7 +88,7 @@ export function Footer() {
         <div className="text-center text-sm text-gray-500">
           <p>
             Built with ❤️ by an indie hacker for indie hackers. &copy;{" "}
-            {new Date().getFullYear()} LaunchCheck
+            {new Date().getFullYear()} Launch Check
           </p>
         </div>
       </div>
