@@ -13,19 +13,19 @@ const steps = [
     icon: Coffee,
     title: "You Build Amazing Things",
     description:
-      "While you focus on creating awesome features and shipping products, we handle the security checks in the background",
+      "Focus on creating awesome features and shipping products. The security checks run quietly in the background.",
   },
   {
     icon: Shield,
-    title: "We Find Issues (If Any)",
+    title: "Get Notified If Issues Found",
     description:
-      "We scan your website and notify you only when something needs attention - no constant alerts or false alarms",
+      "The scanner checks your website and only alerts you when something needs attention - no noise, no false alarms.",
   },
   {
     icon: Code2,
-    title: "Get Simple Solutions",
+    title: "Simple Solutions, Ready to Use",
     description:
-      "Receive clear explanations and ready-to-use code snippets that you can quickly implement and get back to building",
+      "Each alert comes with clear explanations and ready-to-use code snippets. Just copy, paste, and get back to building.",
   },
 ];
 
@@ -45,8 +45,8 @@ export function FeaturesSection() {
             Ship Fast. Stay Secure.
           </h2>
           <p className="mx-auto max-w-2xl text-xl text-gray-300">
-            Focus on building your next big thing. We'll handle the security
-            checks.
+            Focus on building your next big thing. Let the automated security
+            checks do their job.
           </p>
         </motion.div>
 
@@ -95,23 +95,25 @@ export function FeaturesSection() {
           <div className="grid gap-8 md:grid-cols-3">
             <div className="space-y-2">
               <div className="text-3xl font-bold text-red-500">24/7</div>
-              <h3 className="text-xl font-semibold">Continuous Protection</h3>
+              <h3 className="text-xl font-semibold">Always Watching</h3>
               <p className="text-sm text-gray-300">
-                We monitor your site while you sleep, code, or enjoy your coffee
+                Your site stays monitored while you sleep, code, or enjoy your
+                coffee
               </p>
             </div>
             <div className="space-y-2">
               <div className="text-3xl font-bold text-red-500">5 min</div>
               <h3 className="text-xl font-semibold">Quick Fixes</h3>
               <p className="text-sm text-gray-300">
-                Copy-paste solutions with code snippets that just work
+                Copy-paste solutions that just work, so you can move forward
+                fast
               </p>
             </div>
             <div className="space-y-2">
               <div className="text-3xl font-bold text-red-500">No</div>
               <h3 className="text-xl font-semibold">Learning Curve</h3>
               <p className="text-sm text-gray-300">
-                No security expertise needed - focus on building your product
+                Zero security expertise needed - keep your focus on building
               </p>
             </div>
           </div>
