@@ -1,26 +1,11 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import { Queue } from "bullmq";
 import { env } from "@/env";
 import { scans } from "@/server/db/schema/scan";
 import { desc, eq, and } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
-import { projects } from "../db/schema/projects";
-
-const scanQueue = new Queue(env.REDIS_SCAN_QUEUE_NAME, {
-  connection: {
-    url: env.REDIS_URL,
-  },
-});
-
-interface ScanRequest {
-  targetUrls: string[];
-}
-
-interface ScanJob {
-  scanId: string;
-  request: ScanRequest;
-}
+import { projects } from "@/server/db/schema/projects";
+import { ScanJob, scanQueue } from "@/server/redis";
 
 export const scansRouter = createTRPCRouter({
   getLastScan: protectedProcedure
