@@ -12,6 +12,7 @@ const scanQueue = new Queue(env.REDIS_SCAN_QUEUE_NAME, {
     url: env.REDIS_URL,
   },
 });
+
 interface ScanRequest {
   targetUrls: string[];
 }
@@ -25,6 +26,25 @@ export const scansRouter = createTRPCRouter({
   getLastScan: protectedProcedure
     .input(z.object({ projectId: z.string() }))
     .query(async ({ ctx, input }) => {
+      // First verify project ownership
+      const [project] = await ctx.db
+        .select()
+        .from(projects)
+        .where(
+          and(
+            eq(projects.id, input.projectId),
+            eq(projects.userId, ctx.session?.user.id),
+          ),
+        )
+        .limit(1);
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found or you don't have access to it",
+        });
+      }
+
       const [lastScan] = await ctx.db
         .select({
           startedAt: scans.startedAt,
@@ -51,22 +71,30 @@ export const scansRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      // Join with projects to verify ownership
       const [scan] = await ctx.db
-        .select()
+        .select({
+          scan: scans,
+        })
         .from(scans)
+        .innerJoin(projects, eq(scans.projectId, projects.id))
         .where(
-          and(eq(scans.id, input.scanId), eq(scans.projectId, input.projectId)),
+          and(
+            eq(scans.id, input.scanId),
+            eq(scans.projectId, input.projectId),
+            eq(projects.userId, ctx.session?.user.id),
+          ),
         )
         .limit(1);
 
       if (!scan) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Scan not found",
+          message: "Scan not found or you don't have access to it",
         });
       }
 
-      return scan;
+      return scan.scan;
     }),
 
   getScans: protectedProcedure
@@ -76,14 +104,22 @@ export const scansRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      // Join with projects to verify ownership and get scans
       const items = await ctx.db
-        .select()
+        .select({
+          scan: scans,
+        })
         .from(scans)
-        .where(eq(scans.projectId, input.projectId))
-        .orderBy(desc(scans.startedAt))
-        .execute();
+        .innerJoin(projects, eq(scans.projectId, projects.id))
+        .where(
+          and(
+            eq(scans.projectId, input.projectId),
+            eq(projects.userId, ctx.session?.user.id),
+          ),
+        )
+        .orderBy(desc(scans.startedAt));
 
-      return items;
+      return items.map((item) => item.scan);
     }),
 
   createScan: protectedProcedure
@@ -97,15 +133,21 @@ export const scansRouter = createTRPCRouter({
       const [project] = await ctx.db
         .select()
         .from(projects)
-        .where(eq(projects.id, input.projectId))
+        .where(
+          and(
+            eq(projects.id, input.projectId),
+            eq(projects.userId, ctx.session?.user.id),
+          ),
+        )
         .limit(1);
 
       if (!project) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Project not found",
+          message: "Project not found or you don't have access to it",
         });
       }
+
       // Create scan record
       const [scan] = await ctx.db
         .insert(scans)
