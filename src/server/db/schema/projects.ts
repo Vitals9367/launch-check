@@ -22,7 +22,10 @@ export const projects = pgTable(
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
   },
-  (table) => [index("projects_user_id_idx").on(table.userId)],
+  (table) => [
+    index("projects_user_id_idx").on(table.userId),
+    index("projects_id_idx").on(table.id),
+  ],
 );
 
 export type Project = typeof projects.$inferSelect;
