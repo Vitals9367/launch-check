@@ -1,4 +1,4 @@
-import { ScanItem } from "./scan";
+import { ScanItem } from "./scan-item";
 import { Scan } from "@/server/db/schema/scan";
 interface ScanListProps {
   scans: Scan[];

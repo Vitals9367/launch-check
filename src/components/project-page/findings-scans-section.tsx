@@ -15,9 +15,15 @@ interface FindingsSectionProps {
 
 export function FindingsSection({ project }: FindingsSectionProps) {
   const { data: scans, isFetching: isFetchingScans } =
-    api.scans.getScans.useQuery({
-      projectId: project.id,
-    });
+    api.scans.getScans.useQuery(
+      {
+        projectId: project.id,
+      },
+      {
+        // Refresh every 5 seconds
+        refetchInterval: 5000,
+      },
+    );
 
   const scan = scans?.[0];
 
@@ -48,7 +54,7 @@ export function FindingsSection({ project }: FindingsSectionProps) {
             </TabsList>
 
             <TabsContent value="findings" className="mt-0">
-              {isFetchingVulnerabilities ? (
+              {isFetchingVulnerabilities && !vulnerabilities ? (
                 <div className="flex items-center justify-center">
                   <Loader2 className="h-4 w-4 animate-spin" />
                 </div>
@@ -61,7 +67,7 @@ export function FindingsSection({ project }: FindingsSectionProps) {
             </TabsContent>
 
             <TabsContent value="scans" className="mt-0">
-              {isFetchingScans ? (
+              {isFetchingScans && !scans ? (
                 <div className="flex items-center justify-center">
                   <Loader2 className="h-4 w-4 animate-spin" />
                 </div>

@@ -18,8 +18,13 @@ export function ProjectActions({ project }: ProjectActionsProps) {
 
   const { mutate: createScan, isPending: isScanPending } =
     api.scans.createScan.useMutation({
-      onSuccess: async () => {
-        await utils.scans.getScans.invalidate({ projectId: project.id });
+      onSuccess: async (newScan) => {
+        // Update the cache with the new scan
+        utils.scans.getScans.setData({ projectId: project.id }, (oldScans) => {
+          if (!oldScans) return [newScan];
+          return [newScan, ...oldScans];
+        });
+
         toast({
           title: "Scan created successfully",
         });
@@ -27,6 +32,7 @@ export function ProjectActions({ project }: ProjectActionsProps) {
       onError: () => {
         toast({
           title: "Failed to create scan",
+          variant: "destructive",
         });
       },
     });

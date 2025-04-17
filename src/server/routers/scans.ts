@@ -14,11 +14,10 @@ const scanQueue = new Queue(env.REDIS_SCAN_QUEUE_NAME, {
 });
 interface ScanRequest {
   targetUrls: string[];
-  severityLevels?: Array<"critical" | "high" | "medium" | "low" | "info">;
 }
 
 interface ScanJob {
-  projectId: string;
+  scanId: string;
   request: ScanRequest;
 }
 
@@ -118,12 +117,18 @@ export const scansRouter = createTRPCRouter({
         })
         .returning();
 
+      if (!scan) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create scan",
+        });
+      }
+
       // Queue the scan job
       const scanJob: ScanJob = {
-        projectId: project.id,
+        scanId: scan.id,
         request: {
           targetUrls: [project.targetUrl],
-          severityLevels: ["critical", "high", "medium", "low", "info"],
         },
       };
 
