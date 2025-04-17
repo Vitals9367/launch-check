@@ -10,9 +10,19 @@ import { env } from "@/env";
 
 const scanQueue = new Queue(env.REDIS_SCAN_QUEUE_NAME, {
   connection: {
-    host: env.REDIS_URL,
+    url: env.REDIS_URL,
   },
 });
+
+interface ScanRequest {
+  targetUrls: string[];
+  severityLevels?: Array<"critical" | "high" | "medium" | "low" | "info">;
+}
+
+interface ScanJob {
+  projectId: string;
+  request: ScanRequest;
+}
 
 export const scansRouter = createTRPCRouter({
   getLastScan: protectedProcedure
@@ -73,9 +83,13 @@ export const scansRouter = createTRPCRouter({
   createScan: protectedProcedure
     .input(z.object({ projectId: z.string() }))
     .mutation(async ({ input }) => {
-      // TODO: Replace with actual database query
-      await scanQueue.add(env.REDIS_SCAN_QUEUE_NAME, {
+      const scanJob: ScanJob = {
         projectId: input.projectId,
-      });
+        request: {
+          targetUrls: ["https://example.com"],
+        },
+      };
+
+      await scanQueue.add(env.REDIS_SCAN_QUEUE_NAME, scanJob);
     }),
 });
