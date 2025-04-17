@@ -1,11 +1,15 @@
-import { Vulnerability } from "@/server/mocks/scans";
+import { ScanFinding as ScanFindingType } from "@/server/db/schema/scan-finding";
 import ScanFinding from "./scan-finding";
 
 interface ScanFindingsListProps {
-  vulnerabilities: Vulnerability[];
+  vulnerabilities: ScanFindingType[];
+  projectId: string;
 }
 
-export function ScanFindingsList({ vulnerabilities }: ScanFindingsListProps) {
+export function ScanFindingsList({
+  vulnerabilities,
+  projectId,
+}: ScanFindingsListProps) {
   if (!vulnerabilities || vulnerabilities.length === 0) {
     return (
       <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed">
@@ -17,7 +21,11 @@ export function ScanFindingsList({ vulnerabilities }: ScanFindingsListProps) {
   return (
     <div className="space-y-4">
       {vulnerabilities.map((vulnerability) => (
-        <ScanFinding key={vulnerability.id} {...vulnerability} />
+        <ScanFinding
+          key={vulnerability.id}
+          finding={vulnerability}
+          projectId={projectId}
+        />
       ))}
     </div>
   );

@@ -1,29 +1,35 @@
+"use client";
+
 import { Card, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { History, AlertOctagon } from "lucide-react";
+import { History, AlertOctagon, Loader2 } from "lucide-react";
 import { ScanFindingsList } from "@/components/scan-findings/scan-findings-list";
 import { ScanList } from "@/components/scans/scan-list";
 import { Project } from "@/server/db/schema/projects";
-import { api } from "@/trpc/server";
-import { Vulnerability } from "@/server/mocks/scans";
+import { api } from "@/trpc/react";
+import { ScanFinding } from "@/server/db/schema/scan-finding";
+
 interface FindingsSectionProps {
   project: Project;
 }
 
-export async function FindingsSection({ project }: FindingsSectionProps) {
-  const scans = await api.scans.getScans({
-    projectId: project.id,
-  });
+export function FindingsSection({ project }: FindingsSectionProps) {
+  const { data: scans, isFetching: isFetchingScans } =
+    api.scans.getScans.useQuery({
+      projectId: project.id,
+    });
 
   const scan = scans?.[0];
-  let vulnerabilities: Vulnerability[] = [];
 
-  if (scan) {
-    vulnerabilities = await api.scans.getVulnerabilities({
-      projectId: project.id,
-      scanId: scan.id,
-    });
-  }
+  const { data: vulnerabilities, isFetching: isFetchingVulnerabilities } =
+    api.findings.getByScanId.useQuery(
+      {
+        scanId: scan?.id ?? "",
+      },
+      {
+        enabled: !!scan,
+      },
+    );
 
   return (
     <section>
@@ -42,11 +48,26 @@ export async function FindingsSection({ project }: FindingsSectionProps) {
             </TabsList>
 
             <TabsContent value="findings" className="mt-0">
-              <ScanFindingsList vulnerabilities={vulnerabilities} />
+              {isFetchingVulnerabilities ? (
+                <div className="flex items-center justify-center">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                </div>
+              ) : (
+                <ScanFindingsList
+                  vulnerabilities={vulnerabilities ?? []}
+                  projectId={project.id}
+                />
+              )}
             </TabsContent>
 
             <TabsContent value="scans" className="mt-0">
-              <ScanList scans={scans ?? []} />
+              {isFetchingScans ? (
+                <div className="flex items-center justify-center">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                </div>
+              ) : (
+                <ScanList scans={scans ?? []} />
+              )}
             </TabsContent>
           </Tabs>
         </CardHeader>

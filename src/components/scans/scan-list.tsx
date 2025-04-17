@@ -1,6 +1,5 @@
-import { Scan } from "@/server/mocks/scans";
 import { ScanItem } from "./scan";
-
+import { Scan } from "@/server/db/schema/scan";
 interface ScanListProps {
   scans: Scan[];
 }
@@ -17,7 +16,7 @@ export function ScanList({ scans }: ScanListProps) {
   return (
     <div className="divide-y divide-gray-100">
       {scans.map((scan) => (
-        <ScanItem key={scan.id} {...scan} />
+        <ScanItem key={scan.id} scan={scan} />
       ))}
     </div>
   );

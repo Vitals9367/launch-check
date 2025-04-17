@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Scan } from "@/server/mocks/scans";
+import { Scan } from "@/server/db/schema/scan";
 
 const STATUS_STYLES = {
   in_progress: {
@@ -15,16 +15,29 @@ const STATUS_STYLES = {
     label: "Failed",
     className: "bg-red-50 text-red-700 border-red-200",
   },
+  pending: {
+    label: "Pending",
+    className: "bg-yellow-50 text-yellow-700 border-yellow-200",
+  },
 } as const;
 
-export function ScanItem({
-  id,
-  status,
-  startedAt,
-  completedAt,
-  summary,
-  projectId,
-}: Scan) {
+interface ScanItemProps {
+  scan: Scan;
+}
+
+export function ScanItem({ scan }: ScanItemProps) {
+  const {
+    id,
+    status,
+    startedAt,
+    completedAt,
+    projectId,
+    criticalCount,
+    highCount,
+    mediumCount,
+    lowCount,
+  } = scan;
+
   const statusStyle = STATUS_STYLES[status];
   if (!statusStyle) return null;
 
@@ -53,22 +66,22 @@ export function ScanItem({
           <div className="flex items-center space-x-2">
             <SeverityCount
               label="Critical"
-              count={summary.critical}
+              count={criticalCount}
               className="bg-red-50 text-red-700"
             />
             <SeverityCount
               label="High"
-              count={summary.high}
+              count={highCount}
               className="bg-orange-50 text-orange-700"
             />
             <SeverityCount
               label="Medium"
-              count={summary.medium}
+              count={mediumCount}
               className="bg-yellow-50 text-yellow-700"
             />
             <SeverityCount
               label="Low"
-              count={summary.low}
+              count={lowCount}
               className="bg-blue-50 text-blue-700"
             />
           </div>

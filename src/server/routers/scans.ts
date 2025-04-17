@@ -1,19 +1,17 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import {
-  mockScan,
-  mockScanList,
-  mockVulnerabilities,
-} from "@/server/mocks/scans";
 import { Queue } from "bullmq";
 import { env } from "@/env";
+import { scans } from "@/server/db/schema/scan";
+import { desc, eq, and } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
+import { projects } from "../db/schema/projects";
 
 const scanQueue = new Queue(env.REDIS_SCAN_QUEUE_NAME, {
   connection: {
     url: env.REDIS_URL,
   },
 });
-
 interface ScanRequest {
   targetUrls: string[];
   severityLevels?: Array<"critical" | "high" | "medium" | "low" | "info">;
@@ -27,20 +25,22 @@ interface ScanJob {
 export const scansRouter = createTRPCRouter({
   getLastScan: protectedProcedure
     .input(z.object({ projectId: z.string() }))
-    .query(({ input }) => {
-      // Generate a deterministic last scan date based on project ID
-      const projectIdSum = input.projectId
-        .split("-")
-        .map((part) => parseInt(part, 16))
-        .reduce((a, b) => a + b, 0);
+    .query(async ({ ctx, input }) => {
+      const [lastScan] = await ctx.db
+        .select({
+          startedAt: scans.startedAt,
+        })
+        .from(scans)
+        .where(eq(scans.projectId, input.projectId))
+        .orderBy(desc(scans.startedAt))
+        .limit(1);
 
-      // Use the project ID to generate a date within the last 30 days
-      const daysAgo = projectIdSum % 30;
-      const lastScanDate = new Date();
-      lastScanDate.setDate(lastScanDate.getDate() - daysAgo);
+      if (!lastScan) {
+        return { lastScanDate: null };
+      }
 
       return {
-        lastScanDate: lastScanDate.toISOString(),
+        lastScanDate: lastScan.startedAt.toISOString(),
       };
     }),
 
@@ -51,22 +51,23 @@ export const scansRouter = createTRPCRouter({
         scanId: z.string(),
       }),
     )
-    .query(async ({ input }) => {
-      // TODO: Replace with actual database query
-      return mockScan;
-    }),
+    .query(async ({ ctx, input }) => {
+      const [scan] = await ctx.db
+        .select()
+        .from(scans)
+        .where(
+          and(eq(scans.id, input.scanId), eq(scans.projectId, input.projectId)),
+        )
+        .limit(1);
 
-  getVulnerabilities: protectedProcedure
-    .input(
-      z.object({
-        projectId: z.string(),
-        scanId: z.string(),
-      }),
-    )
-    .query(async ({ input }) => {
-      // TODO: Replace with actual database query
-      // In a real implementation, we would filter vulnerabilities by scan ID
-      return mockVulnerabilities;
+      if (!scan) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Scan not found",
+        });
+      }
+
+      return scan;
     }),
 
   getScans: protectedProcedure
@@ -75,21 +76,59 @@ export const scansRouter = createTRPCRouter({
         projectId: z.string(),
       }),
     )
-    .query(async ({ input }) => {
-      // TODO: Replace with actual database query
-      return mockScanList;
+    .query(async ({ ctx, input }) => {
+      const items = await ctx.db
+        .select()
+        .from(scans)
+        .where(eq(scans.projectId, input.projectId))
+        .orderBy(desc(scans.startedAt))
+        .execute();
+
+      return items;
     }),
 
   createScan: protectedProcedure
-    .input(z.object({ projectId: z.string() }))
-    .mutation(async ({ input }) => {
+    .input(
+      z.object({
+        projectId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Verify project exists and user has access
+      const [project] = await ctx.db
+        .select()
+        .from(projects)
+        .where(eq(projects.id, input.projectId))
+        .limit(1);
+
+      if (!project) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Project not found",
+        });
+      }
+      // Create scan record
+      const [scan] = await ctx.db
+        .insert(scans)
+        .values({
+          projectId: project.id,
+          targetUrls: [project.targetUrl],
+          status: "pending",
+          startedAt: new Date(),
+        })
+        .returning();
+
+      // Queue the scan job
       const scanJob: ScanJob = {
-        projectId: input.projectId,
+        projectId: project.id,
         request: {
-          targetUrls: ["https://example.com"],
+          targetUrls: [project.targetUrl],
+          severityLevels: ["critical", "high", "medium", "low", "info"],
         },
       };
 
       await scanQueue.add(env.REDIS_SCAN_QUEUE_NAME, scanJob);
+
+      return scan;
     }),
 });
