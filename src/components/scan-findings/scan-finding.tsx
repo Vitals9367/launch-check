@@ -8,58 +8,47 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ScanFinding as ScanFindingType } from "@/server/db/schema/scan-finding";
 
-type Severity = "critical" | "high" | "medium" | "low";
+const severityColors = {
+  critical: {
+    badge: "border-red-200 bg-red-50 text-red-700",
+    icon: "text-red-600",
+  },
+  high: {
+    badge: "border-orange-200 bg-orange-50 text-orange-700",
+    icon: "text-orange-500",
+  },
+  medium: {
+    badge: "border-yellow-200 bg-yellow-50 text-yellow-700",
+    icon: "text-yellow-500",
+  },
+  low: {
+    badge: "border-blue-200 bg-blue-50 text-blue-700",
+    icon: "text-blue-500",
+  },
+  info: {
+    badge: "border-gray-200 bg-gray-50 text-gray-700",
+    icon: "text-gray-500",
+  },
+};
+
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+};
 
 interface ScanFindingProps {
-  id: string;
-  title: string;
-  severity: Severity;
-  location: string;
-  detectedAt: string;
-  scanId: string;
+  finding: ScanFindingType;
   projectId: string;
-  description?: string;
 }
 
-export default function ScanFinding({
-  id,
-  title,
-  severity,
-  location,
-  detectedAt,
-  projectId,
-  description,
-  scanId,
-}: ScanFindingProps) {
-  const severityColors = {
-    critical: {
-      badge: "border-red-200 bg-red-50 text-red-700",
-      icon: "text-red-600",
-    },
-    high: {
-      badge: "border-orange-200 bg-orange-50 text-orange-700",
-      icon: "text-orange-500",
-    },
-    medium: {
-      badge: "border-yellow-200 bg-yellow-50 text-yellow-700",
-      icon: "text-yellow-500",
-    },
-    low: {
-      badge: "border-blue-200 bg-blue-50 text-blue-700",
-      icon: "text-blue-500",
-    },
-  };
-
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date);
-  };
+export default function ScanFinding({ finding, projectId }: ScanFindingProps) {
+  const { id, template, templatePath, matchedAt, createdAt, scanId } = finding;
 
   return (
     <TooltipProvider>
@@ -71,38 +60,32 @@ export default function ScanFinding({
           <div className="flex items-start gap-3">
             <Tooltip>
               <TooltipTrigger>
-                <AlertTriangle
-                  className={cn("h-6 w-6", severityColors[severity].icon)}
-                />
+                <AlertTriangle className="h-6 w-6 text-yellow-500" />
               </TooltipTrigger>
               <TooltipContent>
-                <p className="capitalize">{severity} severity finding</p>
+                <p>Security finding detected</p>
               </TooltipContent>
             </Tooltip>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <h4 className="font-medium text-gray-900">{title}</h4>
-                <Badge
-                  variant="outline"
-                  className={cn("capitalize", severityColors[severity].badge)}
-                >
-                  {severity}
-                </Badge>
+                <h4 className="font-medium text-gray-900">{template}</h4>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <FileCode className="h-3.5 w-3.5" />
-                <span>{location}</span>
+                <span>{templatePath}</span>
               </div>
-              {description && (
-                <p className="mt-1 text-sm text-gray-600">{description}</p>
+              {matchedAt && (
+                <p className="mt-1 text-sm text-gray-600">
+                  Found at: <code className="text-xs">{matchedAt}</code>
+                </p>
               )}
             </div>
           </div>
 
           <div className="flex shrink-0 items-center gap-2 text-sm text-gray-500">
             <Clock className="h-3.5 w-3.5" />
-            <span>{formatDate(detectedAt)}</span>
+            <span>{formatDate(createdAt)}</span>
           </div>
         </div>
       </Link>

@@ -11,7 +11,7 @@ export default async function ProjectPage({
 }) {
   const { projectId } = await params;
 
-  const project = await api.projects.getById({
+  const project = await api.projects.getByIdWithStats({
     id: projectId,
   });
 

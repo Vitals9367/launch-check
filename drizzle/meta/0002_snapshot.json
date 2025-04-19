@@ -1,6 +1,6 @@
 {
-  "id": "5456cc2c-5b99-4573-bdc8-99f4ea2f4e95",
-  "prevId": "9df040e4-fbb4-4d29-b05e-5c7beb38c9f5",
+  "id": "75705819-1811-40ca-a2c6-884817a9300c",
+  "prevId": "5456cc2c-5b99-4573-bdc8-99f4ea2f4e95",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -218,6 +218,21 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "projects_id_idx": {
+          "name": "projects_id_idx",
+          "columns": [
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -303,7 +318,38 @@
           "default": "CURRENT_TIMESTAMP"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "scan_findings_scan_id_idx": {
+          "name": "scan_findings_scan_id_idx",
+          "columns": [
+            {
+              "expression": "scan_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "scan_findings_id_idx": {
+          "name": "scan_findings_id_idx",
+          "columns": [
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "scan_findings_scan_id_scans_id_fk": {
           "name": "scan_findings_scan_id_scans_id_fk",
@@ -438,7 +484,38 @@
           "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "scans_project_id_idx": {
+          "name": "scans_project_id_idx",
+          "columns": [
+            {
+              "expression": "project_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "scans_id_idx": {
+          "name": "scans_id_idx",
+          "columns": [
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "scans_project_id_projects_id_fk": {
           "name": "scans_project_id_projects_id_fk",
