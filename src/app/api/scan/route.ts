@@ -1,4 +1,4 @@
-import { type Vulnerability } from "@/app/types/scanner";
+import { type Vulnerability } from "@/types/scanner";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
