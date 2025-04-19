@@ -50,13 +50,13 @@ export function FindingsSection({ project }: FindingsSectionProps) {
         <CardHeader>
           <Tabs defaultValue="scans" className="w-full">
             <TabsList className="mb-4 grid w-[600px] grid-cols-3">
-              <TabsTrigger value="findings" className="flex items-center gap-2">
-                <AlertOctagon className="h-4 w-4" />
-                Latest Findings
-              </TabsTrigger>
               <TabsTrigger value="scans" className="flex items-center gap-2">
                 <History className="h-4 w-4" />
                 Recent Scans
+              </TabsTrigger>
+              <TabsTrigger value="findings" className="flex items-center gap-2">
+                <AlertOctagon className="h-4 w-4" />
+                Latest Findings
               </TabsTrigger>
               <TabsTrigger value="links" className="flex items-center gap-2">
                 <LinkIcon className="h-4 w-4" />
