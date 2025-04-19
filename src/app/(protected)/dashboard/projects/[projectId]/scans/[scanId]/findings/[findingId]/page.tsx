@@ -1,4 +1,10 @@
-import { AlertTriangle, Book, LinkIcon, ExternalLink } from "lucide-react";
+import {
+  AlertTriangle,
+  Book,
+  LinkIcon,
+  ExternalLink,
+  Shield,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -34,19 +40,26 @@ export default async function FindingPage({
     high: "bg-orange-50 text-orange-700 border-orange-200",
     medium: "bg-yellow-50 text-yellow-700 border-yellow-200",
     low: "bg-blue-50 text-blue-700 border-blue-200",
-  };
+    info: "bg-gray-50 text-gray-700 border-gray-200",
+  } as const;
 
-  const effortColors = {
-    low: "bg-green-50 text-green-700",
-    medium: "bg-yellow-50 text-yellow-700",
-    high: "bg-red-50 text-red-700",
-  };
+  const confidenceColors = {
+    confirmed: "bg-green-50 text-green-700 border-green-200",
+    high: "bg-blue-50 text-blue-700 border-blue-200",
+    medium: "bg-yellow-50 text-yellow-700 border-yellow-200",
+    low: "bg-gray-50 text-gray-700 border-gray-200",
+  } as const;
 
-  const severityColor =
-    severityColors[finding.severity as keyof typeof severityColors];
+  const severityColor = severityColors[finding.severity];
+  const confidenceColor = confidenceColors[finding.confidence];
 
-  // TODO: Finish the page
-  // const effortColor = effortColors[finding.e as keyof typeof effortColors];
+  // Format headers for display and ensure they are strings
+  const requestHeadersStr = finding.requestHeaders
+    ? JSON.stringify(finding.requestHeaders as Record<string, string>, null, 2)
+    : null;
+  const responseHeadersStr = finding.responseHeaders
+    ? JSON.stringify(finding.responseHeaders as Record<string, string>, null, 2)
+    : null;
 
   return (
     <div className="container mx-auto space-y-6 py-8">
@@ -66,11 +79,11 @@ export default async function FindingPage({
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight">{finding.title}</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{finding.name}</h1>
           <p className="text-sm text-gray-500">
-            Detected {new Date(finding.createdAt).toLocaleDateString()} in{" "}
+            Detected {new Date(finding.createdAt).toLocaleDateString()} at{" "}
             <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm">
-              {finding.location}
+              {finding.url}
             </code>
           </p>
         </div>
@@ -82,9 +95,13 @@ export default async function FindingPage({
             <AlertTriangle className="mr-1 h-3 w-3" />
             {finding.severity} Severity
           </Badge>
-          {/* <Badge variant="secondary" className={cn("capitalize", effortColor)}>
-            {finding.effort} effort to fix
-          </Badge> */}
+          <Badge
+            variant="secondary"
+            className={cn("capitalize", confidenceColor)}
+          >
+            <Shield className="mr-1 h-3 w-3" />
+            {finding.confidence} Confidence
+          </Badge>
         </div>
       </div>
 
@@ -100,85 +117,117 @@ export default async function FindingPage({
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Impact</CardTitle>
-            </CardHeader>
-            {/* <CardContent>
-              <p className="text-gray-700">{finding.impact}</p>
-            </CardContent> */}
-          </Card>
+          {finding.solution && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Solution</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-700">{finding.solution}</p>
+              </CardContent>
+            </Card>
+          )}
 
-          {/* <Card>
-            <CardHeader>
-              <CardTitle>How to Fix</CardTitle>
-              <CardDescription>{finding.remediation}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs
-                defaultValue={finding.technologies?.[0]?.name ?? ""}
-                className="w-full"
-              >
-                <TabsList className="w-full justify-start">
-                  {finding.technologies.map((tech) => (
-                    <TabsTrigger key={tech.name} value={tech.name}>
-                      {tech.name}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-                {finding.technologies.map((tech) => (
-                  <TabsContent
-                    key={tech.name}
-                    value={tech.name}
-                    className="space-y-4"
-                  >
-                    <div>
-                      <h4 className="mb-2 font-medium">Vulnerable Code</h4>
-                      <CodeBlock
-                        code={tech.vulnerableCode}
-                        language={tech.language}
-                        className="bg-red-950/5"
-                      />
-                    </div>
-                    <div>
-                      <h4 className="mb-2 font-medium">Fixed Code</h4>
-                      <CodeBlock
-                        code={tech.fixedCode}
-                        language={tech.language}
-                        className="bg-green-950/5"
-                      />
-                    </div>
-                  </TabsContent>
-                ))}
-              </Tabs>
-            </CardContent>
-          </Card> */}
+          {finding.evidence && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Evidence</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <pre className="whitespace-pre-wrap rounded-lg bg-gray-50 p-4 font-mono text-sm">
+                  {finding.evidence}
+                </pre>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Sidebar */}
-        <div>
+        <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Book className="h-4 w-4" />
-                Additional Resources
+                Additional Information
               </CardTitle>
             </CardHeader>
-            {/* <CardContent className="space-y-4">
-              {finding.references.map((reference) => (
-                <a
-                  key={reference.url}
-                  href={reference.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
-                >
-                  <span>{reference.title}</span>
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              ))}
-            </CardContent> */}
+            <CardContent className="space-y-4">
+              {finding.reference && (
+                <div>
+                  <h4 className="mb-1 font-medium">References</h4>
+                  <a
+                    href={finding.reference}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                  >
+                    <span>Learn more</span>
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+              )}
+              {finding.cveId && (
+                <div>
+                  <h4 className="mb-1 font-medium">CVE ID</h4>
+                  <p className="font-mono text-sm">{finding.cveId}</p>
+                </div>
+              )}
+              {finding.cweIds && finding.cweIds.length > 0 && (
+                <div>
+                  <h4 className="mb-1 font-medium">CWE IDs</h4>
+                  <div className="flex flex-wrap gap-1">
+                    {finding.cweIds.map((cwe) => (
+                      <Badge key={cwe} variant="secondary">
+                        {cwe}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {finding.tags && finding.tags.length > 0 && (
+                <div>
+                  <h4 className="mb-1 font-medium">Tags</h4>
+                  <div className="flex flex-wrap gap-1">
+                    {finding.tags.map((tag) => (
+                      <Badge key={tag} variant="secondary">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
           </Card>
+
+          {(requestHeadersStr || responseHeadersStr) && (
+            <Card>
+              <CardHeader>
+                <CardTitle>HTTP Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {requestHeadersStr && (
+                  <div className="mt-4">
+                    <h3 className="mb-2 text-lg font-semibold">
+                      Request Headers
+                    </h3>
+                    <pre className="overflow-x-auto rounded-lg bg-gray-100 p-4">
+                      <code>{requestHeadersStr}</code>
+                    </pre>
+                  </div>
+                )}
+                {responseHeadersStr && (
+                  <div className="mt-4">
+                    <h3 className="mb-2 text-lg font-semibold">
+                      Response Headers
+                    </h3>
+                    <pre className="overflow-x-auto rounded-lg bg-gray-100 p-4">
+                      <code>{responseHeadersStr}</code>
+                    </pre>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

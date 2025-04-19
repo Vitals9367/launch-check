@@ -1,6 +1,15 @@
 import { ScanFinding as ScanFindingType } from "@/server/db/schema/scan-finding";
 import ScanFinding from "./scan-finding";
 
+// Severity order mapping for consistent sorting
+const SEVERITY_ORDER = {
+  critical: 0,
+  high: 1,
+  medium: 2,
+  low: 3,
+  info: 4,
+} as const;
+
 interface ScanFindingsListProps {
   vulnerabilities: ScanFindingType[];
   projectId: string;
@@ -18,9 +27,14 @@ export function ScanFindingsList({
     );
   }
 
+  // Sort vulnerabilities by severity
+  const sortedVulnerabilities = [...vulnerabilities].sort(
+    (a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity],
+  );
+
   return (
     <div className="space-y-4">
-      {vulnerabilities.map((vulnerability) => (
+      {sortedVulnerabilities.map((vulnerability) => (
         <ScanFinding
           key={vulnerability.id}
           finding={vulnerability}

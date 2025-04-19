@@ -1,15 +1,13 @@
 import { sql } from "drizzle-orm";
 import {
   pgTable,
-  serial,
   varchar,
   timestamp,
-  integer,
   pgEnum,
   text,
-  boolean,
   jsonb,
   uuid,
+  integer,
 } from "drizzle-orm/pg-core";
 import { scans } from "./scan";
 
@@ -22,64 +20,70 @@ export const severityLevelEnum = pgEnum("severity_level", [
   "info",
 ]);
 
-// Classification type for findings
-export const findingClassification = pgTable("finding_classifications", {
-  id: uuid()
-    .primaryKey()
-    .notNull()
-    .default(sql`gen_random_uuid()`),
-  cveId: varchar({ length: 50 }),
-  cweIds: text().array(),
-});
+// Confidence level enum for ZAP findings
+export const confidenceLevelEnum = pgEnum("confidence_level", [
+  "high",
+  "medium",
+  "low",
+  "confirmed",
+]);
 
-// Info type for findings
-export const findingInfo = pgTable("finding_info", {
-  id: uuid()
-    .primaryKey()
-    .notNull()
-    .default(sql`gen_random_uuid()`),
-  name: varchar({ length: 255 }).notNull(),
-  authors: text().array().notNull(),
-  tags: text().array().notNull(),
-  description: text().notNull(),
-  severity: severityLevelEnum().notNull(),
-  metadata: jsonb(), // Store additional metadata as JSON
-  classificationId: uuid().references(() => findingClassification.id, {
-    onDelete: "cascade",
-  }),
-});
+// Risk level enum for raw ZAP risk scores
+export const riskLevelEnum = pgEnum("risk_level", [
+  "high",
+  "medium",
+  "low",
+  "info",
+]);
 
-// Scan findings table schema
+// Consolidated scan findings table schema
 export const scanFindings = pgTable("scan_findings", {
   id: uuid()
     .primaryKey()
     .notNull()
     .default(sql`gen_random_uuid()`),
 
+  // Scan reference
   scanId: uuid()
     .references(() => scans.id, { onDelete: "cascade" })
     .notNull(),
 
-  // Template information
-  template: varchar({ length: 255 }).notNull(),
-  templateUrl: varchar({ length: 2048 }).notNull(),
-  templateId: varchar({ length: 255 }).notNull(),
-  templatePath: varchar({ length: 2048 }).notNull(),
+  // Finding Info fields
+  name: varchar({ length: 255 }).notNull(),
+  description: text().notNull(),
+  severity: severityLevelEnum().notNull(),
+  confidence: confidenceLevelEnum().notNull(),
+  solution: text(), // How to fix the vulnerability
+  reference: text(), // Reference URLs and documentation
+  tags: text().array(),
 
-  // Finding info reference
-  infoId: uuid()
-    .references(() => findingInfo.id, { onDelete: "cascade" })
-    .notNull(),
+  // Raw ZAP specific fields
+  riskLevel: riskLevelEnum().notNull(),
+  riskScore: integer(), // Numeric risk score from ZAP
+  pluginId: varchar({ length: 50 }).notNull(), // ZAP Plugin/Rule ID
 
-  // Match details
-  matcherName: varchar({ length: 255 }).notNull(),
-  type: varchar({ length: 100 }).notNull(),
-  host: varchar({ length: 2048 }).notNull(),
-  matchedAt: varchar({ length: 2048 }).notNull(),
-  request: text().notNull(),
-  matcherStatus: boolean().notNull(),
+  // Classification fields
+  cveId: varchar({ length: 50 }),
+  cweIds: text().array(),
+  wasc: text().array(), // Web Application Security Consortium IDs
 
-  // Metadata
+  // Location information
+  url: varchar({ length: 2048 }).notNull(), // The affected URL
+  method: varchar({ length: 10 }), // HTTP method (GET, POST, etc.)
+  parameter: varchar({ length: 255 }), // Affected parameter
+  attack: text(), // The attack string used
+  evidence: text(), // Evidence of the vulnerability
+  otherInfo: text(), // Additional context
+
+  // Request/Response details (excluding response body to save space)
+  requestHeaders: jsonb(), // HTTP request headers
+  requestBody: text(), // HTTP request body
+  responseHeaders: jsonb(), // HTTP response headers
+
+  // Additional metadata
+  metadata: jsonb(),
+
+  // Timestamps
   createdAt: timestamp({ withTimezone: true })
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
