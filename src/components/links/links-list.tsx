@@ -14,33 +14,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
-interface ProjectLink {
-  id: string;
-  url: string;
-}
 import { api } from "@/trpc/react";
 import { useParams } from "next/navigation";
 import { CreateLinkDialog } from "@/components/links/create-link-dialog";
 import { useCreateLinkDialogStore } from "@/store/use-create-link-dialog-store";
 import { LinksEmpty } from "@/components/links/links-empty";
 
-// Fetch links by project ID
-const LinksFetcher = () => {
-  const params = useParams();
-  const projectId = params.projectId as string;
-
-  const {
-    data: projectLinks,
-    isLoading,
-    error,
-  } = api.links.fetchByProject.useQuery(
-    { projectId },
-    { enabled: !!projectId },
-  );
-
-  return { projectLinks: projectLinks ?? [], isLoading, error };
-};
+interface ProjectLink {
+  id: string;
+  url: string;
+}
 
 export function LinksList() {
   const [editingLinkId, setEditingLinkId] = useState<string | null>(null);
@@ -49,8 +32,20 @@ export function LinksList() {
   const [linkToDelete, setLinkToDelete] = useState<string | null>(null);
   const [projectLinks, setProjectLinks] = useState<ProjectLink[]>([]);
 
-  const { projectLinks: fetchedLinks, isLoading } = LinksFetcher();
   const params = useParams();
+  const projectId = params.projectId as string;
+
+  // Use a ref to store the utils to avoid dependency issues
+  const utils = api.useUtils();
+
+  const {
+    data: fetchedLinks,
+    isLoading,
+    error,
+  } = api.links.fetchByProject.useQuery(
+    { projectId },
+    { enabled: !!projectId },
+  );
 
   useEffect(() => {
     if (fetchedLinks) {
@@ -69,6 +64,29 @@ export function LinksList() {
         link.id === id ? { ...link, url: editedUrl } : link,
       ),
     );
+    // Call API to edit link
+    const projectId = params.projectId as string;
+
+    // Update the link in the database
+    if (id && editedUrl) {
+      const updateLink = api.links.update.useMutation({
+        onSuccess: async () => {
+          // Invalidate links query to trigger a refresh
+          await utils.links.fetchByProject.invalidate({ projectId });
+        },
+        onError: (error) => {
+          console.error("Failed to update link:", error);
+          // Revert the local state change
+          setProjectLinks(fetchedLinks || []);
+        },
+      });
+
+      updateLink.mutate({
+        id,
+        url: editedUrl,
+      });
+    }
+
     setEditingLinkId(null);
   };
 
@@ -116,6 +134,16 @@ export function LinksList() {
 
   return (
     <div className="space-y-3">
+      <Button
+        variant="outline"
+        size="sm"
+        className="mt-1 w-full justify-center gap-2 border-dashed text-gray-500 hover:text-gray-700"
+        onClick={handleAddLink}
+      >
+        <Plus className="h-4 w-4" />
+        Add Project Link
+      </Button>
+
       {projectLinks.map((link) => (
         <div
           key={link.id}
@@ -186,16 +214,6 @@ export function LinksList() {
           </div>
         </div>
       ))}
-
-      <Button
-        variant="outline"
-        size="sm"
-        className="mt-1 w-full justify-center gap-2 border-dashed text-gray-500 hover:text-gray-700"
-        onClick={handleAddLink}
-      >
-        <Plus className="h-4 w-4" />
-        Add Project Link
-      </Button>
 
       <CreateLinkDialog />
 

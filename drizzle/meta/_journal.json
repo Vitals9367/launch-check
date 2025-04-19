@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1744659238425,
-      "tag": "0000_busy_tony_stark",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1744742857394,
-      "tag": "0001_lively_silhouette",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1745040864156,
-      "tag": "0002_cloudy_norman_osborn",
+      "when": 1745087066362,
+      "tag": "0000_clear_warlock",
       "breakpoints": true
     }
   ]

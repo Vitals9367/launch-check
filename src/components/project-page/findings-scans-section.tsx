@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { History, AlertOctagon, Link as LinkIcon } from "lucide-react";
 import { ScanFindingsList } from "@/components/scan-findings/scan-findings-list";
 import { ScanList } from "@/components/scans/scan-list";
-import { LinksList } from "@/components/scans/links-list";
+import { LinksList } from "@/components/links/links-list";
 import { Project } from "@/server/db/schema/projects";
 import { api } from "@/trpc/server";
 import { Vulnerability } from "@/server/mocks/scans";

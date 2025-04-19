@@ -20,9 +20,18 @@ CREATE TABLE "feedback" (
 	"createdAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "links" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"url" text NOT NULL,
+	"projectId" uuid NOT NULL,
+	"createdAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updatedAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "projects" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
+	"targetUrl" text NOT NULL,
 	"userId" text NOT NULL,
 	"createdAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"updatedAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL
@@ -57,8 +66,10 @@ CREATE TABLE "waitlist_entries" (
 );
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "links" ADD CONSTRAINT "links_projectId_projects_id_fk" FOREIGN KEY ("projectId") REFERENCES "public"."projects"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "feedback_email_idx" ON "feedback" USING btree ("email" text_ops);--> statement-breakpoint
+CREATE INDEX "links_project_id_idx" ON "links" USING btree ("projectId");--> statement-breakpoint
 CREATE INDEX "projects_user_id_idx" ON "projects" USING btree ("userId");--> statement-breakpoint
 CREATE INDEX "waitlist_entries_email_idx" ON "waitlist_entries" USING btree ("email" text_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "waitlist_entries_email_key" ON "waitlist_entries" USING btree ("email" text_ops);
