@@ -3,6 +3,7 @@ import { waitlistRouter } from "@/server/routers/waitlist";
 import { projectsRouter } from "@/server/routers/projects";
 import { scansRouter } from "@/server/routers/scans";
 import { findingsRouter } from "@/server/routers/findings";
+import { linksRouter } from "@/server/routers/links";
 /**
  * This is the primary router for your server.
  *
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
   projects: projectsRouter,
   scans: scansRouter,
   findings: findingsRouter,
+  links: linksRouter,
 });
 
 // export type definition of API
