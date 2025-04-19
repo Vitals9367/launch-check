@@ -9,7 +9,7 @@ import { useState } from "react";
 import { ProjectItem } from "../project-card/project-item";
 
 export function ProjectsList() {
-  const { data: projects, isLoading } = api.projects.fetch.useQuery();
+  const { data: projects, isLoading } = api.projects.fetchWithStats.useQuery();
   const [selectedProjects, setSelectedProjects] = useState<Set<string>>(
     new Set(),
   );

@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertOctagon, Clock, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ScanFindingsList } from "@/components/scan-findings/scan-findings-list";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 
 const statusColors = {
   pending: "bg-blue-50 text-blue-700",
@@ -43,13 +44,16 @@ export default async function ScanPage({
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link
-          href={`/dashboard/projects/${projectId}`}
-          className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Project
-        </Link>
+        <Breadcrumbs
+          items={[
+            { label: "Projects", href: "/dashboard/projects" },
+            { label: "Project", href: `/dashboard/projects/${projectId}` },
+            {
+              label: "Scan",
+              href: `/dashboard/projects/${projectId}/scans/${scanId}`,
+            },
+          ]}
+        />
       </div>
 
       <div className="grid gap-6">

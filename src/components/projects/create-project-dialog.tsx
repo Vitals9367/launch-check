@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useCreateProjectDialogStore } from "@/store/use-create-project-dialog-store";
+import type { Project } from "@/server/db/schema/projects";
 
 export function CreateProjectDialog() {
   const { isOpen, onOpen, onClose, onOpenChange } =
@@ -27,13 +28,15 @@ export function CreateProjectDialog() {
   const utils = api.useUtils();
 
   const createProject = api.projects.create.useMutation({
-    onSuccess: async () => {
+    onSuccess: async (newProject: Project) => {
       // Invalidate projects query to trigger a refresh
       await utils.projects.fetch.invalidate();
       // Close dialog and reset form
       onOpenChange(false);
       setProjectName("");
       setTargetUrl("");
+      // Redirect to the new project's page
+      router.push(`/dashboard/projects/${newProject.id}`);
     },
   });
 

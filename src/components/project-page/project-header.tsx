@@ -1,9 +1,9 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { type Project } from "@/server/db/schema/projects";
 import { projectRoute } from "@/routes";
 import { ProjectActions } from "./project-actions";
+import { Project } from "@/server/db/schema/projects";
 
 interface ProjectHeaderProps {
   project: Project;
