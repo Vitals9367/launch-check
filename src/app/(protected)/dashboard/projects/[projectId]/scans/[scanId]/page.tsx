@@ -5,6 +5,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertOctagon, Clock, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ScanFindingsList } from "@/components/scan-findings/scan-findings-list";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+
+const statusColors = {
+  pending: "bg-blue-50 text-blue-700",
+  in_progress: "bg-blue-50 text-blue-700",
+  completed: "bg-green-50 text-green-700",
+  failed: "bg-red-50 text-red-700",
+};
+
+const statusLabels = {
+  pending: "Pending",
+  in_progress: "In Progress",
+  completed: "Completed",
+  failed: "Failed",
+};
 
 export default async function ScanPage({
   params,
@@ -22,28 +37,23 @@ export default async function ScanPage({
     notFound();
   }
 
-  const statusColors = {
-    in_progress: "bg-blue-50 text-blue-700",
-    completed: "bg-green-50 text-green-700",
-    failed: "bg-red-50 text-red-700",
-  };
-
-  const statusLabels = {
-    in_progress: "In Progress",
-    completed: "Completed",
-    failed: "Failed",
-  };
+  const vulnerabilities = await api.findings.getByScanId({
+    scanId: scan.id,
+  });
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link
-          href={`/dashboard/projects/${projectId}`}
-          className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Project
-        </Link>
+        <Breadcrumbs
+          items={[
+            { label: "Projects", href: "/dashboard/projects" },
+            { label: "Project", href: `/dashboard/projects/${projectId}` },
+            {
+              label: "Scan",
+              href: `/dashboard/projects/${projectId}/scans/${scanId}`,
+            },
+          ]}
+        />
       </div>
 
       <div className="grid gap-6">
@@ -70,31 +80,31 @@ export default async function ScanPage({
             <div className="grid grid-cols-5 gap-4">
               <div className="rounded-lg border p-4 text-center">
                 <div className="text-2xl font-semibold">
-                  {scan.summary.total}
+                  {scan.totalFindings}
                 </div>
                 <div className="text-sm text-gray-500">Total</div>
               </div>
               <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-center">
                 <div className="text-2xl font-semibold text-red-700">
-                  {scan.summary.critical}
+                  {scan.criticalCount}
                 </div>
                 <div className="text-sm text-red-700">Critical</div>
               </div>
               <div className="rounded-lg border border-orange-200 bg-orange-50 p-4 text-center">
                 <div className="text-2xl font-semibold text-orange-700">
-                  {scan.summary.high}
+                  {scan.highCount}
                 </div>
                 <div className="text-sm text-orange-700">High</div>
               </div>
               <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-center">
                 <div className="text-2xl font-semibold text-yellow-700">
-                  {scan.summary.medium}
+                  {scan.mediumCount}
                 </div>
                 <div className="text-sm text-yellow-700">Medium</div>
               </div>
               <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-center">
                 <div className="text-2xl font-semibold text-blue-700">
-                  {scan.summary.low}
+                  {scan.lowCount}
                 </div>
                 <div className="text-sm text-blue-700">Low</div>
               </div>
@@ -118,7 +128,10 @@ export default async function ScanPage({
               </div>
 
               <TabsContent value="findings" className="mt-0">
-                <ScanFindingsList vulnerabilities={scan.vulnerabilities} />
+                <ScanFindingsList
+                  vulnerabilities={vulnerabilities}
+                  projectId={projectId}
+                />
               </TabsContent>
             </Tabs>
           </CardHeader>

@@ -59,8 +59,7 @@ function calculateDuration(startedAt: string, completedAt?: string): string {
   return `${minutes}m`;
 }
 
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
+function formatDate(date: Date): string {
   return date.toLocaleString("en-US", {
     year: "numeric",
     month: "2-digit",
@@ -124,8 +123,8 @@ export default async function ProjectScansPage({
             {scans.map((scan) => {
               const statusStyle = STATUS_STYLES[scan.status];
               const duration = calculateDuration(
-                scan.startedAt,
-                scan.completedAt,
+                scan.startedAt.toISOString(),
+                scan.completedAt?.toISOString(),
               );
 
               if (!statusStyle) return null;
@@ -149,24 +148,24 @@ export default async function ProjectScansPage({
                         </span>
                       </div>
                       <div className="mt-1 flex items-center gap-3 text-sm">
-                        {scan.summary.critical > 0 && (
+                        {scan.criticalCount > 0 && (
                           <span className="text-red-600">
-                            {scan.summary.critical} Critical
+                            {scan.criticalCount} Critical
                           </span>
                         )}
-                        {scan.summary.high > 0 && (
+                        {scan.highCount > 0 && (
                           <span className="text-orange-500">
-                            {scan.summary.high} High
+                            {scan.highCount} High
                           </span>
                         )}
-                        {scan.summary.medium > 0 && (
+                        {scan.mediumCount > 0 && (
                           <span className="text-yellow-500">
-                            {scan.summary.medium} Medium
+                            {scan.mediumCount} Medium
                           </span>
                         )}
-                        {scan.summary.low > 0 && (
+                        {scan.lowCount > 0 && (
                           <span className="text-blue-500">
-                            {scan.summary.low} Low
+                            {scan.lowCount} Low
                           </span>
                         )}
                       </div>

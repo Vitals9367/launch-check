@@ -22,9 +22,7 @@ export default async function FindingPage({
   const { projectId, scanId, findingId } = await params;
 
   const finding = await api.findings.getById({
-    projectId: projectId as string,
-    scanId: scanId as string,
-    findingId: findingId as string,
+    findingId: findingId,
   });
 
   if (!finding) {
@@ -44,30 +42,11 @@ export default async function FindingPage({
     high: "bg-red-50 text-red-700",
   };
 
-  const SEVERITY_STYLES = {
-    critical: {
-      color: "text-red-600",
-      bgColor: "bg-red-50",
-      borderColor: "border-red-200",
-    },
-    high: {
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
-      borderColor: "border-orange-200",
-    },
-    medium: {
-      color: "text-yellow-600",
-      bgColor: "bg-yellow-50",
-      borderColor: "border-yellow-200",
-    },
-    low: {
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-      borderColor: "border-blue-200",
-    },
-  };
+  const severityColor =
+    severityColors[finding.severity as keyof typeof severityColors];
 
-  const severityStyle = SEVERITY_STYLES[finding.severity];
+  // TODO: Finish the page
+  // const effortColor = effortColors[finding.e as keyof typeof effortColors];
 
   return (
     <div className="container mx-auto space-y-6 py-8">
@@ -87,9 +66,9 @@ export default async function FindingPage({
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight">{finding.name}</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{finding.title}</h1>
           <p className="text-sm text-gray-500">
-            Detected {new Date(finding.detectedAt).toLocaleDateString()} in{" "}
+            Detected {new Date(finding.createdAt).toLocaleDateString()} in{" "}
             <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm">
               {finding.location}
             </code>
@@ -98,17 +77,14 @@ export default async function FindingPage({
         <div className="flex items-center gap-2">
           <Badge
             variant="secondary"
-            className={cn("capitalize", severityColors[finding.severity])}
+            className={cn("capitalize", severityColor)}
           >
             <AlertTriangle className="mr-1 h-3 w-3" />
             {finding.severity} Severity
           </Badge>
-          <Badge
-            variant="secondary"
-            className={cn("capitalize", effortColors[finding.effort])}
-          >
+          {/* <Badge variant="secondary" className={cn("capitalize", effortColor)}>
             {finding.effort} effort to fix
-          </Badge>
+          </Badge> */}
         </div>
       </div>
 
@@ -128,12 +104,12 @@ export default async function FindingPage({
             <CardHeader>
               <CardTitle>Impact</CardTitle>
             </CardHeader>
-            <CardContent>
+            {/* <CardContent>
               <p className="text-gray-700">{finding.impact}</p>
-            </CardContent>
+            </CardContent> */}
           </Card>
 
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle>How to Fix</CardTitle>
               <CardDescription>{finding.remediation}</CardDescription>
@@ -176,7 +152,7 @@ export default async function FindingPage({
                 ))}
               </Tabs>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
 
         {/* Sidebar */}
@@ -188,7 +164,7 @@ export default async function FindingPage({
                 Additional Resources
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            {/* <CardContent className="space-y-4">
               {finding.references.map((reference) => (
                 <a
                   key={reference.url}
@@ -201,7 +177,7 @@ export default async function FindingPage({
                   <ExternalLink className="h-3 w-3" />
                 </a>
               ))}
-            </CardContent>
+            </CardContent> */}
           </Card>
         </div>
       </div>

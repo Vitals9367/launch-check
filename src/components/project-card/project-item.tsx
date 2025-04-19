@@ -5,32 +5,42 @@ import { cn } from "@/lib/utils";
 import { projectRoute } from "@/routes";
 import { ProjectHeader } from "./project-header";
 import { ProjectFooter } from "./project-footer";
-import { useScanData } from "./use-scan-data";
-import type { ProjectItemProps } from "./types";
+import { getStatusConfig } from "./status-config";
+import type { ProjectWithStats } from "@/types/project";
+
+interface ProjectItemProps {
+  project: ProjectWithStats;
+  isSelected?: boolean;
+}
 
 export function ProjectItem({ project, isSelected = false }: ProjectItemProps) {
-  const { scanData, statusDetails } = useScanData(project.id);
+  const statusDetails = getStatusConfig(project.scanData.status);
+
+  const cardClassName = cn(
+    // Base styles
+    "group h-full transition-all",
+
+    // Conditional styles based on selection state
+    isSelected
+      ? {
+          // Selected state
+          "border-blue-500": true,
+          "bg-blue-50": true,
+          "ring-2": true,
+          "ring-blue-500/20": true,
+          "shadow-md": true,
+        }
+      : {
+          // Default hover state
+          "hover:border-blue-200": true,
+          "hover:shadow-md": true,
+          "hover:bg-blue-50/50": true,
+        },
+  );
 
   return (
     <Link href={`${projectRoute}/${project.id}`} className="block h-full">
-      <Card
-        className={cn(
-          "group h-full transition-all",
-          isSelected
-            ? [
-                "border-blue-500",
-                "bg-blue-50",
-                "ring-2",
-                "ring-blue-500/20",
-                "shadow-md",
-              ]
-            : [
-                "hover:border-blue-200",
-                "hover:shadow-md",
-                "hover:bg-blue-50/50",
-              ],
-        )}
-      >
+      <Card className={cardClassName}>
         <CardContent className="p-6">
           <ProjectHeader
             name={project.name}
@@ -39,12 +49,15 @@ export function ProjectItem({ project, isSelected = false }: ProjectItemProps) {
           />
           <div className="flex items-center gap-2">
             <Badge variant={statusDetails.variant}>
-              {scanData.vulnerabilities}{" "}
-              {scanData.vulnerabilities === 1 ? "issue" : "issues"}
+              {project.scanData.vulnerabilities}{" "}
+              {project.scanData.vulnerabilities === 1 ? "issue" : "issues"}
             </Badge>
           </div>
         </CardContent>
-        <ProjectFooter lastScan={scanData.lastScan} isSelected={isSelected} />
+        <ProjectFooter
+          lastScan={project.scanData.lastScan}
+          isSelected={isSelected}
+        />
       </Card>
     </Link>
   );
