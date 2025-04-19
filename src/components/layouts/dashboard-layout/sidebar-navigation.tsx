@@ -18,21 +18,6 @@ const staticSections: NavigationSection[] = [
       },
     ],
   },
-  {
-    title: "Scan",
-    items: [
-      {
-        href: "/dashboard/scan",
-        icon: ScanLine,
-        label: "Scan Now",
-      },
-      {
-        href: "/dashboard/scans",
-        icon: History,
-        label: "Scan History",
-      },
-    ],
-  },
 ];
 
 const profileSection: NavigationSection = {

@@ -8,6 +8,27 @@ import { projects } from "@/server/db/schema/projects";
 import { ScanJob, scanQueue } from "@/server/redis";
 
 export const scansRouter = createTRPCRouter({
+  getLatestUserScans: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().optional().default(10),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      // Get all scans for user's projects
+      const items = await ctx.db
+        .select({
+          scan: scans,
+        })
+        .from(scans)
+        .innerJoin(projects, eq(scans.projectId, projects.id))
+        .where(eq(projects.userId, ctx.session?.user.id))
+        .orderBy(desc(scans.startedAt))
+        .limit(input.limit);
+
+      return items.map((item) => item.scan);
+    }),
+
   getLastScan: protectedProcedure
     .input(z.object({ projectId: z.string() }))
     .query(async ({ ctx, input }) => {

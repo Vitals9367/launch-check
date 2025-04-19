@@ -1,6 +1,7 @@
 import { pgTable, text, timestamp, uuid, index } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { users } from "./users";
+import type { ScanStatus } from "@/components/project-card/types";
 
 export const projects = pgTable(
   "projects",
