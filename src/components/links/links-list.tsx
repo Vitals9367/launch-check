@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { api } from "@/trpc/react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { CreateLinkDialog } from "@/components/links/create-link-dialog";
 import { useCreateLinkDialogStore } from "@/store/use-create-link-dialog-store";
 import { LinksEmpty } from "@/components/links/links-empty";
@@ -33,9 +33,9 @@ export function LinksList() {
   const [projectLinks, setProjectLinks] = useState<ProjectLink[]>([]);
 
   const params = useParams();
+  const router = useRouter();
   const projectId = params.projectId as string;
 
-  // Use a ref to store the utils to avoid dependency issues
   const utils = api.useUtils();
 
   const {
@@ -58,36 +58,29 @@ export function LinksList() {
     setEditedUrl(link.url);
   };
 
+  const updateLink = api.links.update.useMutation({
+    onSuccess: async () => {
+      // Invalidate links query to trigger a refresh
+      await utils.links.fetchByProject.invalidate({ projectId });
+      // Refresh the page to update server components
+      router.refresh();
+      setEditingLinkId(null);
+    },
+    onError: (error) => {
+      console.error("Failed to update link:", error);
+      // Revert the local state change
+      setProjectLinks(fetchedLinks || []);
+      setEditingLinkId(null);
+    },
+  });
+
   const handleSaveEdit = (id: string) => {
-    setProjectLinks((links) =>
-      links.map((link) =>
-        link.id === id ? { ...link, url: editedUrl } : link,
-      ),
-    );
-    // Call API to edit link
-    const projectId = params.projectId as string;
-
-    // Update the link in the database
     if (id && editedUrl) {
-      const updateLink = api.links.update.useMutation({
-        onSuccess: async () => {
-          // Invalidate links query to trigger a refresh
-          await utils.links.fetchByProject.invalidate({ projectId });
-        },
-        onError: (error) => {
-          console.error("Failed to update link:", error);
-          // Revert the local state change
-          setProjectLinks(fetchedLinks || []);
-        },
-      });
-
       updateLink.mutate({
         id,
         url: editedUrl,
       });
     }
-
-    setEditingLinkId(null);
   };
 
   const handleCancelEdit = () => {
@@ -99,13 +92,25 @@ export function LinksList() {
     setDeleteDialogOpen(true);
   };
 
-  const confirmDelete = () => {
-    if (linkToDelete) {
-      setProjectLinks((links) =>
-        links.filter((link) => link.id !== linkToDelete),
-      );
+  const deleteLink = api.links.delete.useMutation({
+    onSuccess: async () => {
+      // Invalidate links query to trigger a refresh
+      await utils.links.fetchByProject.invalidate({ projectId });
+      // Refresh the page to update server components
+      router.refresh();
       setDeleteDialogOpen(false);
       setLinkToDelete(null);
+    },
+    onError: (error) => {
+      console.error("Failed to delete link:", error);
+      setDeleteDialogOpen(false);
+      setLinkToDelete(null);
+    },
+  });
+
+  const confirmDelete = () => {
+    if (linkToDelete) {
+      deleteLink.mutate({ id: linkToDelete });
     }
   };
 
@@ -164,14 +169,16 @@ export function LinksList() {
                     variant="outline"
                     onClick={() => handleSaveEdit(link.id)}
                     className="h-8"
+                    disabled={updateLink.isPending}
                   >
-                    Save
+                    {updateLink.isPending ? "Saving..." : "Save"}
                   </Button>
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={handleCancelEdit}
                     className="h-8"
+                    disabled={updateLink.isPending}
                   >
                     Cancel
                   </Button>
@@ -205,6 +212,7 @@ export function LinksList() {
                   size="sm"
                   className="h-8 w-8 p-0 text-red-500"
                   onClick={() => handleDeleteClick(link.id)}
+                  disabled={deleteLink.isPending}
                 >
                   <Trash2 className="h-4 w-4" />
                   <span className="sr-only">Delete</span>
@@ -230,8 +238,9 @@ export function LinksList() {
             <AlertDialogAction
               onClick={confirmDelete}
               className="bg-red-600 hover:bg-red-700"
+              disabled={deleteLink.isPending}
             >
-              Delete
+              {deleteLink.isPending ? "Deleting..." : "Delete"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

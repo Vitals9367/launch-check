@@ -26,7 +26,6 @@ export function CreateLinkDialog() {
   const router = useRouter();
   const params = useParams();
   const utils = api.useUtils();
-
   // Get current project ID from URL params
   useEffect(() => {
     if (params.projectId) {
@@ -51,13 +50,15 @@ export function CreateLinkDialog() {
     onSuccess: async () => {
       // Invalidate links query to trigger a refresh
       await utils.links.fetchByProject.invalidate({ projectId });
+      // Refresh the page to update server components
+      router.refresh();
       // Close dialog and reset form
       onOpenChange(false);
       setPath("");
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!path.trim() || !projectId.trim() || !projectTargetUrl) {
       return;
