@@ -2,7 +2,13 @@
 
 import { Card, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { History, AlertOctagon, Loader2, Link as LinkIcon } from "lucide-react";
+import {
+  History,
+  AlertOctagon,
+  Loader2,
+  Link as LinkIcon,
+  AlertCircle,
+} from "lucide-react";
 import { ScanFindingsList } from "@/components/scan-findings/scan-findings-list";
 import { ScanList } from "@/components/scans/scan-list";
 import { LinksList } from "@/components/links/links-list";
@@ -43,7 +49,11 @@ export function FindingsSection({ project }: FindingsSectionProps) {
       <Card className="bg-white">
         <CardHeader>
           <Tabs defaultValue="scans" className="w-full">
-            <TabsList className="mb-4 grid w-[400px] grid-cols-2">
+            <TabsList className="mb-4 grid w-[600px] grid-cols-3">
+              <TabsTrigger value="findings" className="flex items-center gap-2">
+                <AlertOctagon className="h-4 w-4" />
+                Latest Findings
+              </TabsTrigger>
               <TabsTrigger value="scans" className="flex items-center gap-2">
                 <History className="h-4 w-4" />
                 Recent Scans
