@@ -5,7 +5,6 @@ import { scans } from "@/server/db/schema/scan";
 import { TRPCError } from "@trpc/server";
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
-import { generateMockProjectStats } from "@/server/mocks/project-stats";
 
 const updateProject = protectedProcedure
   .input(
