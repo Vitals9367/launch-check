@@ -15,6 +15,13 @@
       "when": 1744742857394,
       "tag": "0001_lively_silhouette",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1745040864156,
+      "tag": "0002_cloudy_norman_osborn",
+      "breakpoints": true
     }
   ]
 }
