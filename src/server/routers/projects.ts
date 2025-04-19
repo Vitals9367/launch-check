@@ -5,6 +5,34 @@ import { scans } from "@/server/db/schema/scan";
 import { TRPCError } from "@trpc/server";
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
+
+const updateProject = protectedProcedure
+  .input(
+    z.object({
+      id: z.string(),
+      name: z.string().optional(),
+      targetUrl: z.string().optional(),
+    }),
+  )
+  .mutation(async ({ ctx, input }) => {
+    const { id, ...updateData } = input;
+    return await ctx.db
+      .update(projects)
+      .set({
+        ...updateData,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(
+        and(eq(projects.id, id), eq(projects.userId, ctx.session.user.id)),
+      );
+  });
+
+const fetchProjects = protectedProcedure.query(async ({ ctx }) => {
+  return await ctx.db
+    .select()
+    .from(projects)
+    .where(eq(projects.userId, ctx.session.user.id));
+});
 import {
   calculateSecurityStats,
   getScanStatus,
@@ -71,13 +99,6 @@ const getProjectWithStatsById = protectedProcedure
       },
     };
   });
-
-const fetchProjects = protectedProcedure.query(async ({ ctx }) => {
-  return await ctx.db
-    .select()
-    .from(projects)
-    .where(eq(projects.userId, ctx.session.user.id));
-});
 
 const fetchProjectsWithStats = protectedProcedure.query(async ({ ctx }) => {
   // Get all projects with their latest scan
@@ -152,5 +173,6 @@ export const projectsRouter = createTRPCRouter({
 
   // Mutations
   create: createProject,
+  update: updateProject,
   delete: deleteProject,
 });
