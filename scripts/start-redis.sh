@@ -53,9 +53,9 @@ fi
 
 docker run -d \
   --name $REDIS_CONTAINER_NAME \
-  -e REDIS_PASSWORD="$REDIS_PASSWORD" \
   -p "${REDIS_PORT:-6379}":6379 \
   --restart unless-stopped \
+  --network launch-check \
   docker.io/redis:7-alpine \
-  redis-server --requirepass "$REDIS_PASSWORD" \
+  redis-server \
   && echo "Redis container '$REDIS_CONTAINER_NAME' was successfully created"

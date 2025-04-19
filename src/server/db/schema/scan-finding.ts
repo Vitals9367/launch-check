@@ -10,7 +10,6 @@ import {
   boolean,
   jsonb,
   uuid,
-  index,
 } from "drizzle-orm/pg-core";
 import { scans } from "./scan";
 
@@ -23,39 +22,68 @@ export const severityLevelEnum = pgEnum("severity_level", [
   "info",
 ]);
 
+// Classification type for findings
+export const findingClassification = pgTable("finding_classifications", {
+  id: uuid()
+    .primaryKey()
+    .notNull()
+    .default(sql`gen_random_uuid()`),
+  cveId: varchar({ length: 50 }),
+  cweIds: text().array(),
+});
+
+// Info type for findings
+export const findingInfo = pgTable("finding_info", {
+  id: uuid()
+    .primaryKey()
+    .notNull()
+    .default(sql`gen_random_uuid()`),
+  name: varchar({ length: 255 }).notNull(),
+  authors: text().array().notNull(),
+  tags: text().array().notNull(),
+  description: text().notNull(),
+  severity: severityLevelEnum().notNull(),
+  metadata: jsonb(), // Store additional metadata as JSON
+  classificationId: uuid().references(() => findingClassification.id, {
+    onDelete: "cascade",
+  }),
+});
+
 // Scan findings table schema
-export const scanFindings = pgTable(
-  "scan_findings",
-  {
-    id: uuid()
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+export const scanFindings = pgTable("scan_findings", {
+  id: uuid()
+    .primaryKey()
+    .notNull()
+    .default(sql`gen_random_uuid()`),
 
-    scanId: uuid()
-      .references(() => scans.id, { onDelete: "cascade" })
-      .notNull(),
+  scanId: uuid()
+    .references(() => scans.id, { onDelete: "cascade" })
+    .notNull(),
 
-    // Finding details
-    title: varchar({ length: 255 }).notNull(),
-    description: text().notNull(),
-    severity: severityLevelEnum().notNull(),
+  // Template information
+  template: varchar({ length: 255 }).notNull(),
+  templateUrl: varchar({ length: 2048 }).notNull(),
+  templateId: varchar({ length: 255 }).notNull(),
+  templatePath: varchar({ length: 2048 }).notNull(),
 
-    // Technical details
-    location: varchar({ length: 2048 }), // URL, file path, or endpoint
-    snippet: text(), // Code snippet or relevant context
-    recommendation: text(), // How to fix
+  // Finding info reference
+  infoId: uuid()
+    .references(() => findingInfo.id, { onDelete: "cascade" })
+    .notNull(),
 
-    // Additional metadata
-    createdAt: timestamp({ withTimezone: true })
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
-  },
-  (table) => [
-    index("scan_findings_scan_id_idx").on(table.scanId),
-    index("scan_findings_id_idx").on(table.id),
-  ],
-);
+  // Match details
+  matcherName: varchar({ length: 255 }).notNull(),
+  type: varchar({ length: 100 }).notNull(),
+  host: varchar({ length: 2048 }).notNull(),
+  matchedAt: varchar({ length: 2048 }).notNull(),
+  request: text().notNull(),
+  matcherStatus: boolean().notNull(),
+
+  // Metadata
+  createdAt: timestamp({ withTimezone: true })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+});
 
 // Types
 export type ScanFinding = typeof scanFindings.$inferSelect;

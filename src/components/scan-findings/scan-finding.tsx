@@ -27,6 +27,10 @@ const severityColors = {
     badge: "border-blue-200 bg-blue-50 text-blue-700",
     icon: "text-blue-500",
   },
+  info: {
+    badge: "border-gray-200 bg-gray-50 text-gray-700",
+    icon: "text-gray-500",
+  },
 };
 
 const formatDate = (date: Date) => {
@@ -44,10 +48,7 @@ interface ScanFindingProps {
 }
 
 export default function ScanFinding({ finding, projectId }: ScanFindingProps) {
-  const { id, title, severity, location, createdAt, description, scanId } =
-    finding;
-
-  const severityColor = severityColors[severity as keyof typeof severityColors];
+  const { id, template, templatePath, matchedAt, createdAt, scanId } = finding;
 
   return (
     <TooltipProvider>
@@ -59,29 +60,25 @@ export default function ScanFinding({ finding, projectId }: ScanFindingProps) {
           <div className="flex items-start gap-3">
             <Tooltip>
               <TooltipTrigger>
-                <AlertTriangle className={cn("h-6 w-6", severityColor.icon)} />
+                <AlertTriangle className="h-6 w-6 text-yellow-500" />
               </TooltipTrigger>
               <TooltipContent>
-                <p className="capitalize">{severity} severity finding</p>
+                <p>Security finding detected</p>
               </TooltipContent>
             </Tooltip>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <h4 className="font-medium text-gray-900">{title}</h4>
-                <Badge
-                  variant="outline"
-                  className={cn("capitalize", severityColor.badge)}
-                >
-                  {severity}
-                </Badge>
+                <h4 className="font-medium text-gray-900">{template}</h4>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <FileCode className="h-3.5 w-3.5" />
-                <span>{location}</span>
+                <span>{templatePath}</span>
               </div>
-              {description && (
-                <p className="mt-1 text-sm text-gray-600">{description}</p>
+              {matchedAt && (
+                <p className="mt-1 text-sm text-gray-600">
+                  Found at: <code className="text-xs">{matchedAt}</code>
+                </p>
               )}
             </div>
           </div>
