@@ -120,7 +120,7 @@ export function ProjectSettingsDialog() {
 
             <div className="space-y-2">
               <Label htmlFor="targetUrl" className="text-sm font-medium">
-                Target URL
+                Website URL
               </Label>
               <Input
                 id="targetUrl"
@@ -177,6 +177,7 @@ export function ProjectSettingsDialog() {
             variant="destructive"
             className="w-full justify-center gap-2 sm:w-1/2"
             onClick={handleDelete}
+            disabled={updateProject.isPending}
           >
             <Trash2 className="h-4 w-4" />
             Delete Project
@@ -185,9 +186,10 @@ export function ProjectSettingsDialog() {
             type="button"
             onClick={handleSubmit}
             className="w-full justify-center gap-2 bg-blue-600 hover:bg-blue-700 sm:w-1/2"
+            disabled={updateProject.isPending}
           >
             <Settings className="h-4 w-4" />
-            Save Changes
+            {updateProject.isPending ? "Saving Changes..." : "Save Changes"}
           </Button>
         </DialogFooter>
       </DialogContent>

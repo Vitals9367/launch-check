@@ -73,7 +73,7 @@ export function CreateProjectDialog() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="target-url">Target URL</Label>
+            <Label htmlFor="target-url">Website URL</Label>
             <Input
               id="target-url"
               placeholder="My Website URL"

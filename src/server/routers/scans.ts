@@ -2,9 +2,10 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { env } from "@/env";
 import { scans } from "@/server/db/schema/scan";
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq, and, count } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { projects } from "@/server/db/schema/projects";
+import { users } from "@/server/db/schema/users";
 import { ScanJob, scanQueue } from "@/server/redis";
 
 export const scansRouter = createTRPCRouter({
@@ -135,6 +136,22 @@ export const scansRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      // Get user's scan limit
+      const [user] = await ctx.db
+        .select({
+          maxScans: users.maxScans,
+        })
+        .from(users)
+        .where(eq(users.id, ctx.session.user.id))
+        .limit(1);
+
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
       // Verify project exists and user has access
       const [project] = await ctx.db
         .select()
@@ -151,6 +168,22 @@ export const scansRouter = createTRPCRouter({
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Project not found or you don't have access to it",
+        });
+      }
+
+      // Count total scans for all user's projects
+      const result = await ctx.db
+        .select({ value: count() })
+        .from(scans)
+        .innerJoin(projects, eq(scans.projectId, projects.id))
+        .where(eq(projects.userId, ctx.session.user.id));
+
+      const totalUserScans = result[0]?.value ?? 0;
+
+      if (totalUserScans >= user.maxScans) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: `You have reached your maximum limit of ${user.maxScans} scans. Please delete some older scans to continue.`,
         });
       }
 
