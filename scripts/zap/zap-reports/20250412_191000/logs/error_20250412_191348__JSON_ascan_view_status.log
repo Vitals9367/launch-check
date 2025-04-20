@@ -1,0 +1,14 @@
+=== Error Details ===
+Timestamp: 2025-04-12 19:13:48
+URL: https://www.launchcheck.io
+Endpoint: /JSON/ascan/view/status
+Error: Failed to extract progress from status response
+=== Response Body ===
+<html>
+<head><title>504 Gateway Time-out</title></head>
+<body>
+<center><h1>504 Gateway Time-out</h1></center>
+<hr><center>nginx/1.24.0 (Ubuntu)</center>
+</body>
+</html>
+====================
