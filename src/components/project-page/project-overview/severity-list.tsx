@@ -4,8 +4,8 @@ import {
   CircleOff,
   AlertCircle,
 } from "lucide-react";
-import type { ProjectStats } from "@/server/routers/projects";
 import { SEVERITY_ICONS } from "./constants";
+import { VulnerabilityStats } from "@/server/utils/vulnerability-stats";
 
 const SEVERITY_ICON_COMPONENTS = {
   critical: AlertOctagon,
@@ -34,7 +34,10 @@ function SeverityItem({ type, count }: SeverityItemProps) {
 }
 
 interface SeverityListProps {
-  vulnerabilities: ProjectStats["vulnerabilities"];
+  vulnerabilities: Pick<
+    VulnerabilityStats,
+    "critical" | "high" | "medium" | "low"
+  >;
 }
 
 export function SeverityList({ vulnerabilities }: SeverityListProps) {
