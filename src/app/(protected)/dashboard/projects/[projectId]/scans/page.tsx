@@ -73,9 +73,9 @@ function formatDate(date: Date): string {
 export default async function ProjectScansPage({
   params,
 }: {
-  params: { projectId: string };
+  params: Promise<{ projectId: string }>;
 }) {
-  const { projectId } = params;
+  const { projectId } = await params;
 
   const scans = await api.scans.getScans({
     projectId: projectId as string,

@@ -24,7 +24,7 @@ const statusLabels = {
 export default async function ScanPage({
   params,
 }: {
-  params: { projectId: string; scanId: string };
+  params: Promise<{ projectId: string; scanId: string }>;
 }) {
   const { projectId, scanId } = await params;
 

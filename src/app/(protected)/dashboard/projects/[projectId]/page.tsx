@@ -7,7 +7,7 @@ import { api } from "@/trpc/server";
 export default async function ProjectPage({
   params,
 }: {
-  params: { projectId: string };
+  params: Promise<{ projectId: string }>;
 }) {
   const { projectId } = await params;
 

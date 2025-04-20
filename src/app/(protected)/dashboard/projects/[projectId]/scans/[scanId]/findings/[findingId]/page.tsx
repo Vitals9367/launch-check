@@ -23,7 +23,7 @@ import { notFound } from "next/navigation";
 export default async function FindingPage({
   params,
 }: {
-  params: { projectId: string; scanId: string; findingId: string };
+  params: Promise<{ projectId: string; scanId: string; findingId: string }>;
 }) {
   const { projectId, scanId, findingId } = await params;
 
