@@ -183,7 +183,7 @@ export const scansRouter = createTRPCRouter({
       if (totalUserScans >= user.maxScans) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: `You have reached your maximum limit of ${user.maxScans} scans. Please delete some older scans to continue.`,
+          message: `You have reached your maximum limit of ${user.maxScans} scans.`,
         });
       }
 
