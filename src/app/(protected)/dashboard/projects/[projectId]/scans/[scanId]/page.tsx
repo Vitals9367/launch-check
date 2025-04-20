@@ -2,10 +2,10 @@ import { notFound } from "next/navigation";
 import { api } from "@/trpc/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertOctagon, Clock, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { AlertOctagon, Clock, ArrowLeft, File } from "lucide-react";
 import { ScanFindingsList } from "@/components/scan-findings/scan-findings-list";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { Button } from "@/components/ui/button";
 
 const statusColors = {
   pending: "bg-blue-50 text-blue-700",
@@ -43,7 +43,7 @@ export default async function ScanPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between gap-4">
         <Breadcrumbs
           items={[
             { label: "Projects", href: "/dashboard/projects" },
@@ -54,6 +54,10 @@ export default async function ScanPage({
             },
           ]}
         />
+        <Button variant="outline">
+          <File className="mr-2 h-4 w-4" />
+          Export Report as PDF
+        </Button>
       </div>
 
       <div className="grid gap-6">

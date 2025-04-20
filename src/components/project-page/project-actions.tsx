@@ -61,10 +61,6 @@ export function ProjectActions({ project }: ProjectActionsProps) {
           </>
         )}
       </Button>
-      <Button variant="outline">
-        <File className="mr-2 h-4 w-4" />
-        Export Report as PDF
-      </Button>
       <Button variant="outline" onClick={() => onOpenSettings(project)}>
         <Settings className="mr-2 h-4 w-4" />
         Settings
