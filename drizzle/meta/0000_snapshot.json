@@ -1,5 +1,5 @@
 {
-  "id": "9df040e4-fbb4-4d29-b05e-5c7beb38c9f5",
+  "id": "05c6bd24-86b5-4f19-8042-57aa3ddb82ef",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -159,6 +159,82 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.links": {
+      "name": "links",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "links_project_id_idx": {
+          "name": "links_project_id_idx",
+          "columns": [
+            {
+              "expression": "project_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "links_project_id_projects_id_fk": {
+          "name": "links_project_id_projects_id_fk",
+          "tableFrom": "links",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "project_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.projects": {
       "name": "projects",
       "schema": "",
@@ -218,6 +294,21 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "projects_id_idx": {
+          "name": "projects_id_idx",
+          "columns": [
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -241,8 +332,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.scanFindings": {
-      "name": "scanFindings",
+    "public.finding_classifications": {
+      "name": "finding_classifications",
       "schema": "",
       "columns": {
         "id": {
@@ -252,15 +343,53 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "scan_id": {
-          "name": "scan_id",
+        "cve_id": {
+          "name": "cve_id",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cwe_ids": {
+          "name": "cwe_ids",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.finding_info": {
+      "name": "finding_info",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
           "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
-        "title": {
-          "name": "title",
-          "type": "varchar(255)",
+        "authors": {
+          "name": "authors",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tags": {
+          "name": "tags",
+          "type": "text[]",
           "primaryKey": false,
           "notNull": true
         },
@@ -277,23 +406,123 @@
           "primaryKey": false,
           "notNull": true
         },
-        "location": {
-          "name": "location",
+        "metadata": {
+          "name": "metadata",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "classification_id": {
+          "name": "classification_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "finding_info_classification_id_finding_classifications_id_fk": {
+          "name": "finding_info_classification_id_finding_classifications_id_fk",
+          "tableFrom": "finding_info",
+          "tableTo": "finding_classifications",
+          "columnsFrom": [
+            "classification_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.scan_findings": {
+      "name": "scan_findings",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "scan_id": {
+          "name": "scan_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "template": {
+          "name": "template",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "template_url": {
+          "name": "template_url",
           "type": "varchar(2048)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "snippet": {
-          "name": "snippet",
+        "template_id": {
+          "name": "template_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "template_path": {
+          "name": "template_path",
+          "type": "varchar(2048)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "info_id": {
+          "name": "info_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "matcher_name": {
+          "name": "matcher_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "host": {
+          "name": "host",
+          "type": "varchar(2048)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "matched_at": {
+          "name": "matched_at",
+          "type": "varchar(2048)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "request": {
+          "name": "request",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "recommendation": {
-          "name": "recommendation",
-          "type": "text",
+        "matcher_status": {
+          "name": "matcher_status",
+          "type": "boolean",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -305,12 +534,25 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "scanFindings_scan_id_scans_id_fk": {
-          "name": "scanFindings_scan_id_scans_id_fk",
-          "tableFrom": "scanFindings",
+        "scan_findings_scan_id_scans_id_fk": {
+          "name": "scan_findings_scan_id_scans_id_fk",
+          "tableFrom": "scan_findings",
           "tableTo": "scans",
           "columnsFrom": [
             "scan_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "scan_findings_info_id_finding_info_id_fk": {
+          "name": "scan_findings_info_id_finding_info_id_fk",
+          "tableFrom": "scan_findings",
+          "tableTo": "finding_info",
+          "columnsFrom": [
+            "info_id"
           ],
           "columnsTo": [
             "id"
@@ -438,7 +680,38 @@
           "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "scans_project_id_idx": {
+          "name": "scans_project_id_idx",
+          "columns": [
+            {
+              "expression": "project_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "scans_id_idx": {
+          "name": "scans_id_idx",
+          "columns": [
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "scans_project_id_projects_id_fk": {
           "name": "scans_project_id_projects_id_fk",
@@ -556,8 +829,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.verificationToken": {
-      "name": "verificationToken",
+    "public.verification_token": {
+      "name": "verification_token",
       "schema": "",
       "columns": {
         "identifier": {
