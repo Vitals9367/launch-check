@@ -3,6 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { scanFindings } from "@/server/db/schema/scan-finding";
 import { scans } from "@/server/db/schema/scan";
 import { projects } from "@/server/db/schema/projects";
+import { alerts } from "@/server/db/schema/alerts";
 import { eq, and } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
@@ -14,16 +15,18 @@ export const findingsRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      // Join with scans and projects to verify ownership
-      const [finding] = await ctx.db
+      // Join with scans, projects, and alerts to verify ownership and get enriched data
+      const [result] = await ctx.db
         .select({
           finding: scanFindings,
           projectId: scans.projectId,
           userId: projects.userId,
+          alert: alerts,
         })
         .from(scanFindings)
         .innerJoin(scans, eq(scanFindings.scanId, scans.id))
         .innerJoin(projects, eq(scans.projectId, projects.id))
+        .leftJoin(alerts, eq(scanFindings.pluginId, alerts.id))
         .where(
           and(
             eq(scanFindings.id, input.findingId),
@@ -32,14 +35,28 @@ export const findingsRouter = createTRPCRouter({
         )
         .limit(1);
 
-      if (!finding) {
+      if (!result) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Finding not found or you don't have access to it",
         });
       }
 
-      return finding.finding;
+      // Combine finding data with alert data
+      return {
+        ...result.finding,
+        enrichedData: result.alert
+          ? {
+              frameworkFixes: result.alert.frameworkFixes,
+              impactAnalysis: result.alert.impactAnalysis,
+              mitigation: result.alert.mitigation,
+              priority: result.alert.priority,
+              compliance: result.alert.compliance,
+              monitoring: result.alert.monitoring,
+              testing: result.alert.testing,
+            }
+          : null,
+      };
     }),
 
   getByScanId: protectedProcedure
@@ -65,14 +82,29 @@ export const findingsRouter = createTRPCRouter({
         });
       }
 
-      // Now get the findings
+      // Now get the findings with enriched alert data
       const findings = await ctx.db
         .select({
           finding: scanFindings,
+          alert: alerts,
         })
         .from(scanFindings)
+        .leftJoin(alerts, eq(scanFindings.pluginId, alerts.id))
         .where(eq(scanFindings.scanId, input.scanId));
 
-      return findings.map((f) => f.finding);
+      return findings.map((result) => ({
+        ...result.finding,
+        enrichedData: result.alert
+          ? {
+              frameworkFixes: result.alert.frameworkFixes,
+              impactAnalysis: result.alert.impactAnalysis,
+              mitigation: result.alert.mitigation,
+              priority: result.alert.priority,
+              compliance: result.alert.compliance,
+              monitoring: result.alert.monitoring,
+              testing: result.alert.testing,
+            }
+          : null,
+      }));
     }),
 });
