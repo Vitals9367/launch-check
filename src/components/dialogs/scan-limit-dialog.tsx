@@ -38,19 +38,6 @@ export function ScanLimitDialog() {
             </div>
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Close
-          </Button>
-          <Button
-            onClick={() => {
-              window.location.href =
-                "mailto:vitalijus.alsauskas@gmail.com?subject=Launch Check - Scan Limit Inquiry";
-            }}
-          >
-            Contact Support
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
