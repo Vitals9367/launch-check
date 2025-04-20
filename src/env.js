@@ -30,6 +30,7 @@ export const env = createEnv({
     REDIS_URL: z.string(),
     REDIS_SCAN_QUEUE_NAME: z.string(),
     REDIS_SCAN_NOTIFICATION_QUEUE_NAME: z.string(),
+    OPENAI_API_KEY: z.string(),
   },
 
   /**
@@ -74,6 +75,7 @@ export const env = createEnv({
     REDIS_SCAN_QUEUE_NAME: process.env.REDIS_SCAN_QUEUE_NAME,
     REDIS_SCAN_NOTIFICATION_QUEUE_NAME:
       process.env.REDIS_SCAN_NOTIFICATION_QUEUE_NAME,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
