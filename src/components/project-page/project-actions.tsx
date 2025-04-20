@@ -29,9 +29,10 @@ export function ProjectActions({ project }: ProjectActionsProps) {
           title: "Scan created successfully",
         });
       },
-      onError: () => {
+      onError: (error) => {
         toast({
           title: "Failed to create scan",
+          description: error.message,
           variant: "destructive",
         });
       },
